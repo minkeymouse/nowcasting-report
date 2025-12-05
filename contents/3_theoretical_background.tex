@@ -145,7 +145,7 @@ DDFM은 다음과 같은 재구성 오차를 최소화하여 학습됨:
 DDFM은 고유 오차(idiosyncratic error)를 모델링하여 더 정확한 예측을 제공할 수 있는 잠재력을 보유함.
 \begin{itemize}
     \item 고유 오차는 각 시계열의 요인으로 설명되지 않는 부분을 나타냄
-    \item DDFM은 고유 오차에 AR(1) 동학을 부여하여 시간적 의존성을 포착함
+    \item DDFM은 특이 성분(idiosyncratic component)에 AR(d) 동학을 부여하여 시간적 의존성을 포착함. 일반적으로 AR(1)이 사용되며, 대각 행렬의 자기회귀 계수를 가진다
     \item 이는 전체 상태 벡터에 요인과 고유 오차를 모두 포함시켜 Kalman 필터를 통해 추정함
 \end{itemize}
 

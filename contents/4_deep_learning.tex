@@ -8,12 +8,13 @@
 심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)은 딥러닝 기법을 DFM에 접목한 모형으로, 자기인코더(autoencoder)를 활용하여 잠재 상태(latent state)를 생성하고 비선형 요인 구조를 학습한다 \cite{andreini2020deep}. DDFM은 기존 DFM의 선형 가정을 완화하여 더 복잡한 요인 구조를 포착할 수 있다.
 
 \paragraph{선형 DFM의 한계}
-선형 DFM은 다음과 같은 네 가지 핵심 가정에 기반한다:
+선형 DFM은 다음과 같은 다섯 가지 핵심 가정에 기반한다 \cite{andreini2020deep}:
 \begin{enumerate}
-    \item \textbf{선형 요인 동학}: $z_t = A z_{t-1} + w_t$ - 요인이 선형적으로 진화한다.
-    \item \textbf{가우시안 혁신}: $w_t \sim \mathcal{N}(0, Q)$ - 요인 혁신이 정규분포를 따른다.
-    \item \textbf{고정 적재}: $\Lambda$가 시간에 따라 변하지 않는다.
-    \item \textbf{선형 관측}: $y_t = \Lambda z_t + \varepsilon_t$ - 요인이 관측치에 선형적으로 영향을 미친다.
+    \item \textbf{선형 인코딩 함수}: 인코딩 함수 $G(\cdot): \mathbf{y} \to \mathbf{f}$가 선형 연산자이다.
+    \item \textbf{선형 디코딩 함수}: 디코딩 함수 $F(\cdot): \mathbf{f} \to \tilde{\mathbf{y}}$가 선형 연산자이다.
+    \item \textbf{선형 요인 동학}: $z_t = A z_{t-1} + w_t$ - 요인이 선형 확률 벡터 차분 방정식을 따른다.
+    \item \textbf{선형 특이 성분 동학}: 특이 성분이 대각 행렬의 자기회귀 계수를 가진 선형 확률 벡터 차분 방정식을 따른다.
+    \item \textbf{가우시안 오차}: 전이 방정식과 관측 방정식의 오차 항이 독립 동일 정규분포(i.i.d. Gaussian)를 따른다.
 \end{enumerate}
 
 이러한 가정들은 구조적 변화가 발생하는 시기(예: COVID-19 팬데믹, 2008년 금융위기)에 문제가 될 수 있다. 구조적 변화 시 요인 동학이 변화하고($A_1 \neq A_2$), 요인 변동성이 급증하며(GARCH-like behavior), 적재가 증가하고(상관관계 급증), 요인 간 비선형 상호작용이 발생할 수 있다.
@@ -48,20 +49,16 @@ DDFM은 자기인코더(autoencoder) 구조를 통해 잠재 상태를 생성하
 여기서 $g_\phi$는 인코더, $f_\theta$는 디코더를 나타내며, 재구성 오차(reconstruction error)를 최소화함으로써 공통 정보를 요인 공간으로 압축한다.
 
 \paragraph{학습 과정}
-DDFM의 학습은 두 단계로 구성된다:
+DDFM의 학습은 MCMC(Markov Chain Monte Carlo) 기반 알고리즘을 사용하며, 두 단계로 구성된다 \cite{andreini2020deep}:
 
 \begin{enumerate}
-    \item \textbf{사전 학습(Pre-training)}: 자기인코더만을 학습하여 초기 요인 추출 능력을 확보한다.
+    \item \textbf{오프라인 학습(Off-line estimation)}: 전체 모형의 파라미터를 추정한다. 이 단계에서는 사전 학습(pre-training)을 통해 자기인코더를 초기화하고, 이후 MCMC 알고리즘을 통해 인코더, 디코더, 특이 성분 파라미터를 교대 최적화한다. Denoising 접근법을 사용하여 노이즈 주입을 통해 모형의 강건성을 향상시킨다.
     \begin{equation}
-    \min_{\phi, \theta} \sum_{t=1}^T ||x_t - f_\theta(g_\phi(x_t))||^2
+    \min_{\phi, \theta, \Phi, \Sigma_\varepsilon} \sum_{t=1}^T ||x_t - f_\theta(g_\phi(x_t^{(mc)}))||^2
     \end{equation}
-    이 단계는 일반적으로 50-200 에폭 동안 수행된다.
+    여기서 $x_t^{(mc)}$는 노이즈가 주입된 관측치이며, 특이 성분 파라미터 $\Phi$와 $\Sigma_\varepsilon$는 요인 추정과 교대하여 업데이트된다.
     
-    \item \textbf{공동 학습(Joint Training)}: 요인 동학을 고려하여 인코더, 디코더, 전이 행렬을 동시에 학습한다.
-    \begin{equation}
-    \mathcal{L} = \sum_{t=1}^T ||x_t - f_\theta(z_t)||^2 + \lambda \sum_{t=2}^T ||z_t - A z_{t-1}||^2
-    \end{equation}
-    여기서 $\lambda$는 재구성 오차와 동학 오차 간의 균형을 조절하는 하이퍼파라미터이다. 이 단계는 일반적으로 100-500 에폭 동안 수행된다.
+    \item \textbf{온라인 학습(On-line updates)}: 디코딩 부분을 상태 공간 프레임워크로 변환하여 관측치가 주어질 때 잠재 상태를 실시간으로 업데이트한다. Kalman 필터를 사용하여 ragged edges와 결측치를 처리한다.
 \end{enumerate}
 
 \paragraph{그래디언트 기반 최적화}
@@ -74,7 +71,7 @@ Adam 옵티마이저는 다음과 같은 특징을 가진다:
     \item \textbf{이차 모멘트 추정}: 그래디언트의 제곱의 지수 이동 평균을 사용하여 학습률을 조정한다.
 \end{itemize}
 
-미니배치 학습을 통해 대규모 데이터셋에서도 효율적으로 학습할 수 있으며, 결측치는 손실 함수에서 마스킹하여 자연스럽게 처리한다. 이는 EM 알고리즘과 달리 그래디언트 기반 최적화의 장점이다.
+미니배치 학습을 통해 대규모 데이터셋에서도 효율적으로 학습할 수 있으며, 결측치는 selection matrices를 사용하여 손실 함수에서 마스킹하여 자연스럽게 처리한다. Denoising 접근법을 통해 노이즈 주입을 사용하여 모형의 강건성을 향상시킨다. 이는 EM 알고리즘과 달리 그래디언트 기반 최적화의 장점이다.
 
 \subsubsection{비선형 요인 구조의 학습}
 DDFM의 핵심 장점은 비선형 요인 구조를 학습할 수 있다는 점이다. 기존 DFM은 선형 관계만을 모델링할 수 있으나, DDFM은 신경망을 통해 복잡한 비선형 변환을 학습할 수 있다.
@@ -121,7 +118,7 @@ DDFM의 주요 구성 요소는 다음과 같다:
 \begin{itemize}
     \item \textbf{인코더 네트워크}: 다층 퍼셉트론(MLP)을 사용하여 관측치를 요인 공간으로 변환한다. 인코더는 여러 은닉층을 가질 수 있으며, 각 층은 비선형 활성 함수(ReLU, tanh, sigmoid 등)를 사용한다.
     \item \textbf{디코더 네트워크}: 요인을 다시 관측치 공간으로 변환한다. 해석가능성을 위해 디코더는 선형으로 유지하는 경우가 많다.
-    \item \textbf{상태 전이 모델}: 요인의 시간적 동학을 모델링하는 AR 모델로, 선형 전이 행렬 $A$를 사용한다.
+    \item \textbf{상태 전이 모델}: 요인의 시간적 동학을 모델링하는 AR 모델로, 선형 전이 행렬 $A$를 사용한다. 특이 성분도 AR(d) 과정으로 모델링되며, 대각 행렬의 자기회귀 계수를 가진다.
     \item \textbf{손실 함수}: 재구성 오차와 동학 오차의 가중합으로 구성된다.
 \end{itemize}
 
