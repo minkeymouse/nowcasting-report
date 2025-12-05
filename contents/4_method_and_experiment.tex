@@ -28,7 +28,7 @@
     \item \textbf{KOGFCF\_\_D}: 총고정자본형성(Gross Capital Formation, Fixed), 실질 기준, 사슬 연결 가중치. 분기별 빈도를 가지며, 총 162개의 관측치가 있으며, 세 목표 변수 중 가장 큰 변동성을 보이는 것으로 알려져 있음.
 \end{itemize}
 
-이러한 목표 변수들은 분기별로 발표되며, 해당 분기 종료 후 약 25일 정도의 시차를 가지고 있음. 따라서 나우캐스팅을 통해 공식 발표 전에 현재 분기의 값을 추정하는 것이 가능함.
+이러한 목표 변수들은 분기별로 발표되며, 해당 분기 종료 후 약 25일 정도의 시차를 가지고 있음. 따라서 nowcasting을 통해 공식 발표 전에 현재 분기의 값을 추정하는 것이 가능함.
 
 \subsubsection{설명 변수}
 설명 변수들은 목표 변수와 관련된 다양한 경제 지표들로 구성되어 있음. 주요 변수 그룹은 다음과 같음:
@@ -55,7 +55,7 @@
 
 \subsection{dfm-python 패키지 개요}
 
-dfm-python은 고차원 시계열 데이터의 나우캐스팅과 예측을 위한 동적 요인 모형(Dynamic Factor Model, DFM)의 포괄적인 Python 구현체임. 본 연구에서는 dfm-python 패키지를 활용하여 DFM과 DDFM(Deep Dynamic Factor Model) 모형을 사용하도록 설계함.
+dfm-python은 고차원 시계열 데이터의 nowcasting과 예측을 위한 동적 요인 모형(Dynamic Factor Model, DFM)의 포괄적인 Python 구현체임. 본 연구에서는 dfm-python 패키지를 활용하여 DFM과 DDFM(Deep Dynamic Factor Model) 모형을 사용하도록 설계함.
 
 \subsubsection{dfm-python의 핵심 기능}
 dfm-python 패키지는 다음과 같은 핵심 기능을 제공함:
@@ -66,7 +66,7 @@ dfm-python 패키지는 다음과 같은 핵심 기능을 제공함:
     \item \textbf{블록 구조}: 유연한 요인 조직화를 지원함. 전역 공통 요인(global common factor)과 부문별 요인(sector-specific factors)을 블록으로 구성할 수 있음
     \item \textbf{결측치 처리}: 내부적으로 스플라인 보간을 사용하여 결측치를 강건하게 처리함
     \item \textbf{News decomposition}: 특정 데이터 발표가 예측 변화에 미치는 기여도를 분석할 수 있는 기능을 제공함
-    \item \textbf{나우캐스팅 및 예측}: 모든 예측 기간에 대한 예측을 생성할 수 있음
+    \item \textbf{nowcasting 및 예측}: 모든 예측 기간에 대한 예측을 생성할 수 있음
     \item \textbf{Deep Dynamic Factor Models (DDFM)}: 비선형 인코더를 사용하여 복잡한 요인 구조를 포착하는 DDFM을 지원함 (PyTorch 필요)
 \end{itemize}
 
@@ -95,7 +95,7 @@ dfm-python 패키지는 다음과 같은 주요 모듈로 구성됨:
     \item \textbf{core 모듈}: EM 알고리즘 구현, 수치 유틸리티, 헬퍼 함수, 타임스탬프 유틸리티
     \item \textbf{kalman 모듈}: Kalman 필터 및 스무더 구현
     \item \textbf{lightning 모듈}: PyTorch Lightning 기반 데이터 모듈 및 트레이너
-    \item \textbf{nowcast 모듈}: 나우캐스팅 기능 및 News decomposition
+    \item \textbf{nowcast 모듈}: nowcasting 기능 및 News decomposition
     \item \textbf{utils 모듈}: 혼합 빈도 유틸리티(텐트 가중치, 집계 구조, idio 체인 길이, 빈도 헬퍼)
 \end{itemize}
 
@@ -149,4 +149,4 @@ dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측�
     \item \textbf{블록 구조}: 목표 변수와 관련된 변수들을 블록으로 그룹화하도록 설계함. GDP 예측을 위한 Block\_Production, 민간 소비 예측을 위한 Block\_Consumption, 총고정자본형성 예측을 위한 Block\_Investment 블록을 구성하도록 설계함.
 \end{itemize}
 
-dfm-python의 나우캐스팅 기능을 활용하여 마스킹된 데이터를 통한 백테스팅을 수행할 수 있도록 설계함. 각 시점에서 목표 변수의 최근 관측치를 마스킹하고, 사용 가능한 고빈도 데이터만을 활용하여 예측을 수행하도록 설계함. 또한 DFM과 DDFM의 각 하이퍼파라미터가 모형 성능에 미치는 영향을 분석하기 위해 Ablation study를 수행할 수 있도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 분석은 제한적임.
+dfm-python의 nowcasting 기능을 활용하여 마스킹된 데이터를 통한 백테스팅을 수행할 수 있도록 설계함. 각 시점에서 목표 변수의 최근 관측치를 마스킹하고, 사용 가능한 고빈도 데이터만을 활용하여 예측을 수행하도록 설계함.

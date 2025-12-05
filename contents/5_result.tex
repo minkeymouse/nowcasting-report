@@ -85,29 +85,29 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
     \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
 \end{itemize}
 
-\subsection{DFM vs DDFM 나우캐스팅 비교}
+\subsection{DFM vs DDFM nowcasting 비교}
 
-마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 나우캐스팅 성능을 비교할 수 있도록 설계함. 나우캐스팅은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
+마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 nowcasting 성능을 비교할 수 있도록 설계함. nowcasting은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
 
-\subsubsection{나우캐스팅 성능 비교}
-표 \ref{tab:nowcasting_metrics}는 두 모형의 나우캐스팅 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+\subsubsection{nowcasting 성능 비교}
+표 \ref{tab:nowcasting_metrics}는 두 모형의 nowcasting 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 
-나우캐스팅 성능 비교는 다음과 같이 설계됨:
+nowcasting 성능 비교는 다음과 같이 설계됨:
 \begin{itemize}
     \item 월간 고빈도 지표들을 활용하여 분기별 목표 변수를 예측하도록 설계함
-    \item DDFM의 비선형 인코더가 정보가 제한적인 나우캐스팅 상황에서도 비선형 요인 구조를 학습할 수 있도록 설계함
+    \item DDFM의 비선형 인코더가 정보가 제한적인 nowcasting 상황에서도 비선형 요인 구조를 학습할 수 있도록 설계함
     \item News decomposition 기능을 통해 새로운 데이터 발표 시 예측 업데이트의 기여도를 분석할 수 있도록 설계함
     \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
 \end{itemize}
 
 \input{tables/tab_nowcasting_metrics}
 
-표 \ref{tab:nowcasting_by_target}는 목표 변수별 나우캐스팅 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:nowcasting_by_target}는 목표 변수별 nowcasting 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \begin{table}[h]
 \centering
-\caption{목표 변수별 나우캐스팅 성능 비교 (표준화된 RMSE)}
+\caption{목표 변수별 nowcasting 성능 비교 (표준화된 RMSE)}
 \label{tab:nowcasting_by_target}
 \begin{tabular}{lccc}
 \toprule
@@ -119,11 +119,11 @@ DDFM & - & - & - \\
 \end{tabular}
 \end{table}
 
-표 \ref{tab:nowcasting_by_masking}는 마스킹 기간별 나우캐스팅 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:nowcasting_by_masking}는 마스킹 기간별 nowcasting 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \begin{table}[h]
 \centering
-\caption{마스킹 기간별 나우캐스팅 성능 비교 (표준화된 RMSE)}
+\caption{마스킹 기간별 nowcasting 성능 비교 (표준화된 RMSE)}
 \label{tab:nowcasting_by_masking}
 \begin{tabular}{lccc}
 \toprule
@@ -131,85 +131,6 @@ DDFM & - & - & - \\
 \midrule
 DFM & - & - & - \\
 DDFM & - & - & - \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{dfm-python을 활용한 Ablation Study 결과}
-
-dfm-python 패키지의 설정을 변경하여 DFM과 DDFM의 하이퍼파라미터가 성능에 미치는 영향을 분석할 수 있도록 설계함. YAML 설정 파일을 통해 요인 개수, AR 차수, 인코더 구조 등을 조정하고, 각 설정에 대한 성능을 비교할 수 있도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 분석은 제한적임.
-
-\subsubsection{DFM 하이퍼파라미터 분석}
-DFM 설정에서 요인 개수와 AR 차수 변화에 따른 성능 분석을 위한 실험 설계는 다음과 같음:
-\begin{itemize}
-    \item 요인 개수는 블록 구조에서 설정하며, Block\_Global의 factors 파라미터를 조정함
-    \item 요인 개수가 증가할수록 모형의 표현력이 향상되나, 과적합의 위험이 증가할 것으로 예상됨
-    \item AR 차수는 ar\_lag 파라미터로 조정함
-    \item EM 알고리즘의 수렴 기준(threshold)과 최대 반복 횟수(max\_iter)를 설정할 수 있으며, 본 연구에서는 threshold=1e-4, max\_iter=100으로 설정함
-\end{itemize}
-
-표 \ref{tab:dfm_ablation_factors}는 요인 개수별 DFM 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
-
-\begin{table}[h]
-\centering
-\caption{DFM 요인 개수별 성능 비교 (표준화된 RMSE)}
-\label{tab:dfm_ablation_factors}
-\begin{tabular}{lccc}
-\toprule
-요인 개수 & GDP & 민간 소비 & 총고정자본형성 \\
-\midrule
-1개 & - & - & - \\
-2개 & - & - & - \\
-3개 & - & - & - \\
-4개 & - & - & - \\
-5개 & - & - & - \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsubsection{DDFM 하이퍼파라미터 분석}
-DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 따른 성능 분석을 위한 실험 설계는 다음과 같음.
-\begin{itemize}
-    \item 인코더 레이어 구조는 encoder\_layers 파라미터로 설정하며, 예를 들어 [64, 32]는 2개 레이어를 의미함
-    \item 인코더 레이어 수가 증가할수록 비선형 변환의 복잡도가 증가하여 더 복잡한 요인 구조를 학습할 수 있으나, 과적합의 위험이 증가함
-    \item 학습률은 learning\_rate 파라미터로 조정하며, 너무 작으면 학습 속도가 느려지고, 너무 크면 학습이 불안정해짐
-    \item DDFMTrainer는 Adam 옵티마이저를 사용하며, 학습률 스케줄링을 지원함
-    \item 배치 크기는 batch\_size 파라미터로 조정하며, 작을수록 학습이 불안정해지고, 클수록 메모리 사용량이 증가함
-    \item DDFM은 배치 기반 학습을 사용하므로, DFM의 EM 알고리즘과 달리 메모리 효율적인 학습이 가능함
-\end{itemize}
-
-표 \ref{tab:ddfm_ablation_layers}는 인코더 레이어 수별 DDFM 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
-
-\begin{table}[h]
-\centering
-\caption{DDFM 인코더 레이어 수별 성능 비교 (표준화된 RMSE)}
-\label{tab:ddfm_ablation_layers}
-\begin{tabular}{lccc}
-\toprule
-레이어 수 & GDP & 민간 소비 & 총고정자본형성 \\
-\midrule
-1개 & - & - & - \\
-2개 & - & - & - \\
-3개 & - & - & - \\
-4개 & - & - & - \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-표 \ref{tab:ddfm_ablation_lr}는 학습률별 DDFM 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
-
-\begin{table}[h]
-\centering
-\caption{DDFM 학습률별 성능 비교 (표준화된 RMSE)}
-\label{tab:ddfm_ablation_lr}
-\begin{tabular}{lccc}
-\toprule
-학습률 & GDP & 민간 소비 & 총고정자본형성 \\
-\midrule
-0.0001 & - & - & - \\
-0.001 & - & - & - \\
-0.01 & - & - & - \\
-0.1 & - & - & - \\
 \bottomrule
 \end{tabular}
 \end{table}

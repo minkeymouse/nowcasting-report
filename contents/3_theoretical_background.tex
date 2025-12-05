@@ -59,6 +59,24 @@ DFM에서 요인을 추정하기 위해 Kalman 필터와 스무더가 사용됨.
 
 \subsection{혼합 빈도 데이터 처리}
 
+혼합 빈도(mixed-frequency) 데이터 처리는 거시경제 예측에서 핵심적인 과제임. 서로 다른 빈도의 데이터를 효과적으로 통합하기 위한 여러 방법론이 제안되어 왔음.
+
+\subsubsection{MIDAS (Mixed Data Sampling)}
+MIDAS는 Ghysels 등 (2004)에 의해 제안된 방법으로, 고빈도 데이터를 직접적으로 저빈도 예측에 활용할 수 있도록 설계된 회귀 모형임 \cite{ghysels2004midas}.
+\begin{itemize}
+    \item MIDAS는 고빈도 설명 변수를 저빈도 종속 변수에 직접 연결하는 방법으로, 분기별 GDP를 월간 또는 주간 지표로부터 예측하는 데 널리 활용됨
+    \item MIDAS의 핵심은 고빈도 데이터에 대한 분산 가중치(distributed lag weights)를 사용하여 저빈도 예측을 생성하는 것임
+    \item 이 방법은 DFM과 달리 요인 추출 없이 직접적으로 고빈도 데이터를 활용할 수 있다는 장점이 있음
+\end{itemize}
+
+\subsubsection{Diffusion 모델의 활용}
+최근 연구에서는 확산 모델(diffusion models)을 활용하여 혼합 빈도 데이터의 복잡한 패턴을 학습하고 예측 성능을 향상시키는 방법이 제안되고 있음.
+\begin{itemize}
+    \item Diffusion 모델은 생성 모델의 한 종류로, 노이즈를 점진적으로 제거하여 데이터를 생성하는 과정을 역으로 학습함
+    \item 혼합 빈도 데이터 처리에서 diffusion 모델은 고빈도 데이터의 노이즈를 제거하고, 저빈도 목표 변수와의 관계를 더 정확하게 모델링할 수 있는 잠재력을 보유함
+    \item 이러한 접근법은 특히 비선형 관계와 복잡한 패턴을 포착하는 데 유용함
+\end{itemize}
+
 \subsubsection{Clock 기반 프레임워크}
 dfm-python 패키지는 clock 기반 프레임워크를 사용하여 혼합 빈도 데이터를 처리함.
 \begin{itemize}
@@ -69,10 +87,10 @@ dfm-python 패키지는 clock 기반 프레임워크를 사용하여 혼합 빈�
 \end{itemize}
 
 \subsubsection{텐트 커널 집계}
-저빈도 시계열(예: 분기별 GDP)을 고빈도 요인(예: 월간 요인)으로부터 생성하기 위해 텐트 커널(tent kernel) 집계 방식을 사용함. 이는 FRBNY Staff Nowcast에서 사용되는 핵심 기법으로, 혼합 빈도 데이터를 효과적으로 처리하기 위한 방법임 \cite{bok2017macroeconomic}.
+저빈도 시계열(예: 분기별 GDP)을 고빈도 요인(예: 월간 요인)으로부터 생성하기 위해 텐트 커널(tent kernel) 집계 방식을 사용함. 텐트 커널은 Mariano와 Murasawa (2003)에 의해 제안된 방법으로, 혼합 빈도 데이터를 효과적으로 처리하기 위한 핵심 기법임 \cite{mariano2003new}. 이 방법은 FRBNY Staff Nowcast에서도 핵심적으로 사용되며, Bańbura 등 (2012)과 Bok 등 (2017, 2019)의 연구에서 실증적으로 검증됨 \cite{bok2017macroeconomic}.
 \begin{itemize}
-    \item 텐트 커널은 시간 가중치를 부여하여, 분기 내 각 월의 기여도를 다르게 설정함. 이는 저빈도 관측 변수를 고빈도 잠재 상태로 매핑하는 결정론적 방법임
-    \item 분기 $q$에 해당하는 월간 시점들의 집합을 $S_q = \{m_1, m_2, m_3\}$라고 하면, 각 월의 가중치는 다음과 같이 계산됨:
+    \item \textbf{텐트 커널의 기원}: Mariano와 Murasawa (2003)는 혼합 빈도 시계열 모형에서 저빈도 변수를 고빈도 잠재 상태로 매핑하기 위한 결정론적 방법으로 텐트 커널을 제안함. 이 방법은 분기 내 각 월의 기여도를 시간 가중치로 부여하여, 분기의 중간 시점이 더 큰 가중치를 갖도록 함
+    \item \textbf{수학적 정의}: 분기 $q$에 해당하는 월간 시점들의 집합을 $S_q = \{m_1, m_2, m_3\}$라고 하면, 각 월의 가중치는 다음과 같이 계산됨:
     \begin{equation}
     w_{m_i} = \begin{cases}
     \frac{i - 1}{2} & \text{if } i = 1, 2 \\
@@ -80,14 +98,14 @@ dfm-python 패키지는 clock 기반 프레임워크를 사용하여 혼합 빈�
     \end{cases}
     \end{equation}
     \item 이러한 가중치는 분기의 첫 번째 월과 세 번째 월에는 작은 가중치를, 두 번째 월(중간 월)에는 큰 가중치를 부여함
-    \item 텐트 커널을 사용하는 이유는 다음과 같음:
+    \item \textbf{텐트 커널을 사용하는 이유}:
     \begin{itemize}
         \item \textbf{분기 중간 시점의 대표성}: 분기의 중간 시점이 전체 분기 값을 더 잘 대표한다는 경제적 직관에 기반함. 분기 초반과 후반의 변동성이 중간 시점에 집중되어 있다고 가정함. 이는 분기별 집계 변수의 시간적 분포 특성을 반영함
         \item \textbf{균등 가중치의 한계}: 균등 가중치를 사용할 경우, 분기 내 각 월이 동일한 기여를 한다고 가정하나, 실제로는 분기 중간 시점의 정보가 더 중요할 수 있음. 또한 분기 초반과 후반의 정보 손실이 발생할 수 있음
         \item \textbf{최근 가중치의 한계}: 최근 가중치를 사용할 경우, 분기 후반의 정보만 강조되어 분기 전체의 정보를 충분히 활용하지 못함. 이는 분기 초반과 중반의 정보를 소홀히 하게 됨
         \item \textbf{실증적 우수성}: Bańbura 등 (2012)과 Bok 등 (2017)의 연구에서 텐트 커널이 균등 가중치나 최근 가중치보다 우수한 성능을 보이는 것으로 보고됨 \cite{banbura2012nowcasting, bok2017macroeconomic}. 특히 FRBNY Staff Nowcast에서 텐트 커널을 핵심 기법으로 사용하여 실증적으로 검증됨 \cite{bok2019frbny}
     \end{itemize}
-    \item 텐트 커널의 수학적 특성:
+    \item \textbf{텐트 커널의 수학적 특성}:
     \begin{itemize}
         \item 가중치의 합은 1이 되도록 정규화되어, 분기별 값의 스케일을 보존함
         \item 가중치 함수는 대칭적이며, 분기 중간에서 최대값을 가짐
@@ -137,15 +155,15 @@ DDFM은 고유 오차(idiosyncratic error)를 모델링하여 더 정확한 예�
     \item 이는 전체 상태 벡터에 요인과 고유 오차를 모두 포함시켜 Kalman 필터를 통해 추정함
 \end{itemize}
 
-\subsection{나우캐스팅의 이론적 기초}
+\subsection{Nowcasting의 이론적 기초}
 
 \subsubsection{출시 시차를 고려한 모델링}
-나우캐스팅은 각 시점에서 사용 가능한 데이터만을 활용하여 목표 변수를 예측함.
+Nowcasting은 각 시점에서 사용 가능한 데이터만을 활용하여 목표 변수를 예측함.
 \begin{itemize}
     \item 각 변수는 서로 다른 출시 시차(release lag)를 가지며, 이는 데이터가 실제로 발생한 시점과 공식적으로 발표되는 시점 사이의 시간 차이임
     \item 예를 들어, 분기별 GDP는 해당 분기가 종료된 후 약 25일이 지나야 공식 발표됨
     \item 반면, 월간 생산지수는 해당 월이 종료된 후 약 30일이 지나면 발표됨
-    \item 나우캐스팅에서는 각 시점에서 사용 가능한 데이터만을 선택하여 모델링함
+    \item Nowcasting에서는 각 시점에서 사용 가능한 데이터만을 선택하여 모델링함
 \end{itemize}
 
 \subsubsection{News Decomposition}
@@ -154,7 +172,7 @@ dfm-python 패키지는 News decomposition 기능을 제공하여 새로운 데�
     \item News는 새로운 데이터 발표로 인한 예측 업데이트를 나타냄
     \item News decomposition은 각 변수의 발표가 예측 변화에 미치는 기여도를 정량화함
     \item 이를 통해 어떤 변수가 예측에 가장 중요한 정보를 제공하는지 파악할 수 있음
-    \item 이는 나우캐스팅의 신뢰성을 향상시키는 데 유용함
+    \item 이는 nowcasting의 신뢰성을 향상시키는 데 유용함
 \end{itemize}
 
 \subsection{평가 지표}
