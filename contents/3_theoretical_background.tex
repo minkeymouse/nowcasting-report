@@ -122,7 +122,7 @@ DDFM은 자기인코더(autoencoder) 신경망 구조를 활용하여 잠재 상
         \item 디코더는 선형 변환으로 구현되며, 해석 가능성을 유지함
         \item 디코더 파라미터는 관측 행렬을 직접 추출하는 데 사용됨
     \end{itemize}
-    \item \textbf{요인 동학}: 학습된 요인은 DFM과 동일하게 AR(1) 또는 AR(2) 과정을 따름
+    \item \textbf{요인 동학}: 학습된 요인은 DFM과 동일하게 AR(1) 과정을 따름
     \begin{itemize}
         \item $Z_t = A Z_{t-1} + \eta_t$ (AR(1)의 경우)
         \item $A$는 OLS를 통해 추정되며, Kalman 필터를 통해 최종 요인을 추정함
