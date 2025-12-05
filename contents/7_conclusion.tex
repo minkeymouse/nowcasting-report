@@ -8,7 +8,7 @@
 
 \begin{itemize}
     \item \textbf{DFM의 혼합 빈도 처리 능력}: 본 연구에서는 DFM이 텐트 커널을 활용하여 분기별 목표 변수를 월간 고빈도 지표로부터 예측하도록 설계함. Stock과 Watson (2002)이 제안한 주성분 분석을 활용한 요인 추출 방법이 고차원 시계열 데이터의 차원 축소에 효과적임을 참고하여 모형을 구성함 \cite{stock2002forecasting}. \begin{center}[아직 실험 미진행]\end{center}
-    \item \textbf{DDFM의 비선형 관계 포착}: 본 연구에서는 DDFM이 자기인코더(autoencoder)를 활용하여 잠재 상태를 생성하고 비선형 요인 구조를 학습하도록 설계함 \cite{andreini2020deep}. 특히 변동성이 큰 변수(총고정자본형성)에 대해서는 비선형 관계를 포착할 수 있는 DDFM의 장점이 기대됨. \begin{center}[아직 실험 미진행]\end{center}
+    \item \textbf{DDFM의 비선형 관계 포착}: 본 연구에서는 DDFM이 자기인코더(autoencoder)를 활용하여 잠재 상태를 생성하고 비선형 요인 구조를 학습하도록 설계함 \cite{andreini2020deep}. 특히 변동성이 큰 변수(총고정자본형성)에 대해서는 비선형 관계를 포착할 수 있는 DDFM의 장점이 기대됨. 한국 거시경제 데이터를 활용한 선행 연구에서도 딥러닝 모형(Mamba)이 DFM보다 우수한 성능을 보인 것으로 보고됨 \cite{kim2024deep}. \begin{center}[아직 실험 미진행]\end{center}
     \item \textbf{고빈도 데이터의 정보 함량}: 본 연구에서는 다양한 고빈도 지표(생산지수, 소비자 심리지수, 금융지표 등)를 활용하여 거시경제 변수 예측을 수행하도록 설계함. \begin{center}[아직 실험 미진행]\end{center}
     \item \textbf{nowcasting의 실용성}: 본 연구에서는 DFM과 DDFM을 활용한 nowcasting 프레임워크를 구축하여 공식 통계 발표 전에 현재 분기의 경제 상황을 추정할 수 있도록 설계함. \begin{center}[아직 실험 미진행]\end{center}
     \item \textbf{모형별 특성}: 목표 변수와 예측 기간에 따라 최적 모형이 달라질 것으로 예상되며, 단기 예측에서는 고빈도 데이터를 효과적으로 활용할 수 있는 모형이, 중기 예측에서는 장기 의존성을 학습할 수 있는 모형이 유리할 것으로 기대됨. \begin{center}[아직 실험 미진행]\end{center}
