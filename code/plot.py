@@ -70,46 +70,73 @@ def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataF
     """Extract metrics from comparison results into a DataFrame."""
     rows = []
     
-    models = ['ARIMA', 'VAR', 'VECM', 'DeepAR', 'TFT', 'XGBoost', 'LightGBM', 'DFM', 'DDFM']
+    # Model name mapping (lowercase in JSON)
+    model_mapping = {
+        'arima': 'ARIMA',
+        'var': 'VAR',
+        'dfm': 'DFM',
+        'ddfm': 'DDFM'
+    }
+    
     targets = ['KOGDP...D', 'KOCNPER.D', 'KOGFCF..D']
     horizons = [1, 7, 28]
     metrics = ['sMSE', 'sMAE', 'sRMSE']
     
     for target in targets:
-        for model in models:
+        if target not in all_results:
+            continue
+        
+        # Use the latest result for each target
+        result_data = all_results[target][-1] if all_results[target] else None
+        if not result_data:
+            continue
+        
+        results = result_data.get('results', {})
+        
+        for model_key, model_data in results.items():
+            if not isinstance(model_data, dict) or model_data is None:
+                continue
+            
+            model_name = model_mapping.get(model_key.lower(), model_key.upper())
+            
+            if model_key.lower() not in ['arima', 'var', 'dfm', 'ddfm']:
+                continue
+            
+            model_metrics = model_data.get('metrics', {})
+            if not isinstance(model_metrics, dict):
+                continue
+            
+            forecast_metrics = model_metrics.get('forecast_metrics', {})
+            if not isinstance(forecast_metrics, dict):
+                continue
+            
             for horizon in horizons:
-                for metric in metrics:
-                    # Try to find actual result
-                    value = None
-                    if target in all_results:
-                        for result_data in all_results[target]:
-                            comparison = result_data.get('comparison')
-                            if comparison:
-                                metrics_table = comparison.get('metrics_table')
-                                if metrics_table:
-                                    if isinstance(metrics_table, dict):
-                                        metrics_table = pd.DataFrame([metrics_table])
-                                    elif not isinstance(metrics_table, pd.DataFrame):
-                                        continue
-                                    
-                                    for _, row in metrics_table.iterrows():
-                                        if row.get('model', '').lower() == model.lower():
-                                            col_name = f"{metric}_h{horizon}"
-                                            if col_name in row and pd.notna(row[col_name]):
-                                                value = row[col_name]
-                                                break
-                    
-                    # Use None for missing values (will be displayed as "-")
-                    if value is None or (isinstance(value, float) and np.isnan(value)):
-                        value = None
-                    
-                    rows.append({
-                        'model': model,
-                        'target': target,
-                        'horizon': horizon,
-                        'metric': metric,
-                        'value': value
-                    })
+                horizon_str = str(horizon)
+                if horizon_str not in forecast_metrics:
+                    continue
+                
+                horizon_metrics = forecast_metrics[horizon_str]
+                if not isinstance(horizon_metrics, dict):
+                    continue
+                
+                n_valid = horizon_metrics.get('n_valid', 0)
+                
+                # Only include if we have valid predictions
+                if n_valid and n_valid > 0:
+                    for metric in metrics:
+                        value = horizon_metrics.get(metric)
+                        
+                        # Handle NaN values (stored as string "NaN" in JSON or actual NaN)
+                        if value == "NaN" or value == "nan" or (isinstance(value, float) and (np.isnan(value) or np.isinf(value))):
+                            value = None
+                        elif value is not None:
+                            rows.append({
+                                'model': model_name,
+                                'target': target,
+                                'horizon': horizon,
+                                'metric': metric,
+                                'value': value
+                            })
     
     return pd.DataFrame(rows)
 
@@ -293,8 +320,17 @@ def plot_accuracy_heatmap(save_path: Optional[Path] = None):
     if target_avg_pivot.empty:
         return
     
-    # Rename targets for display
-    target_avg_pivot.columns = ['GDP', 'Consumption', 'Investment']
+    # Rename targets for display (only rename existing columns)
+    target_name_map = {
+        'KOGDP...D': 'GDP',
+        'KOCNPER.D': 'Consumption',
+        'KOGFCF..D': 'Investment'
+    }
+    # Rename columns that exist
+    new_columns = []
+    for col in target_avg_pivot.columns:
+        new_columns.append(target_name_map.get(col, col))
+    target_avg_pivot.columns = new_columns
     
     fig, ax = plt.subplots(figsize=(10, 8))
     

@@ -1,11 +1,15 @@
 \begin{table}[h]
 \centering
-\caption{예측 기간별 모형 성능 비교 (표준화된 RMSE)}
+\caption{예측 기간별 모형 성능 비교 (표준화된 RMSE)\footnote{28일 예측 기간은 모든 모형에서 유효한 결과가 없음 (테스트 세트 크기 부족).}}
 \label{tab:overall_metrics_by_horizon}
 \begin{tabular}{lccc}
 \toprule
 모형 & 1일 & 7일 & 28일 \\
 \midrule
+ARIMA & --- & --- & --- \\
+VAR & 1.2488 & 0.3930 & --- \\
+DFM & 1.5818 & 0.0419 & --- \\
+DDFM & 1.5856 & 0.5167 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
