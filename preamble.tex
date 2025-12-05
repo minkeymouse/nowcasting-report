@@ -12,7 +12,19 @@
 \usepackage{lipsum}
 \usepackage{amsmath}
 
-\title{Nowcasting Production and Investment Sector with High Frequency Data Integration}
+% Korean section numbering: 1, 가, 네모, 동그라미
+\renewcommand{\thesection}{\arabic{section}.}
+\renewcommand{\thesubsection}{\ifcase\value{subsection}\or 가.\or 나.\or 다.\or 라.\or 마.\or 바.\or 사.\or 아.\or 자.\or 차.\or 카.\or 타.\or 파.\or 하.\fi}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
+\renewcommand{\theparagraph}{\arabic{paragraph}.}
+
+% Custom paragraph style for "큰내용" (no numbering, just bold)
+\renewcommand{\paragraph}[1]{\vspace{0.5em}\noindent\textbf{#1}\par\vspace{0.3em}}
+
+% Custom subparagraph style for "◦ 세부내용"
+\renewcommand{\subparagraph}[1]{\vspace{0.3em}\noindent\textbullet~#1\par}
+
+\title{고빈도 데이터를 활용한 생산, 투자 분야 거시 변수 예측 모델}
 
 \author{
   JaeYoung Kim\\

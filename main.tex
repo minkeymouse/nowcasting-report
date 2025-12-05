@@ -6,10 +6,10 @@
 \maketitle
 
 \begin{abstract}
-Some abstract here
+본 연구는 고빈도 데이터를 활용하여 한국의 주요 거시경제 변수(GDP, 소비, 투자)를 예측하는 다양한 모형들의 성능을 체계적으로 비교 분석한다. 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)을 3개의 목표 변수와 3개의 예측 기간(1일, 7일, 28일)에 대해 평가하였으며, 표준화된 MSE, MAE, RMSE를 통해 성능을 비교하였다. 또한 DFM과 DDFM의 나우캐스팅 성능을 마스킹된 데이터를 활용한 백테스팅을 통해 비교하였고, Ablation study를 통해 각 모형의 하이퍼파라미터가 성능에 미치는 영향을 분석하였다. 연구 결과, DDFM이 비선형 요인 구조를 학습할 수 있어 기존 DFM보다 개선된 예측 성능을 보였으며, 특히 나우캐스팅 상황에서 우수한 성능을 보였다. 본 연구는 고빈도 데이터를 활용한 거시경제 변수 예측에 대한 체계적인 분석을 제공하며, 실무에 활용 가능한 예측 시스템 구축의 기초 자료로 활용될 수 있다.
 \end{abstract}
 
-% keywords can be removed
+\textbf{키워드:} 나우캐스팅, 동적 요인 모형, 고빈도 데이터, 거시경제 예측, 딥러닝, 시계열 예측
 
 \input{contents/1_introduction}
 

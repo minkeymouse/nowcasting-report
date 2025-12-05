@@ -1,0 +1,248 @@
+\section{딥러닝을 활용한 비선형 시계열 동학 모델링}
+\label{sec:deep_learning}
+
+\subsection{심층 동적 요인 모형 (DDFM)}
+\label{sec:ddfm}
+
+\subsubsection{DDFM의 이론적 배경}
+심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)은 딥러닝 기법을 DFM에 접목한 모형으로, 변분 자기인코더(Variational Autoencoder, VAE)를 활용하여 비선형 요인 구조를 학습한다 \cite{andreini2020deep}. DDFM은 기존 DFM의 선형 가정을 완화하여 더 복잡한 요인 구조를 포착할 수 있다.
+
+\paragraph{선형 DFM의 한계}
+선형 DFM은 다음과 같은 네 가지 핵심 가정에 기반한다:
+\begin{enumerate}
+    \item \textbf{선형 요인 동학}: $z_t = A z_{t-1} + w_t$ - 요인이 선형적으로 진화한다.
+    \item \textbf{가우시안 혁신}: $w_t \sim \mathcal{N}(0, Q)$ - 요인 혁신이 정규분포를 따른다.
+    \item \textbf{고정 적재}: $\Lambda$가 시간에 따라 변하지 않는다.
+    \item \textbf{선형 관측}: $y_t = \Lambda z_t + \varepsilon_t$ - 요인이 관측치에 선형적으로 영향을 미친다.
+\end{enumerate}
+
+이러한 가정들은 구조적 변화가 발생하는 시기(예: COVID-19 팬데믹, 2008년 금융위기)에 문제가 될 수 있다. 구조적 변화 시 요인 동학이 변화하고($A_1 \neq A_2$), 요인 변동성이 급증하며(GARCH-like behavior), 적재가 증가하고(상관관계 급증), 요인 간 비선형 상호작용이 발생할 수 있다.
+
+\paragraph{DDFM의 구조}
+DDFM은 자기인코더를 PCA의 비선형 일반화로 활용한다. PCA는 선형 차원 축소 방법이지만, 자기인코더는 비선형 변환을 통해 더 복잡한 요인 구조를 학습할 수 있다.
+
+DDFM의 기본 구조는 다음과 같이 표현된다:
+
+\begin{align}
+z_t &= f_{\text{encoder}}(x_t; \theta_e) + \eta_t, \quad \eta_t \sim \mathcal{N}(0, Q) \label{eq:ddfm_encoder} \\
+z_t &= A z_{t-1} + \xi_t, \quad \xi_t \sim \mathcal{N}(0, Q_z) \label{eq:ddfm_state} \\
+\hat{x}_t &= f_{\text{decoder}}(z_t; \theta_d) \label{eq:ddfm_decoder}
+\end{align}
+
+여기서 $f_{\text{encoder}}$와 $f_{\text{decoder}}$는 각각 인코더와 디코더 신경망이며, $\theta_e$와 $\theta_d$는 각각의 파라미터이다. 인코더는 관측치를 요인 공간으로 변환하고, 디코더는 요인을 다시 관측치 공간으로 변환한다.
+
+\paragraph{선형 자기인코더와 PCA의 동치성}
+선형 인코더와 디코더를 사용하는 경우, 자기인코더는 PCA와 동치이다. 최적해는 $W_1 = P_k^T$ (인코더)와 $W_2 = P_k$ (디코더)이며, 여기서 $P_k$는 첫 $k$개의 주성분 벡터이다. 이는 자기인코더가 PCA의 자연스러운 일반화임을 보여준다.
+
+비선형 활성 함수(ReLU, tanh, sigmoid 등)를 추가하면, 자기인코더는 비선형 관계를 포착할 수 있다. 이는 구조적 변화 시기나 변동성이 큰 시기에 특히 유용하다.
+
+\subsubsection{변분 자기인코더 기반 요인 추출}
+DDFM은 변분 추론(variational inference)을 통해 요인의 사후 분포를 근사한다. 변분 자기인코더(VAE)는 확률적 인코더 $q_\phi(z|x)$와 확률적 디코더 $p_\theta(x|z)$로 구성되며, 변분 하한(variational lower bound)을 최대화함으로써 학습된다.
+
+변분 하한은 다음과 같이 정의된다:
+
+\begin{equation}
+\mathcal{L} = \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - \text{KL}(q_\phi(z|x) || p(z))
+\end{equation}
+
+여기서 첫 번째 항은 재구성 오차(reconstruction error)를, 두 번째 항은 사전 분포 $p(z)$와의 KL 발산을 나타낸다. KL 발산 항은 정규화 역할을 하여, 요인이 의미 있는 표현을 학습하도록 유도한다.
+
+\paragraph{학습 과정}
+DDFM의 학습은 두 단계로 구성된다:
+
+\begin{enumerate}
+    \item \textbf{사전 학습(Pre-training)}: 자기인코더만을 학습하여 초기 요인 추출 능력을 확보한다.
+    \begin{equation}
+    \min_{\phi, \theta} \sum_{t=1}^T ||x_t - f_\theta(g_\phi(x_t))||^2
+    \end{equation}
+    이 단계는 일반적으로 50-200 에폭 동안 수행된다.
+    
+    \item \textbf{공동 학습(Joint Training)}: 요인 동학을 고려하여 인코더, 디코더, 전이 행렬을 동시에 학습한다.
+    \begin{equation}
+    \mathcal{L} = \sum_{t=1}^T ||x_t - f_\theta(z_t)||^2 + \lambda \sum_{t=2}^T ||z_t - A z_{t-1}||^2
+    \end{equation}
+    여기서 $\lambda$는 재구성 오차와 동학 오차 간의 균형을 조절하는 하이퍼파라미터이다. 이 단계는 일반적으로 100-500 에폭 동안 수행된다.
+\end{enumerate}
+
+\paragraph{그래디언트 기반 최적화}
+DDFM은 비선형 관계로 인해 EM 알고리즘의 폐형 해(closed-form solution)를 얻을 수 없으므로, 그래디언트 기반 최적화를 사용한다. 본 연구에서는 Adam 옵티마이저를 사용하며, 이는 적응형 학습률을 제공하여 학습의 안정성과 수렴 속도를 향상시킨다.
+
+Adam 옵티마이저는 다음과 같은 특징을 가진다:
+\begin{itemize}
+    \item \textbf{적응형 학습률}: 각 파라미터에 대해 개별적으로 학습률을 조정한다.
+    \item \textbf{모멘텀}: 과거 그래디언트의 지수 이동 평균을 사용하여 수렴을 가속화한다.
+    \item \textbf{이차 모멘트 추정}: 그래디언트의 제곱의 지수 이동 평균을 사용하여 학습률을 조정한다.
+\end{itemize}
+
+미니배치 학습을 통해 대규모 데이터셋에서도 효율적으로 학습할 수 있으며, 결측치는 손실 함수에서 마스킹하여 자연스럽게 처리한다. 이는 EM 알고리즘과 달리 그래디언트 기반 최적화의 장점이다.
+
+\subsubsection{비선형 요인 구조의 학습}
+DDFM의 핵심 장점은 비선형 요인 구조를 학습할 수 있다는 점이다. 기존 DFM은 선형 관계만을 모델링할 수 있으나, DDFM은 신경망을 통해 복잡한 비선형 변환을 학습할 수 있다.
+
+\paragraph{비선형 관계의 포착}
+DDFM은 다음과 같은 비선형 관계를 포착할 수 있다:
+\begin{itemize}
+    \item \textbf{체제 의존적 적재}: 정상 시기와 위기 시기의 요인 적재가 다를 수 있다. 예를 들어, 금융위기 시 모든 자산이 시장 요인에 더 민감하게 반응할 수 있다.
+    \item \textbf{시간 변동 적재}: 적재가 상태의 함수로 변할 수 있다: $\Lambda_t = f(z_t)$
+    \item \textbf{이분산성}: 요인 변동성이 상태에 따라 변할 수 있다(volatility clustering)
+    \item \textbf{임계 효과}: 요인 간 상호작용이 임계값을 넘으면 다른 영향을 미칠 수 있다
+\end{itemize}
+
+\paragraph{실증적 증거}
+한국 GDP 나우캐스팅 연구 \cite{kim2024deep}에 따르면, 선형 DFM은 전체 기간(1985-2019) 동안 MAE 3.9\%를 달성했으나, 2020년 2-3분기(COVID-19 팬데믹) 동안 성능이 크게 저하되었다. 반면 DDFM은 전체 기간 동안 MAE 2.2\%를 달성하여 44\%의 개선을 보였으며, 특히 변동성이 큰 시기에 우수한 성능을 보였다.
+
+구체적으로, COVID-19 팬데믹 기간 동안 선형 DFM은 다음과 같은 한계를 보였다:
+\begin{itemize}
+    \item \textbf{체제 전환}: 경제 관계가 급격히 변화하여 전이 행렬 $A$가 변했으나, 선형 DFM은 고정된 $A$를 사용한다.
+    \item \textbf{변동성 클러스터링}: 요인 변동성이 급증하여 공분산 $Q$가 시간에 따라 변했으나, 선형 DFM은 고정된 $Q$를 사용한다.
+    \item \textbf{시간 변동 적재}: 자산 간 상관관계가 급증하여 적재 $\Lambda$가 증가했으나, 선형 DFM은 고정된 $\Lambda$를 사용한다.
+    \item \textbf{비선형 상호작용}: 요인 간 임계 효과가 발생했으나, 선형 DFM은 선형 관계만을 모델링한다.
+\end{itemize}
+
+DDFM은 이러한 한계를 극복할 수 있다:
+\begin{itemize}
+    \item 비선형 인코더를 통해 체제 의존적 요인 구조를 학습할 수 있다.
+    \item 신경망의 유연성을 통해 시간 변동 적재를 포착할 수 있다.
+    \item 비선형 활성 함수를 통해 임계 효과와 같은 비선형 상호작용을 모델링할 수 있다.
+\end{itemize}
+
+이는 DDFM이 구조적 변화와 비선형 관계를 효과적으로 포착할 수 있음을 보여준다. COVID-19 팬데믹과 같은 구조적 변화 시기에는 경제 관계가 급격히 변화하므로, 비선형 모형이 선형 모형보다 우수한 성능을 보인다.
+
+\paragraph{보편적 근사 정리}
+보편적 근사 정리(Universal Approximation Theorem)에 따르면, 하나의 은닉층을 가진 신경망은 임의의 연속 함수를 임의의 정확도로 근사할 수 있다. 이는 충분한 데이터와 계산 자원이 주어지면, DDFM이 임의로 복잡한 비선형 관계를 학습할 수 있음을 보장한다.
+
+\subsection{DDFM의 구현 및 학습}
+\label{sec:ddfm_implementation}
+
+\subsubsection{PyTorch Lightning 기반 구현}
+본 연구에서는 PyTorch Lightning을 활용하여 DDFM을 구현한다. PyTorch Lightning은 PyTorch의 상위 레벨 래퍼로, 학습 루프, 검증, 체크포인트 저장 등을 자동화하여 코드를 간결하게 만든다.
+
+DDFM의 주요 구성 요소는 다음과 같다:
+\begin{itemize}
+    \item \textbf{인코더 네트워크}: 다층 퍼셉트론(MLP)을 사용하여 관측치를 요인 공간으로 변환한다. 인코더는 여러 은닉층을 가질 수 있으며, 각 층은 비선형 활성 함수(ReLU, tanh, sigmoid 등)를 사용한다.
+    \item \textbf{디코더 네트워크}: 요인을 다시 관측치 공간으로 변환한다. 해석가능성을 위해 디코더는 선형으로 유지하는 경우가 많다.
+    \item \textbf{상태 전이 모델}: 요인의 시간적 동학을 모델링하는 AR 모델로, 선형 전이 행렬 $A$를 사용한다.
+    \item \textbf{손실 함수}: 재구성 오차와 동학 오차의 가중합으로 구성된다.
+\end{itemize}
+
+dfm-python 패키지의 DDFM 구현은 다음과 같은 특징을 가진다:
+\begin{itemize}
+    \item \textbf{미니배치 학습}: 대규모 데이터셋에서도 효율적으로 학습할 수 있도록 미니배치 학습을 지원한다.
+    \item \textbf{결측치 처리}: 손실 함수에서 결측치를 마스킹하여 자연스럽게 처리한다.
+    \item \textbf{Adam 옵티마이저}: 적응형 학습률을 사용하는 Adam 옵티마이저를 기본으로 사용한다.
+    \item \textbf{조기 종료}: 검증 손실이 개선되지 않으면 학습을 조기 종료하여 과적합을 방지한다.
+\end{itemize}
+
+\subsubsection{하이퍼파라미터 설정}
+DDFM의 주요 하이퍼파라미터는 다음과 같다:
+
+\begin{itemize}
+    \item \textbf{인코더 레이어 구조}: 인코더 네트워크의 구조로, 비선형 변환의 복잡도를 결정한다. 일반적인 구조는 다음과 같다:
+    \begin{itemize}
+        \item \textbf{얕은 구조} (`[32, 32]`): 제한된 데이터, 단순한 관계, 빠른 학습
+        \item \textbf{표준 구조} (`[64, 32]`): 좋은 기본값, 용량과 속도의 균형
+        \item \textbf{깊은 구조} (`[128, 64, 32]`): 복잡한 관계, 충분한 데이터, 다중 체제
+        \item \textbf{넓은 구조} (`[256, 128]`): 많은 시계열, 고차원 입력, 높은 용량 필요
+    \end{itemize}
+    
+    \item \textbf{요인 개수}: 공통 요인의 개수로, 모형의 표현력을 결정한다. 일반적으로 1-5개의 요인이 사용되며, 시작은 1-2개 요인으로 시작하여 점진적으로 증가시킨다. 요인이 너무 적으면 모형이 단순하여 복잡한 패턴을 포착하지 못하고, 너무 많으면 과적합의 위험이 있다.
+    
+    \item \textbf{활성 함수}: 비선형 활성 함수로, 다음과 같은 선택지가 있다:
+    \begin{itemize}
+        \item \textbf{tanh}: 기본값, 유계(bounded), 부드러운(smooth), 금융 응용에 적합
+        \item \textbf{ReLU}: 빠른 학습, 비유계(unbounded), 희소 표현
+        \item \textbf{sigmoid}: 유계, 포화(saturation) 문제 가능
+    \end{itemize}
+    
+    \item \textbf{학습률}: 최적화 알고리즘의 학습률로, 일반적으로 0.0001-0.01 범위에서 선택된다. 기본값은 0.001이다.
+    
+    \item \textbf{배치 크기}: 미니배치의 크기로, 일반적으로 16-128 범위에서 선택된다. 기본값은 32이다. 배치 크기가 크면 학습이 안정적이지만 메모리 사용량이 증가하고, 작으면 학습이 불안정할 수 있지만 메모리 효율적이다.
+    
+    \item \textbf{에폭 수}: 전체 데이터셋을 학습하는 횟수로, 일반적으로 50-200 에폭이 사용된다. 충분한 데이터가 있는 경우 100 에폭이 좋은 기본값이다.
+\end{itemize}
+
+\paragraph{파라미터 수 추정}
+인코더의 파라미터 수는 레이어 구조에 따라 결정된다. 레이어 구조가 `[n1, n2, ..., nL]`이고 입력 차원이 $n$, 요인 개수가 $k$인 경우, 파라미터 수는 다음과 같다:
+
+\begin{equation}
+\text{Parameters} = n \cdot n_1 + n_1 \cdot n_2 + \cdots + n_{L-1} \cdot n_L + n_L \cdot k
+\end{equation}
+
+예를 들어, `[64, 32]` 구조에 $n=100$, $k=2$인 경우 약 7,000개의 파라미터가 필요하다. 경험적 규칙으로, 파라미터당 10-20개의 데이터 포인트가 필요하다. 따라서 7,000개의 파라미터를 학습하려면 최소 70,000-140,000개의 관측치가 필요하다.
+
+\subsubsection{학습 과정}
+DDFM의 학습은 다음과 같은 과정으로 진행된다:
+
+\begin{enumerate}
+    \item 데이터 로딩 및 전처리: 시계열 데이터를 로딩하고 전처리한다.
+    \item 배치 생성: 시계열 데이터를 시퀀스로 나누어 배치를 생성한다.
+    \item 순전파: 인코더를 통해 관측치를 요인으로 변환하고, 디코더를 통해 재구성한다.
+    \item 손실 계산: 재구성 오차와 KL 발산을 계산하여 손실을 구한다.
+    \item 역전파: 그래디언트를 계산하고 파라미터를 업데이트한다.
+    \item 검증: 검증 데이터에 대해 성능을 평가한다.
+    \item 조기 종료: 검증 성능이 개선되지 않으면 학습을 조기 종료한다.
+\end{enumerate}
+
+\subsection{다른 딥러닝 모형과의 비교}
+\label{sec:dl_comparison}
+
+\subsubsection{DeepAR}
+DeepAR은 자기회귀 순환 신경망 기반의 확률적 예측 모형으로, 시계열의 장기 의존성을 학습할 수 있다 \cite{lim2021temporal}. DeepAR은 LSTM(Long Short-Term Memory) 네트워크를 활용하여 시계열의 시간적 패턴을 포착한다.
+
+DeepAR과 DDFM의 주요 차이점은 다음과 같다:
+\begin{itemize}
+    \item \textbf{요인 구조}: DDFM은 요인 구조를 명시적으로 모델링하지만, DeepAR은 요인 구조를 암묵적으로 학습한다.
+    \item \textbf{혼합 빈도 처리}: DDFM은 혼합 빈도 데이터를 자연스럽게 처리할 수 있으나, DeepAR은 추가적인 전처리가 필요하다.
+    \item \textbf{해석가능성}: DDFM은 추출된 요인을 해석할 수 있으나, DeepAR은 해석이 어렵다.
+\end{itemize}
+
+\subsubsection{Temporal Fusion Transformer (TFT)}
+TFT는 어텐션 메커니즘을 활용한 시계열 예측 모형으로, 시간적 패턴과 외생 변수 간의 관계를 동시에 학습한다. TFT는 변수 선택 어텐션(variable selection attention)과 시간적 어텐션(temporal attention)을 통해 해석 가능한 예측을 제공한다.
+
+TFT와 DDFM의 주요 차이점은 다음과 같다:
+\begin{itemize}
+    \item \textbf{아키텍처}: TFT는 트랜스포머 기반이며, DDFM은 VAE 기반이다.
+    \item \textbf{혼합 빈도 처리}: DDFM은 혼합 빈도 데이터를 자연스럽게 처리할 수 있으나, TFT는 추가적인 전처리가 필요하다.
+    \item \textbf{요인 해석}: DDFM은 요인을 명시적으로 추출하여 해석할 수 있으나, TFT는 어텐션 가중치를 통해 간접적으로 해석한다.
+\end{itemize}
+
+\subsection{DDFM 예측 결과 및 분석}
+\label{sec:ddfm_results}
+
+\subsubsection{DFM vs DDFM 성능 비교}
+DDFM과 기존 DFM의 예측 성능을 비교하여, 비선형 요인 구조 학습의 효과를 검증한다.
+
+[실험 결과에 따라 DFM vs DDFM 성능 비교 작성]
+
+\subsubsection{비선형 관계 포착 능력}
+DDFM이 비선형 관계를 포착하는 능력을 검증하기 위해, 변동성이 큰 변수나 구조적 변화가 있는 시기에 대한 예측 성능을 분석한다.
+
+[실험 결과에 따라 비선형 관계 포착 능력 분석 작성]
+
+\subsubsection{나우캐스팅 성능}
+DDFM의 나우캐스팅 성능을 마스킹된 데이터를 활용한 백테스팅을 통해 평가한다.
+
+[실험 결과에 따라 DDFM의 나우캐스팅 성능 분석 작성]
+
+\subsection{Ablation Study}
+\label{sec:ablation}
+
+\subsubsection{하이퍼파라미터 영향 분석}
+DDFM의 각 하이퍼파라미터가 모형 성능에 미치는 영향을 분석하기 위해 Ablation study를 수행한다. 주요 하이퍼파라미터는 다음과 같다:
+
+\begin{itemize}
+    \item 인코더 레이어 수: 1, 2, 3, 4 레이어
+    \item 요인 개수: 1, 2, 3, 4, 5개
+    \item 학습률: 0.001, 0.01, 0.1
+    \item 배치 크기: 16, 32, 64, 128
+\end{itemize}
+
+각 하이퍼파라미터를 체계적으로 변화시키며 모형 성능을 측정함으로써, 최적의 하이퍼파라미터 조합을 찾고 각 파라미터의 영향을 정량적으로 평가한다.
+
+[실험 결과에 따라 Ablation study 결과 작성]
+
+\subsubsection{DFM 하이퍼파라미터 분석}
+DFM의 요인 개수와 AR 차수 변화에 따른 성능 분석도 수행한다.
+
+[실험 결과에 따라 DFM Ablation study 결과 작성]
+
