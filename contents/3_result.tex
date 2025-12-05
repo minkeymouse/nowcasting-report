@@ -5,10 +5,10 @@
 본 절에서는 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석할 수 있도록 설계함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
 
 \subsubsection{dfm-python을 활용한 DFM/DDFM 실험 결과}
-dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행함.
+dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행하도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 학습 및 예측 결과는 제한적임.
 \begin{itemize}
-    \item DFM은 EM 알고리즘을 통해 파라미터를 추정하였으며, 수렴 기준은 1e-4로 설정하고 최대 반복 횟수는 100으로 설정함
-    \item DDFM은 PyTorch Lightning의 DDFMTrainer를 사용하여 학습하였으며, 인코더 구조는 [64, 32], 학습률은 0.001, 배치 크기는 32로 설정함
+    \item DFM은 EM 알고리즘을 통해 파라미터를 추정하도록 설계되었으며, 수렴 기준은 1e-4로 설정하고 최대 반복 횟수는 100으로 설정하도록 설계함
+    \item DDFM은 PyTorch Lightning의 DDFMTrainer를 사용하여 학습하도록 설계되었으며, 인코더 구조는 [64, 32], 학습률은 0.001, 배치 크기는 32로 설정하도록 설계함
 \end{itemize}
 
 \subsubsection{표준화된 성능 지표}
@@ -87,7 +87,7 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
 
 \subsection{DFM vs DDFM 나우캐스팅 비교}
 
-마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 나우캐스팅 성능을 비교함. 나우캐스팅은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함.
+마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 나우캐스팅 성능을 비교할 수 있도록 설계함. 나우캐스팅은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
 
 \subsubsection{나우캐스팅 성능 비교}
 표 \ref{tab:nowcasting_metrics}는 두 모형의 나우캐스팅 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
