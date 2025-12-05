@@ -122,7 +122,7 @@ dfm-python 패키지는 PyTorch Lightning 패턴을 따르는 표준화된 인�
 본 연구에서는 clock 빈도를 월간('m')으로 설정하여 모든 잠재 요인이 월간 빈도에서 진화하도록 함. 분기별 목표 변수는 텐트 커널(tent kernel)을 통해 월간 요인으로부터 집계됨. 텐트 커널은 분기 내 각 월의 기여도를 시간 가중치로 부여하여, 분기의 중간 시점이 더 큰 가중치를 갖도록 함.
 
 \subsubsection{dfm-python을 활용한 DDFM 구현}
-DDFM은 DFM의 비선형 확장으로, 변분 자기인코더를 사용하여 비선형 요인 구조를 학습함 \cite{andreini2020deep}. dfm-python의 DDFM 구현은 다음과 같은 특징을 가짐:
+DDFM은 DFM의 비선형 확장으로, VAE를 사용하여 비선형 요인 구조를 학습함 \cite{andreini2020deep}. dfm-python의 DDFM 구현은 다음과 같은 특징을 가짐:
 
 \begin{itemize}
     \item \textbf{인코더 구조}: 다층 퍼셉트론(MLP) 기반의 인코더를 사용하여 관측 시계열을 잠재 요인 공간으로 매핑함. 인코더 레이어 수와 각 레이어의 크기를 설정할 수 있음.
