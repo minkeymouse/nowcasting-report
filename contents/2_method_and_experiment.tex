@@ -1,13 +1,25 @@
 \section{데이터 및 방법론}
 
-가. 데이터
+\subsection{데이터}
 
-데이터셋 개요
+\subsubsection{데이터셋 개요}
 본 연구는 한국은행 경제통계시스템(ECOS)에서 수집한 한국 거시경제 시계열 데이터를 활용함. 데이터 기간은 1985년 4월부터 2025년 11월까지이며, 총 2,538개의 관측치와 101개의 시계열 변수로 구성되어 있음. 
 
-데이터는 혼합 빈도(mixed-frequency) 구조를 가지고 있으며, 월간 변수 87개, 분기별 변수 8개, 주간 변수 6개로 구성되어 있음. 변수들은 다음과 같은 카테고리로 분류됨: 생산(Production) 20개, 기업 설문(Survey, Bsnss) 16개, 금융(Finance) 11개, 소비자 설문(Survey, Cnsmr) 10개, 무역(Int. trade) 8개, 거시경제(Macro) 8개, 노동(Labor) 7개, 투자(Investment) 7개, 소비(Consumption) 6개, 물가(Price) 5개 등임.
+데이터는 혼합 빈도(mixed-frequency) 구조를 가지고 있으며, 월간 변수 87개, 분기별 변수 8개, 주간 변수 6개로 구성되어 있음. 변수들은 다음과 같은 카테고리로 분류됨:
+\begin{itemize}
+    \item 생산(Production) 20개
+    \item 기업 설문(Survey, Bsnss) 16개
+    \item 금융(Finance) 11개
+    \item 소비자 설문(Survey, Cnsmr) 10개
+    \item 무역(Int. trade) 8개
+    \item 거시경제(Macro) 8개
+    \item 노동(Labor) 7개
+    \item 투자(Investment) 7개
+    \item 소비(Consumption) 6개
+    \item 물가(Price) 5개 등
+\end{itemize}
 
-목표 변수
+\subsubsection{목표 변수}
 본 연구의 예측 대상은 다음과 같은 3개의 분기별 거시경제 변수임:
 
 \begin{itemize}
@@ -18,7 +30,7 @@
 
 이러한 목표 변수들은 분기별로 발표되며, 해당 분기 종료 후 약 25일 정도의 시차를 가지고 있음. 따라서 나우캐스팅을 통해 공식 발표 전에 현재 분기의 값을 추정하는 것이 가능함.
 
-설명 변수
+\subsubsection{설명 변수}
 설명 변수들은 목표 변수와 관련된 다양한 경제 지표들로 구성되어 있음. 주요 변수 그룹은 다음과 같음:
 
 \begin{itemize}
@@ -32,17 +44,28 @@
 
 대부분의 변수들은 월간 빈도를 가지며, 일부 변수는 주간 또는 분기별 빈도를 가짐. 또한 많은 변수들이 결측치를 포함하고 있어, 적절한 전처리 과정이 필요함.
 
-나. 전처리 방법
+\subsection{전처리 방법}
 
-본 연구에서는 sktime 라이브러리를 활용한 전처리 파이프라인을 구축함. 각 시계열 변수는 메타데이터에 명시된 변환 방법(chg: 변화율, cha: 사슬 연결, lin: 선형)에 따라 전처리되며, 모든 변수는 표준화를 통해 평균 0, 표준편차 1로 변환됨. 결측치는 선형 보간 또는 전방 채우기 방법을 사용하여 처리함.
+\subsubsection{본 연구에서는 sktime 라이브러리를 활용한 전처리 파이프라인을 구축함}
+\begin{itemize}
+    \item 각 시계열 변수는 메타데이터에 명시된 변환 방법(chg: 변화율, cha: 사슬 연결, lin: 선형)에 따라 전처리됨
+    \item 모든 변수는 표준화를 통해 평균 0, 표준편차 1로 변환됨
+    \item 결측치는 선형 보간 또는 전방 채우기 방법을 사용하여 처리함
+\end{itemize}
 
-다. 예측 모형
+\subsection{예측 모형}
 
-본 연구에서는 총 9개의 예측 모형을 비교 분석함. 전통적 통계 모형으로는 ARIMA, VAR, VECM을 사용하며, 머신러닝 모형으로는 XGBoost와 LightGBM을 사용함. 딥러닝 모형으로는 DeepAR과 TFT를 사용함 \cite{salinas2020deepar, lim2021temporal}.
+\subsubsection{본 연구에서는 총 9개의 예측 모형을 비교 분석함}
+\begin{itemize}
+    \item 전통적 통계 모형으로는 ARIMA, VAR, VECM을 사용함
+    \item 머신러닝 모형으로는 XGBoost와 LightGBM을 사용함
+    \item 딥러닝 모형으로는 DeepAR과 TFT를 사용함 \cite{salinas2020deepar, lim2021temporal}
+    \item 동적 요인 모형으로는 dfm-python 패키지를 활용하여 DFM과 DDFM을 구현함
+\end{itemize}
 
-동적 요인 모형으로는 dfm-python 패키지를 활용하여 DFM과 DDFM을 구현함. dfm-python은 혼합 빈도 데이터를 처리할 수 있는 동적 요인 모형의 Python 구현체로, PyTorch Lightning 기반의 모듈화된 API를 제공함.
+dfm-python은 혼합 빈도 데이터를 처리할 수 있는 동적 요인 모형의 Python 구현체로, PyTorch Lightning 기반의 모듈화된 API를 제공함.
 
-dfm-python을 활용한 DFM 구현
+\subsubsection{dfm-python을 활용한 DFM 구현}
 dfm-python 패키지는 PyTorch Lightning 패턴을 따르는 표준화된 인터페이스를 제공함. DFM 모형의 사용은 다음과 같은 단계로 구성됨:
 
 \begin{enumerate}
@@ -54,7 +77,7 @@ dfm-python 패키지는 PyTorch Lightning 패턴을 따르는 표준화된 인�
 
 본 연구에서는 clock 빈도를 월간('m')으로 설정하여 모든 잠재 요인이 월간 빈도에서 진화하도록 함. 분기별 목표 변수는 텐트 커널(tent kernel)을 통해 월간 요인으로부터 집계됨. 텐트 커널은 분기 내 각 월의 기여도를 시간 가중치로 부여하여, 분기의 중간 시점이 더 큰 가중치를 갖도록 함.
 
-dfm-python을 활용한 DDFM 구현
+\subsubsection{dfm-python을 활용한 DDFM 구현}
 DDFM은 DFM의 비선형 확장으로, 변분 자기인코더를 사용하여 비선형 요인 구조를 학습함 \cite{andreini2020deep}. dfm-python의 DDFM 구현은 다음과 같은 특징을 가짐:
 
 \begin{itemize}
@@ -65,11 +88,15 @@ DDFM은 DFM의 비선형 확장으로, 변분 자기인코더를 사용하여 �
 
 본 연구에서는 DDFM의 인코더 구조를 [64, 32]로 설정하였으며, 요인 개수는 목표 변수에 따라 2-4개로 조정함. 학습률은 0.001로 설정하고, 배치 크기는 32로 설정함. DDFM은 DFM과 동일한 clock 프레임워크를 사용하여 혼합 빈도 데이터를 처리함.
 
-라. 실험 설계
+\subsection{실험 설계}
 
-본 연구에서는 세 가지 예측 기간(1일, 7일, 28일)에 대해 모형 성능을 평가함. 모든 모형의 성능은 표준화된 평가 지표(sMSE, sMAE, sRMSE)를 통해 비교되며, 표준화는 훈련 데이터의 표준편차로 나누어 수행됨. 시계열 데이터의 특성을 고려하여 시간 순서를 유지하는 교차 검증을 수행하며, 각 모형의 하이퍼파라미터는 검증 데이터를 통해 최적화됨.
+\subsubsection{본 연구에서는 세 가지 예측 기간(1일, 7일, 28일)에 대해 모형 성능을 평가함}
+\begin{itemize}
+    \item 모든 모형의 성능은 표준화된 평가 지표(sMSE, sMAE, sRMSE)를 통해 비교되며, 표준화는 훈련 데이터의 표준편차로 나누어 수행됨
+    \item 시계열 데이터의 특성을 고려하여 시간 순서를 유지하는 교차 검증을 수행하며, 각 모형의 하이퍼파라미터는 검증 데이터를 통해 최적화됨
+\end{itemize}
 
-dfm-python을 활용한 DFM/DDFM 실험 설정
+\subsubsection{dfm-python을 활용한 DFM/DDFM 실험 설정}
 dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행함. 실험 설정은 다음과 같음:
 
 \begin{itemize}
