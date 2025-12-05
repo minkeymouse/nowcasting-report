@@ -236,7 +236,7 @@ dfm-python의 DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크�
     \item dfm-python의 DDFMTrainer는 Adam 옵티마이저를 사용하며, 학습률 스케줄링을 지원함
     \item 배치 크기는 dfm-python 설정에서 batch\_size 파라미터로 조정함
     \item 배치 크기가 작을수록 학습이 불안정해지고, 클수록 메모리 사용량이 증가하는 것으로 나타남
-    \item 최적 배치 크기는 32-64인 것으로 평가됨
+    \item 배치 크기는 학습 안정성과 메모리 사용량에 영향을 미치는 것으로 평가됨
     \item dfm-python의 DDFM은 배치 기반 학습을 사용하므로, DFM의 EM 알고리즘과 달리 메모리 효율적인 학습이 가능함
 \end{itemize}
 
