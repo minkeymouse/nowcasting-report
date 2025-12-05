@@ -27,11 +27,8 @@ plt.rcParams['ytick.labelsize'] = 9
 plt.rcParams['legend.fontsize'] = 9
 plt.rcParams['figure.titlesize'] = 13
 
-# Korean font support
-try:
-    plt.rcParams['font.family'] = 'DejaVu Sans'
-except:
-    pass
+# Font settings
+plt.rcParams['font.family'] = 'DejaVu Sans'
 
 # Base paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -168,9 +165,9 @@ def plot_model_comparison(save_path: Optional[Path] = None):
         ax.bar(x + i * width, model_avg_pivot[metric].values, width, 
                label=metric, color=colors[i], alpha=0.8)
     
-    ax.set_xlabel('모형', fontsize=11)
-    ax.set_ylabel('표준화된 지표 값', fontsize=11)
-    ax.set_title('모형별 성능 비교 (표준화된 지표)', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Model', fontsize=11)
+    ax.set_ylabel('Standardized Metric Value', fontsize=11)
+    ax.set_title('Model Performance Comparison (Standardized Metrics)', fontsize=13, fontweight='bold')
     ax.set_xticks(x + width)
     ax.set_xticklabels(model_avg_pivot.index, rotation=45, ha='right')
     ax.legend()
@@ -209,9 +206,9 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
         values = [horizon_avg_pivot.loc[model, h] for h in horizons]
         ax.plot(horizons, values, marker='o', label=model, linewidth=2, markersize=6)
     
-    ax.set_xlabel('예측 기간 (일)', fontsize=11)
-    ax.set_ylabel('표준화된 RMSE', fontsize=11)
-    ax.set_title('예측 기간별 성능 추이 (표준화된 RMSE)', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Forecast Horizon (days)', fontsize=11)
+    ax.set_ylabel('Standardized RMSE', fontsize=11)
+    ax.set_title('Performance Trend by Forecast Horizon (Standardized RMSE)', fontsize=13, fontweight='bold')
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
     ax.grid(alpha=0.3)
     ax.set_xticks(horizons)
@@ -243,16 +240,16 @@ def plot_accuracy_heatmap(save_path: Optional[Path] = None):
     )
     
     # Rename targets for display
-    target_avg_pivot.columns = ['GDP', '민간 소비', '총고정자본형성']
+    target_avg_pivot.columns = ['GDP', 'Consumption', 'Investment']
     
     fig, ax = plt.subplots(figsize=(10, 8))
     
     sns.heatmap(target_avg_pivot, annot=True, fmt='.3f', cmap='YlOrRd_r', 
-                cbar_kws={'label': '표준화된 RMSE'}, ax=ax, linewidths=0.5)
+                cbar_kws={'label': 'Standardized RMSE'}, ax=ax, linewidths=0.5)
     
-    ax.set_xlabel('목표 변수', fontsize=11)
-    ax.set_ylabel('모형', fontsize=11)
-    ax.set_title('목표 변수별 예측 정확도 히트맵 (표준화된 RMSE)', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Target Variable', fontsize=11)
+    ax.set_ylabel('Model', fontsize=11)
+    ax.set_title('Prediction Accuracy Heatmap by Target Variable (Standardized RMSE)', fontsize=13, fontweight='bold')
     
     plt.tight_layout()
     
@@ -280,7 +277,7 @@ def plot_forecast_vs_actual(save_path: Optional[Path] = None, target: str = 'GDP
     fig, ax = plt.subplots(figsize=(12, 6))
     
     # Plot actual
-    ax.plot(dates, actual, 'k-', linewidth=2, label='실제값', marker='o', markersize=4)
+    ax.plot(dates, actual, 'k-', linewidth=2, label='Actual', marker='o', markersize=4)
     
     # Plot forecasts for top 3 models
     top_models = ['DDFM', 'DFM', 'TFT']
@@ -289,12 +286,12 @@ def plot_forecast_vs_actual(save_path: Optional[Path] = None, target: str = 'GDP
     for i, model in enumerate(top_models):
         # Add some noise to actual to simulate forecast
         forecast = actual + np.random.normal(0, 1.5 + i * 0.5, n_points)
-        ax.plot(dates, forecast, '--', linewidth=1.5, label=f'{model} 예측값', 
+        ax.plot(dates, forecast, '--', linewidth=1.5, label=f'{model} Forecast', 
                 color=colors[i], alpha=0.7, marker='s', markersize=3)
     
-    ax.set_xlabel('날짜', fontsize=11)
-    ax.set_ylabel('값', fontsize=11)
-    ax.set_title(f'예측값 vs 실제값 시계열 비교 ({target})', fontsize=13, fontweight='bold')
+    ax.set_xlabel('Date', fontsize=11)
+    ax.set_ylabel('Value', fontsize=11)
+    ax.set_title(f'Forecast vs Actual Time Series Comparison ({target})', fontsize=13, fontweight='bold')
     ax.legend(loc='best')
     ax.grid(alpha=0.3)
     plt.xticks(rotation=45)
