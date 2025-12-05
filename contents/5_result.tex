@@ -2,31 +2,31 @@
 
 \subsection{전체 모형 성능 비교}
 
-본 절에서는 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석할 수 있도록 설계함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
+본 절에서는 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석할 수 있도록 설계함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤. [아직 실험 미진행]
 
 \subsubsection{dfm-python을 활용한 DFM/DDFM 실험 결과}
-dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행하도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 학습 및 예측 결과는 제한적임.
+dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행하도록 설계함. [아직 실험 미진행]
 \begin{itemize}
     \item DFM은 EM 알고리즘을 통해 파라미터를 추정하도록 설계되었으며, 수렴 기준은 1e-4로 설정하고 최대 반복 횟수는 100으로 설정하도록 설계함
     \item DDFM은 PyTorch Lightning의 DDFMTrainer를 사용하여 학습하도록 설계되었으며, 인코더 구조는 [64, 32], 학습률은 0.001, 배치 크기는 32로 설정하도록 설계함
 \end{itemize}
 
 \subsubsection{표준화된 성능 지표}
-표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄. [아직 실험 미진행]
 
 \input{tables/tab_overall_metrics}
 
-표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. [아직 실험 미진행]
 
 \input{tables/tab_overall_metrics_by_target}
 
-표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. [아직 실험 미진행]
 
 \input{tables/tab_overall_metrics_by_horizon}
 
 \subsection{DFM과 DDFM의 성능 분석}
 
-dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 수 있도록 설계함. 두 모형 모두 clock 프레임워크를 통해 혼합 빈도 데이터를 처리하도록 설계되었으며, 분기별 목표 변수(GDP, 민간 소비, 총고정자본형성)를 월간 고빈도 지표로부터 예측하도록 설계됨. 현재 실험 결과가 확보되지 않아 구체적인 성능 분석은 제한적임.
+dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 수 있도록 설계함. 두 모형 모두 clock 프레임워크를 통해 혼합 빈도 데이터를 처리하도록 설계되었으며, 분기별 목표 변수(GDP, 민간 소비, 총고정자본형성)를 월간 고빈도 지표로부터 예측하도록 설계됨. [아직 실험 미진행]
 
 \subsubsection{단기 예측 (1일)}
 단기 예측(1일)은 현재 시점에서 바로 다음 시점의 값을 예측하는 것으로, 세 목표 변수에 대한 DFM과 DDFM의 성능 분석은 다음과 같음:
@@ -36,7 +36,7 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
     \item 민간 소비 예측을 위해 소비자 심리지수, 소매판매액 등 고빈도 지표들이 포함된 Block\_Consumption 블록을 구성함
     \item 총고정자본형성 예측을 위해 설비투자 관련 지표들이 포함된 Block\_Investment 블록을 구성함
     \item DDFM의 비선형 인코더를 통해 각 목표 변수와 관련된 고빈도 지표들의 비선형 관계를 학습할 수 있도록 설계함
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \subsubsection{중단기 예측 (7일)}
@@ -44,7 +44,7 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
 \begin{itemize}
     \item 예측 기간이 길어질수록 예측 불확실성이 증가하는 것으로 알려져 있음
     \item 시계열의 시간적 패턴을 학습할 수 있는 모형들이 중단기 예측에서 유리할 것으로 기대됨
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \subsubsection{중기 예측 (28일)}
@@ -53,18 +53,18 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
     \item 예측 기간이 길어질수록 예측 불확실성이 시간에 따라 증가하는 것으로 알려져 있음
     \item 시계열의 장기 의존성을 학습할 수 있는 모형들이 중기 예측에서 유리할 것으로 기대됨
     \item DDFM은 VAE를 통해 비선형 관계를 학습할 수 있어, 특히 변동성이 큰 변수에 대해 유리할 것으로 기대됨
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \subsection{예측 기간별 성능 분석}
 
 \subsubsection{1일 예측}
-단기 예측(1일)은 현재 시점에서 바로 다음 시점의 값을 예측하는 것으로, 가장 단기적인 예측 성능을 평가할 수 있도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 평가는 제한적임.
+단기 예측(1일)은 현재 시점에서 바로 다음 시점의 값을 예측하는 것으로, 가장 단기적인 예측 성능을 평가할 수 있도록 설계함. [아직 실험 미진행]
 \begin{itemize}
     \item 1일 예측에서는 고빈도 데이터를 활용할 수 있는 모형들이 유리할 것으로 기대됨
     \item 혼합 빈도 데이터를 효과적으로 처리할 수 있는 모형들이 단기 예측에서 유리할 것으로 기대됨
     \item 단기 예측에서는 시계열의 최근 패턴이 중요하므로, 장기 의존성을 학습하는 모형의 장점이 크지 않을 수 있음
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \subsubsection{7일 예측}
@@ -73,24 +73,24 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
     \item 예측 기간이 길어질수록 예측 불확실성이 증가하여 성능이 저하될 것으로 예상됨
     \item 시계열의 시간적 패턴을 학습할 수 있는 모형들이 중단기 예측에서 유리할 것으로 기대됨
     \item 비선형 요인 구조 학습 능력과 혼합 빈도 데이터 처리 능력을 동시에 활용할 수 있는 모형들이 유리할 것으로 기대됨
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \subsubsection{28일 예측}
-중기 예측(28일)은 약 1개월 후의 값을 예측하는 것으로, 중기 예측 성능을 평가할 수 있도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 평가는 제한적임.
+중기 예측(28일)은 약 1개월 후의 값을 예측하는 것으로, 중기 예측 성능을 평가할 수 있도록 설계함. [아직 실험 미진행]
 \begin{itemize}
     \item 예측 기간이 길어질수록 예측 불확실성이 시간에 따라 증가하여 모든 모형의 성능이 저하될 것으로 예상됨
     \item 장기 의존성을 학습할 수 있는 동적 요인 모형이 중기 예측에서 유리할 것으로 기대됨
     \item 어텐션 메커니즘을 활용한 모형들이 시계열의 장기 의존성을 학습할 수 있어 유리할 것으로 기대됨
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \subsection{DFM vs DDFM nowcasting 비교}
 
-마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 nowcasting 성능을 비교할 수 있도록 설계함. nowcasting은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
+마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 nowcasting 성능을 비교할 수 있도록 설계함. nowcasting은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. [아직 실험 미진행]
 
 \subsubsection{nowcasting 성능 비교}
-표 \ref{tab:nowcasting_metrics}는 두 모형의 nowcasting 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:nowcasting_metrics}는 두 모형의 nowcasting 성능을 보여줌. [아직 실험 미진행]
 
 
 nowcasting 성능 비교는 다음과 같이 설계됨:
@@ -98,12 +98,12 @@ nowcasting 성능 비교는 다음과 같이 설계됨:
     \item 월간 고빈도 지표들을 활용하여 분기별 목표 변수를 예측하도록 설계함
     \item DDFM의 비선형 인코더가 정보가 제한적인 nowcasting 상황에서도 비선형 요인 구조를 학습할 수 있도록 설계함
     \item News decomposition 기능을 통해 새로운 데이터 발표 시 예측 업데이트의 기여도를 분석할 수 있도록 설계함
-    \item 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임
+    \item [아직 실험 미진행]
 \end{itemize}
 
 \input{tables/tab_nowcasting_metrics}
 
-표 \ref{tab:nowcasting_by_target}는 목표 변수별 nowcasting 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:nowcasting_by_target}는 목표 변수별 nowcasting 성능을 보여줌. [아직 실험 미진행]
 
 \begin{table}[h]
 \centering
@@ -119,7 +119,7 @@ DDFM & - & - & - \\
 \end{tabular}
 \end{table}
 
-표 \ref{tab:nowcasting_by_masking}는 마스킹 기간별 nowcasting 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
+표 \ref{tab:nowcasting_by_masking}는 마스킹 기간별 nowcasting 성능을 보여줌. [아직 실험 미진행]
 
 \begin{table}[h]
 \centering
@@ -138,7 +138,7 @@ DDFM & - & - & - \\
 \subsection{시각화}
 
 \subsubsection{모형별 성능 비교}
-그림 \ref{fig:model_comparison}은 모형별 성능을 비교한 막대 그래프를 보여줌. 현재 실험 결과가 확보되지 않아 placeholder 이미지가 표시됨.
+그림 \ref{fig:model_comparison}은 모형별 성능을 비교한 막대 그래프를 보여줌. [아직 실험 미진행]
 
 \begin{figure}[h]
 \centering
@@ -148,7 +148,7 @@ DDFM & - & - & - \\
 \end{figure}
 
 \subsubsection{예측 기간별 성능 추이}
-그림 \ref{fig:horizon_trend}는 예측 기간별 성능 추이를 보여줌. 현재 실험 결과가 확보되지 않아 placeholder 이미지가 표시됨.
+그림 \ref{fig:horizon_trend}는 예측 기간별 성능 추이를 보여줌. [아직 실험 미진행]
 
 \begin{figure}[h]
 \centering
@@ -158,7 +158,7 @@ DDFM & - & - & - \\
 \end{figure}
 
 \subsubsection{목표 변수별 예측 정확도 히트맵}
-그림 \ref{fig:heatmap}은 목표 변수별 예측 정확도 히트맵을 보여줌. 현재 실험 결과가 확보되지 않아 placeholder 이미지가 표시됨.
+그림 \ref{fig:heatmap}은 목표 변수별 예측 정확도 히트맵을 보여줌. [아직 실험 미진행]
 
 \begin{figure}[h]
 \centering
@@ -168,7 +168,7 @@ DDFM & - & - & - \\
 \end{figure}
 
 \subsubsection{예측값 vs 실제값 시계열 비교}
-그림 \ref{fig:forecast_vs_actual}은 주요 모형들의 예측값과 실제값을 비교한 시계열 그래프를 보여줌. 현재 실험 결과가 확보되지 않아 placeholder 이미지가 표시됨.
+그림 \ref{fig:forecast_vs_actual}은 주요 모형들의 예측값과 실제값을 비교한 시계열 그래프를 보여줌. [아직 실험 미진행]
 
 \begin{figure}[h]
 \centering
