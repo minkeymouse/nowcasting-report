@@ -1,0 +1,88 @@
+\section{선행연구 검토}
+
+\subsection{동적 요인 모형의 발전}
+
+\subsubsection{전통적 동적 요인 모형의 기원과 발전}
+동적 요인 모형(Dynamic Factor Model, DFM)은 고차원 시계열 데이터에서 공통 요인을 추출하여 차원을 축소하고 예측 정확도를 향상시키는 통계적 방법론임.
+\begin{itemize}
+    \item Stock과 Watson (2002)은 주성분 분석(Principal Component Analysis)을 활용한 요인 추출 방법이 고차원 시계열 데이터의 차원 축소에 효과적임을 보여주었으며, 이를 통해 거시경제 변수 예측의 정확도를 향상시킬 수 있음을 입증함 \cite{stock2002forecasting}
+    \item 이들의 연구는 많은 예측 변수 집합에서 주성분을 추출하여 요인을 구성하는 방법이 계산 효율성과 예측 성능의 균형을 제공함을 보여주었으며, 이후 DFM 연구의 기초가 되었음
+    \item DFM의 핵심 아이디어는 관측된 많은 시계열 변수들이 소수의 공통 요인(common factors)에 의해 설명될 수 있다는 가정에 기반함
+    \item 이러한 요인들은 시간에 따라 진화하며, Kalman 필터를 통해 추정됨
+\end{itemize}
+
+\subsubsection{혼합 빈도 데이터 처리의 발전}
+DFM의 가장 큰 장점 중 하나는 혼합 빈도(mixed-frequency) 데이터를 자연스럽게 처리할 수 있다는 점임.
+\begin{itemize}
+    \item 분기별 GDP와 같은 저빈도 변수를 월간 또는 주간 고빈도 지표로부터 예측할 수 있으며, 이는 나우캐스팅에 매우 유용한 것으로 평가됨
+    \item 텐트 커널(tent kernel) 집계 방식을 통해 저빈도 시계열을 고빈도 요인으로부터 생성할 수 있으며, 이는 분기 내 각 월의 기여도를 시간 가중치로 부여하는 방식임
+    \item 이러한 접근법은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 나우캐스팅에 널리 활용되고 있음
+\end{itemize}
+
+\subsection{나우캐스팅 연구의 발전}
+
+\subsubsection{나우캐스팅의 개념과 중요성}
+나우캐스팅(nowcasting)은 공식 통계가 발표되기 전에 다양한 고빈도 지표를 활용하여 현재 시점의 거시경제 변수를 추정하는 기법임.
+\begin{itemize}
+    \item Bok 등 (2017)은 빅데이터를 활용한 거시경제 나우캐스팅과 예측의 중요성을 강조하였으며, 다양한 고빈도 지표들이 예측 정확도 향상에 기여함을 보여줌 \cite{bok2017macroeconomic}
+    \item 나우캐스팅은 특히 경제 위기 상황에서 신속한 정책 대응이 필요한 경우 그 중요성이 더욱 부각됨
+    \item Lewis 등 (2020)은 주간 경제 지수(Weekly Economic Index)를 개발하여 실시간 경제 활동을 측정하는 방법을 제시함 \cite{lewis2020measuring}
+\end{itemize}
+
+\subsubsection{COVID-19 팬데믹 기간의 나우캐스팅 연구}
+COVID-19 팬데믹 기간 동안 나우캐스팅의 중요성이 크게 부각되었으며, 다양한 연구가 수행됨.
+\begin{itemize}
+    \item Schorfheide와 Song (2020)은 팬데믹 기간 동안 비모수적 혼합 빈도 VAR을 활용한 나우캐스팅에서 예측 성능 저하가 관찰되었으며, 비모수적 접근법이 구조적 변화 시기에 더 효과적일 수 있음을 제시함 \cite{schorfheide2020nowcasting}
+    \item Huber 등 (2020)도 유사한 연구를 수행하여 혼합 빈도 VAR을 활용한 나우캐스팅에서 팬데믹 기간 동안의 성능 저하를 관찰함 \cite{huber2020nowcasting}
+    \item 이러한 연구들은 전통적인 선형 모형의 한계를 보여주며, 비선형 관계를 학습할 수 있는 모형의 필요성을 시사함
+\end{itemize}
+
+\subsection{딥러닝 기반 시계열 예측 모형의 발전}
+
+\subsubsection{딥러닝 시계열 예측 모형의 등장}
+최근 딥러닝 기법의 발전과 함께 시계열 예측 분야에도 다양한 딥러닝 모형이 제안됨.
+\begin{itemize}
+    \item DeepAR은 자기회귀 순환 신경망을 활용한 확률적 예측 모형으로, 시계열의 장기 의존성을 효과적으로 모델링할 수 있는 것으로 나타남 \cite{salinas2020deepar}
+    \item Temporal Fusion Transformer (TFT)는 어텐션 메커니즘을 활용하여 시계열의 시간적 패턴과 외생 변수 간의 관계를 동시에 학습하는 모형임 \cite{lim2021temporal}
+    \item Deep State Space Models는 상태 공간 모형을 딥러닝에 접목한 모형으로, 시계열의 장기 의존성을 효과적으로 학습할 수 있음 \cite{rangapuram2018deep}
+\end{itemize}
+
+\subsubsection{심층 동적 요인 모형의 등장}
+전통적인 DFM의 선형 가정을 완화하기 위해 딥러닝 기법을 DFM에 접목한 심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)이 제안됨.
+\begin{itemize}
+    \item Andreini 등 (2020)은 변분 자기인코더(Variational Autoencoder)를 활용하여 비선형 요인 구조를 학습할 수 있는 DDFM을 제안함 \cite{andreini2020deep}
+    \item DDFM은 기존 DFM의 선형 가정을 완화하여 더 정확한 예측을 제공할 수 있는 잠재력을 보유하고 있는 것으로 평가됨
+    \item 특히 변동성이 큰 거시경제 변수에 대해서는 비선형 관계를 포착할 수 있는 DDFM의 장점이 더욱 두드러질 것으로 기대됨
+\end{itemize}
+
+\subsection{한국 거시경제 예측 연구}
+
+\subsubsection{한국 데이터를 활용한 최근 연구}
+한국 거시경제 데이터를 활용한 최근 연구에서도 DDFM의 효과성이 검증되고 있음.
+\begin{itemize}
+    \item Kim (2024)은 딥러닝 방법을 활용한 거시지표 나우캐스팅 모형을 제안하였으며, DDFM이 DFM보다 우수한 성능을 보인 것으로 나타남 \cite{kim2024deep}
+    \item 특히 변동성이 큰 거시경제 변수에 대해서는 비선형 관계를 포착할 수 있는 DDFM의 장점이 더욱 두드러진 것으로 평가됨
+    \item 이러한 연구는 한국 거시경제 데이터에 대한 DDFM의 실용성을 보여주며, 본 연구의 기초가 됨
+\end{itemize}
+
+\subsection{연구 공백 및 본 연구의 기여}
+
+\subsubsection{기존 연구의 한계점}
+기존 연구들은 다음과 같은 한계점을 가지고 있음:
+\begin{itemize}
+    \item 다양한 예측 모형을 체계적으로 비교한 연구가 부족함
+    \item 특히 전통적 통계 모형, 머신러닝 모형, 딥러닝 모형, 그리고 동적 요인 모형을 동일한 데이터셋과 평가 기준으로 비교한 연구가 제한적임
+    \item 한국 거시경제 데이터에 대한 포괄적인 모형 비교 연구가 부족함
+    \item 고빈도 데이터를 활용한 나우캐스팅 프레임워크에 대한 체계적인 분석이 부족함
+\end{itemize}
+
+\subsubsection{본 연구의 기여}
+본 연구는 다음과 같은 기여를 제공함:
+\begin{itemize}
+    \item 9개의 다양한 예측 모형을 동일한 데이터셋과 평가 기준으로 체계적으로 비교함
+    \item 한국 거시경제 데이터에 대한 각 모형의 상대적 성능을 제시함
+    \item 고빈도 데이터를 활용한 나우캐스팅 프레임워크를 구축하여 실무에 활용 가능한 예측 시스템을 제안함
+    \item DDFM의 효과성을 검증하고, 기존 DFM 대비 개선된 성능을 보여줌
+    \item Ablation study를 통해 각 모형의 하이퍼파라미터가 성능에 미치는 영향을 분석함
+\end{itemize}
+

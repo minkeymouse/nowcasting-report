@@ -1,0 +1,159 @@
+\section{이론적 배경}
+
+\subsection{동적 요인 모형의 이론적 기초}
+
+\subsubsection{동적 요인 모형의 기본 구조}
+동적 요인 모형(Dynamic Factor Model, DFM)은 상태 공간 모형(state-space model)의 특수한 형태로, 관측된 많은 시계열 변수들이 소수의 공통 요인에 의해 설명된다는 가정에 기반함.
+\begin{itemize}
+    \item 관측 방정식(observation equation): $X_t = C Z_t + \epsilon_t$
+    \begin{itemize}
+        \item $X_t$는 $N \times 1$ 벡터로, $N$개의 관측 시계열 변수를 나타냄
+        \item $Z_t$는 $m \times 1$ 벡터로, $m$개의 공통 요인을 나타냄 (일반적으로 $m << N$)
+        \item $C$는 $N \times m$ 행렬로, 요인 부하(factor loadings)를 나타냄
+        \item $\epsilon_t$는 $N \times 1$ 벡터로, 각 시계열의 고유 오차(idiosyncratic error)를 나타냄
+    \end{itemize}
+    \item 상태 방정식(state equation): $Z_t = A Z_{t-1} + \eta_t$
+    \begin{itemize}
+        \item $A$는 $m \times m$ 행렬로, 요인의 동학(dynamics)을 나타냄
+        \item $\eta_t$는 $m \times 1$ 벡터로, 요인의 혁신(innovation)을 나타냄
+        \item 일반적으로 $A$는 AR(1) 또는 AR(2) 과정을 따름
+    \end{itemize}
+    \item 오차 항은 정규분포를 따르며, 서로 독립적이라고 가정함:
+    \begin{itemize}
+        \item $\epsilon_t \sim N(0, R)$: 관측 오차의 공분산 행렬
+        \item $\eta_t \sim N(0, Q)$: 요인 혁신의 공분산 행렬
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{요인 추출 방법}
+DFM에서 요인을 추출하는 방법은 크게 두 가지로 구분됨:
+\begin{itemize}
+    \item \textbf{주성분 분석(Principal Component Analysis)}: Stock과 Watson (2002)이 제안한 방법으로, 관측 시계열의 공분산 행렬의 고유벡터를 사용하여 요인을 추출함 \cite{stock2002forecasting}
+    \begin{itemize}
+        \item 이 방법은 계산이 효율적이며, 대규모 데이터셋에 적용하기 용이함
+        \item 요인의 개수는 고유값의 크기나 정보 기준(information criterion)을 통해 결정됨
+    \end{itemize}
+    \item \textbf{최우추정법(Maximum Likelihood Estimation)}: 관측 방정식과 상태 방정식의 파라미터를 동시에 추정하는 방법임
+    \begin{itemize}
+        \item Expectation-Maximization (EM) 알고리즘을 통해 파라미터를 추정함
+        \item Kalman 필터와 Kalman 스무더를 사용하여 요인을 추정함
+        \item 이 방법은 주성분 분석보다 계산 비용이 크지만, 더 정확한 추정을 제공할 수 있음
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Kalman 필터와 스무더}
+DFM에서 요인을 추정하기 위해 Kalman 필터와 스무더가 사용됨.
+\begin{itemize}
+    \item \textbf{Kalman 필터}: 과거 정보를 사용하여 현재 시점의 요인을 추정함
+    \begin{itemize}
+        \item 예측 단계(prediction step): $Z_{t|t-1} = A Z_{t-1|t-1}$, $P_{t|t-1} = A P_{t-1|t-1} A' + Q$
+        \item 업데이트 단계(update step): $Z_{t|t} = Z_{t|t-1} + K_t (X_t - C Z_{t|t-1})$, $P_{t|t} = (I - K_t C) P_{t|t-1}$
+        \item 여기서 $K_t$는 Kalman gain으로, $K_t = P_{t|t-1} C' (C P_{t|t-1} C' + R)^{-1}$
+    \end{itemize}
+    \item \textbf{Kalman 스무더}: 전체 시계열 정보를 사용하여 각 시점의 요인을 재추정함
+    \begin{itemize}
+        \item 스무더는 필터보다 더 정확한 추정을 제공하며, 특히 중간 시점의 요인 추정에 유용함
+        \item Fixed-interval smoother (FIS)를 사용하여 전체 시계열에 대한 요인을 추정함
+    \end{itemize}
+\end{itemize}
+
+\subsection{혼합 빈도 데이터 처리}
+
+\subsubsection{Clock 기반 프레임워크}
+dfm-python 패키지는 clock 기반 프레임워크를 사용하여 혼합 빈도 데이터를 처리함.
+\begin{itemize}
+    \item 모든 잠재 요인(global factor와 block-level factor)이 공통의 "clock" 빈도에서 진화하도록 동기화함
+    \item Clock 빈도는 일간('d'), 주간('w'), 월간('m'), 분기별('q'), 반기별('sa'), 연간('a') 중에서 선택 가능함
+    \item 본 연구에서는 clock 빈도를 월간('m')으로 설정하여 모든 잠재 요인이 월간 빈도에서 진화하도록 함
+    \item 이는 분기별 목표 변수를 월간 고빈도 지표로부터 예측하기 위한 설정임
+\end{itemize}
+
+\subsubsection{텐트 커널 집계}
+저빈도 시계열(예: 분기별 GDP)을 고빈도 요인(예: 월간 요인)으로부터 생성하기 위해 텐트 커널(tent kernel) 집계 방식을 사용함.
+\begin{itemize}
+    \item 텐트 커널은 시간 가중치를 부여하여, 분기 내 각 월의 기여도를 다르게 설정함
+    \item 분기 $q$에 해당하는 월간 시점들의 집합을 $S_q = \{m_1, m_2, m_3\}$라고 하면, 각 월의 가중치는 다음과 같이 계산됨:
+    \begin{equation}
+    w_{m_i} = \begin{cases}
+    \frac{i - 1}{2} & \text{if } i = 1, 2 \\
+    1 - \frac{i - 2}{2} & \text{if } i = 2, 3
+    \end{cases}
+    \end{equation}
+    \item 이러한 가중치는 분기의 첫 번째 월과 세 번째 월에는 작은 가중치를, 두 번째 월(중간 월)에는 큰 가중치를 부여함
+    \item 이는 분기의 중간 시점이 전체 분기 값을 더 잘 대표한다는 직관에 기반함
+    \item 텐트 커널은 균등 가중치나 최근 가중치보다 우수한 성능을 보이는 것으로 나타남
+\end{itemize}
+
+\subsection{심층 동적 요인 모형의 이론적 기초}
+
+\subsubsection{변분 자기인코더를 활용한 비선형 요인 추출}
+DDFM은 변분 자기인코더(Variational Autoencoder, VAE)를 활용하여 비선형 요인 구조를 학습함 \cite{andreini2020deep}.
+\begin{itemize}
+    \item \textbf{인코더(Encoder)}: 관측 시계열 $X_t$를 잠재 요인 $Z_t$로 매핑하는 비선형 함수 $q_\phi(Z_t | X_t)$
+    \begin{itemize}
+        \item 인코더는 다층 퍼셉트론(MLP)으로 구현되며, 관측 시계열을 잠재 공간으로 변환함
+        \item 인코더는 평균 $\mu_\phi(X_t)$와 분산 $\sigma_\phi^2(X_t)$를 출력하며, $Z_t \sim N(\mu_\phi(X_t), \sigma_\phi^2(X_t))$를 따름
+    \end{itemize}
+    \item \textbf{디코더(Decoder)}: 잠재 요인 $Z_t$를 관측 시계열 $X_t$로 재구성하는 함수 $p_\theta(X_t | Z_t)$
+    \begin{itemize}
+        \item 디코더는 선형 변환으로 구현되며, 해석 가능성을 유지함
+        \item 디코더 파라미터는 관측 행렬 $C$를 직접 추출하는 데 사용됨
+    \end{itemize}
+    \item \textbf{요인 동학}: 학습된 요인은 DFM과 동일하게 AR(1) 또는 AR(2) 과정을 따름
+    \begin{itemize}
+        \item $Z_t = A Z_{t-1} + \eta_t$ (AR(1)의 경우)
+        \item $A$는 OLS를 통해 추정되며, Kalman 필터를 통해 최종 요인을 추정함
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{학습 목적 함수}
+DDFM은 다음과 같은 변분 하한(variational lower bound)을 최대화하여 학습됨:
+\begin{equation}
+\mathcal{L}(\phi, \theta) = \mathbb{E}_{q_\phi(Z_t | X_t)}[\log p_\theta(X_t | Z_t)] - \text{KL}(q_\phi(Z_t | X_t) || p(Z_t))
+\end{equation}
+\begin{itemize}
+    \item 첫 번째 항은 재구성 오차(reconstruction error)를 나타내며, 관측 시계열을 정확하게 재구성하도록 학습함
+    \item 두 번째 항은 KL 발산(Kullback-Leibler divergence)으로, 잠재 요인의 사전 분포 $p(Z_t)$와 인코더 분포 $q_\phi(Z_t | X_t)$ 간의 차이를 최소화함
+    \item 이는 잠재 요인이 너무 복잡해지는 것을 방지하는 정규화 역할을 함
+\end{itemize}
+
+\subsubsection{고유 오차 모델링}
+DDFM은 고유 오차(idiosyncratic error)를 모델링하여 더 정확한 예측을 제공함.
+\begin{itemize}
+    \item 고유 오차는 각 시계열의 요인으로 설명되지 않는 부분을 나타냄
+    \item DDFM은 고유 오차에 AR(1) 동학을 부여하여 시간적 의존성을 포착함
+    \item 이는 전체 상태 벡터에 요인과 고유 오차를 모두 포함시켜 Kalman 필터를 통해 추정함
+\end{itemize}
+
+\subsection{나우캐스팅의 이론적 기초}
+
+\subsubsection{출시 시차를 고려한 모델링}
+나우캐스팅은 각 시점에서 사용 가능한 데이터만을 활용하여 목표 변수를 예측함.
+\begin{itemize}
+    \item 각 변수는 서로 다른 출시 시차(release lag)를 가지며, 이는 데이터가 실제로 발생한 시점과 공식적으로 발표되는 시점 사이의 시간 차이임
+    \item 예를 들어, 분기별 GDP는 해당 분기가 종료된 후 약 25일이 지나야 공식 발표됨
+    \item 반면, 월간 생산지수는 해당 월이 종료된 후 약 30일이 지나면 발표됨
+    \item 나우캐스팅에서는 각 시점에서 사용 가능한 데이터만을 선택하여 모델링함
+\end{itemize}
+
+\subsubsection{News Decomposition}
+dfm-python 패키지는 News decomposition 기능을 제공하여 새로운 데이터 발표가 예측 변화에 미치는 기여도를 분석함.
+\begin{itemize}
+    \item News는 새로운 데이터 발표로 인한 예측 업데이트를 나타냄
+    \item News decomposition은 각 변수의 발표가 예측 변화에 미치는 기여도를 정량화함
+    \item 이를 통해 어떤 변수가 예측에 가장 중요한 정보를 제공하는지 파악할 수 있음
+    \item 이는 나우캐스팅의 신뢰성을 향상시키는 데 유용함
+\end{itemize}
+
+\subsection{평가 지표}
+
+\subsubsection{표준화된 평가 지표}
+본 연구에서는 표준화된 평가 지표를 사용하여 모형 성능을 비교함.
+\begin{itemize}
+    \item \textbf{표준화된 MSE (sMSE)}: $sMSE = \frac{1}{T} \sum_{t=1}^T \frac{(y_t - \hat{y}_t)^2}{\sigma_{train}^2}$
+    \item \textbf{표준화된 MAE (sMAE)}: $sMAE = \frac{1}{T} \sum_{t=1}^T \frac{|y_t - \hat{y}_t|}{\sigma_{train}}$
+    \item \textbf{표준화된 RMSE (sRMSE)}: $sRMSE = \sqrt{\frac{1}{T} \sum_{t=1}^T \frac{(y_t - \hat{y}_t)^2}{\sigma_{train}^2}}$
+    \item 여기서 $\sigma_{train}$은 훈련 데이터의 표준편차임
+    \item 표준화를 통해 서로 다른 스케일을 가진 목표 변수 간의 성능을 공정하게 비교할 수 있음
+\end{itemize}
+
