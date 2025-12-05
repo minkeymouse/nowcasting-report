@@ -2,7 +2,7 @@
 
 \subsection{전체 모형 성능 비교}
 
-본 절에서는 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤.
+본 절에서는 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석할 수 있도록 설계함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤. 현재 실험 결과가 확보되지 않아 구체적인 성능 비교는 제한적임.
 
 \subsubsection{dfm-python을 활용한 DFM/DDFM 실험 결과}
 dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행함.
@@ -12,21 +12,21 @@ dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측�
 \end{itemize}
 
 \subsubsection{표준화된 성능 지표}
-표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄.
+표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \input{tables/tab_overall_metrics}
 
-표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌.
+표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \input{tables/tab_overall_metrics_by_target}
 
-표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌.
+표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \input{tables/tab_overall_metrics_by_horizon}
 
 \subsection{DFM과 DDFM의 성능 분석}
 
-dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석함. 두 모형 모두 clock 프레임워크를 통해 혼합 빈도 데이터를 처리하며, 분기별 목표 변수(GDP, 민간 소비, 총고정자본형성)를 월간 고빈도 지표로부터 예측함.
+dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 수 있도록 설계함. 두 모형 모두 clock 프레임워크를 통해 혼합 빈도 데이터를 처리하도록 설계되었으며, 분기별 목표 변수(GDP, 민간 소비, 총고정자본형성)를 월간 고빈도 지표로부터 예측하도록 설계됨. 현재 실험 결과가 확보되지 않아 구체적인 성능 분석은 제한적임.
 
 \subsubsection{단기 예측 (1일)}
 단기 예측(1일)은 현재 시점에서 바로 다음 시점의 값을 예측하는 것으로, 세 목표 변수에 대한 DFM과 DDFM의 성능 분석은 다음과 같음:
@@ -90,7 +90,7 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석함. 
 마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 나우캐스팅 성능을 비교함. 나우캐스팅은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함.
 
 \subsubsection{나우캐스팅 성능 비교}
-표 \ref{tab:nowcasting_metrics}는 두 모형의 나우캐스팅 성능을 보여줌.
+표 \ref{tab:nowcasting_metrics}는 두 모형의 나우캐스팅 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 
 나우캐스팅 성능 비교는 다음과 같이 설계됨:
@@ -137,7 +137,7 @@ DDFM & - & - & - \\
 
 \subsection{dfm-python을 활용한 Ablation Study 결과}
 
-dfm-python 패키지의 설정을 변경하여 DFM과 DDFM의 하이퍼파라미터가 성능에 미치는 영향을 분석함. YAML 설정 파일을 통해 요인 개수, AR 차수, 인코더 구조 등을 조정하고, 각 설정에 대한 성능을 비교함.
+dfm-python 패키지의 설정을 변경하여 DFM과 DDFM의 하이퍼파라미터가 성능에 미치는 영향을 분석할 수 있도록 설계함. YAML 설정 파일을 통해 요인 개수, AR 차수, 인코더 구조 등을 조정하고, 각 설정에 대한 성능을 비교할 수 있도록 설계함. 현재 실험 결과가 확보되지 않아 구체적인 분석은 제한적임.
 
 \subsubsection{DFM 하이퍼파라미터 분석}
 DFM 설정에서 요인 개수와 AR 차수 변화에 따른 성능 분석을 위한 실험 설계는 다음과 같음:
@@ -168,7 +168,7 @@ DFM 설정에서 요인 개수와 AR 차수 변화에 따른 성능 분석을 �
 \end{table}
 
 \subsubsection{DDFM 하이퍼파라미터 분석}
-DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 따른 성능 분석 결과는 다음과 같음.
+DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 따른 성능 분석을 위한 실험 설계는 다음과 같음.
 \begin{itemize}
     \item 인코더 레이어 구조는 encoder\_layers 파라미터로 설정하며, 예를 들어 [64, 32]는 2개 레이어를 의미함
     \item 인코더 레이어 수가 증가할수록 비선형 변환의 복잡도가 증가하여 더 복잡한 요인 구조를 학습할 수 있으나, 과적합의 위험이 증가함
@@ -178,10 +178,7 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
     \item DDFM은 배치 기반 학습을 사용하므로, DFM의 EM 알고리즘과 달리 메모리 효율적인 학습이 가능함
 \end{itemize}
 
-표 \ref{tab:ddfm_ablation_layers}는 인코더 레이어 수별 DDFM 성능을 보여줌.
-\begin{itemize}
-    \item 레이어가 너무 적거나 많을 경우 성능이 저하됨
-\end{itemize}
+표 \ref{tab:ddfm_ablation_layers}는 인코더 레이어 수별 DDFM 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \begin{table}[h]
 \centering
@@ -199,10 +196,7 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
 \end{tabular}
 \end{table}
 
-표 \ref{tab:ddfm_ablation_lr}는 학습률별 DDFM 성능을 보여줌.
-\begin{itemize}
-    \item 학습률이 너무 작거나 클 경우 성능이 저하됨
-\end{itemize}
+표 \ref{tab:ddfm_ablation_lr}는 학습률별 DDFM 성능을 보여줌. 현재 실험 결과가 확보되지 않아 표의 값은 "-"로 표시됨.
 
 \begin{table}[h]
 \centering
