@@ -50,34 +50,21 @@
 
 \subsubsection{거시경제 변수 예측을 위한 다양한 시계열 모형들이 개발되어 왔음}
 \begin{itemize}
-    \item 전통적인 통계 모형으로는 자기회귀 통합 이동평균 모형(ARIMA), 벡터 자기회귀 모형(VAR), 벡터 오차수정 모형(VECM) 등이 있음 \cite{johansen1988statistical}
+    \item 전통적인 통계 모형으로는 자기회귀 통합 이동평균 모형(ARIMA), 벡터 자기회귀 모형(VAR) 등이 있음
     \item 이러한 모형들은 선형 관계와 정상성 가정에 기반하고 있어, 복잡한 비선형 관계를 포착하는 데 한계가 있음
-\end{itemize}
-
-\subsubsection{최근 머신러닝 기법의 발전과 함께 트리 기반 앙상블 모형이 시계열 예측에 널리 활용되고 있음}
-\begin{itemize}
-    \item 트리 기반 앙상블 모형인 XGBoost와 LightGBM은 비선형 관계를 효과적으로 학습할 수 있으며, 특징 공학을 통해 다양한 변수 간 상호작용을 포착할 수 있는 것으로 평가됨
-\end{itemize}
-
-\subsubsection{딥러닝 기반 시계열 예측 모형으로는 DeepAR과 Temporal Fusion Transformer (TFT)가 대표적임}
-\begin{itemize}
-    \item DeepAR은 자기회귀 순환 신경망을 활용한 확률적 예측 모형으로, 시계열의 장기 의존성을 효과적으로 모델링할 수 있음 \cite{salinas2020deepar, lim2021temporal}
-    \item TFT는 어텐션 메커니즘을 활용하여 시계열의 시간적 패턴과 외생 변수 간의 관계를 동시에 학습하는 모형임
-    \item 또한 상태 공간 모형을 딥러닝에 접목한 Deep State Space Models도 시계열 예측에 활용되고 있음 \cite{rangapuram2018deep}
 \end{itemize}
 
 \subsubsection{동적 요인 모형(DFM)은 많은 시계열에서 공통 요인을 추출하여 차원을 축소하고, 혼합 빈도 데이터를 효과적으로 처리할 수 있는 장점을 가지고 있음}
 \begin{itemize}
     \item Stock과 Watson (2002)은 주성분 분석을 활용한 요인 추출 방법이 고차원 시계열 데이터의 차원 축소에 효과적임을 보여주었으며, 이를 통해 거시경제 변수 예측의 정확도를 향상시킬 수 있음을 제시함 \cite{stock2002forecasting}
     \item 최근에는 딥러닝 기법을 DFM에 접목한 심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)이 제안되었으며, 자기인코더(autoencoder)를 활용하여 잠재 상태를 생성하고 비선형 요인 구조를 학습할 수 있음 \cite{andreini2020deep}
-    \item Kim (2024)의 연구에서 한국 거시경제 데이터를 활용한 Mamba 모형(딥러닝 기반 상태공간모형)이 DFM보다 우수한 성능을 보인 것으로 보고되었으며, 특히 변동성이 큰 거시경제 변수에 대해서는 비선형 관계를 포착할 수 있는 딥러닝 모형의 장점이 두드러진 것으로 평가됨 \cite{kim2024deep}
 \end{itemize}
 
 \subsection{연구 목적 및 기여도}
 
 \subsubsection{본 연구는 고빈도 데이터를 활용하여 한국의 주요 거시경제 변수(GDP, 소비, 투자)를 예측하는 다양한 모형들의 성능을 체계적으로 비교 분석하는 것을 목적으로 함}
 \begin{itemize}
-    \item 9개의 다양한 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)을 동일한 데이터셋과 평가 기준으로 비교하여 각 모형의 장단점을 분석할 수 있도록 설계함. [아직 실험 미진행]
+    \item 4개의 예측 모형(ARIMA, VAR, DFM, DDFM)을 동일한 데이터셋과 평가 기준으로 비교하여 각 모형의 장단점을 분석할 수 있도록 설계함. [아직 실험 미진행]
     \item 1일, 7일, 28일의 다양한 예측 기간에 대한 표준화된 성능 지표(MSE, MAE, RMSE)를 계산하여 단기 및 중기 예측 성능을 평가할 수 있도록 설계함. [아직 실험 미진행]
     \item 마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 nowcasting 성능을 비교할 수 있도록 설계함. [아직 실험 미진행]
 \end{itemize}

@@ -2,7 +2,7 @@
 
 \subsection{전체 모형 성능 비교}
 
-본 절에서는 9개의 예측 모형(ARIMA, VAR, VECM, DeepAR, TFT, XGBoost, LightGBM, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석할 수 있도록 설계함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤. [아직 실험 미진행]
+본 절에서는 4개의 예측 모형(ARIMA, VAR, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석할 수 있도록 설계함. 특히 dfm-python을 활용하여 구현한 DFM과 DDFM의 성능에 초점을 맞춤. [아직 실험 미진행]
 
 \subsubsection{dfm-python을 활용한 DFM/DDFM 실험 결과}
 dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측을 수행하도록 설계함. [아직 실험 미진행]
@@ -81,7 +81,6 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석할 �
 \begin{itemize}
     \item 예측 기간이 길어질수록 예측 불확실성이 시간에 따라 증가하여 모든 모형의 성능이 저하될 것으로 예상됨
     \item 장기 의존성을 학습할 수 있는 동적 요인 모형이 중기 예측에서 유리할 것으로 기대됨
-    \item 어텐션 메커니즘을 활용한 모형들이 시계열의 장기 의존성을 학습할 수 있어 유리할 것으로 기대됨
     \item [아직 실험 미진행]
 \end{itemize}
 

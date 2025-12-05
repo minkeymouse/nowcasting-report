@@ -86,7 +86,7 @@ DDFM은 다음과 같은 비선형 관계를 포착할 수 있다:
 \end{itemize}
 
 \paragraph{실증적 증거}
-한국 GDP nowcasting 연구 \cite{kim2024deep}에 따르면, Mamba 모형(딥러닝 기반 상태공간모형)이 선형 DFM보다 우수한 성능을 보였으며, 특히 변동성이 큰 시기와 구조적 변화 시기에 더 나은 성능을 보였다고 보고됨. 이는 비선형 딥러닝 모형이 구조적 변화 시기에 선형 DFM보다 우수한 성능을 보일 수 있음을 시사한다.
+비선형 딥러닝 모형이 구조적 변화 시기에 선형 DFM보다 우수한 성능을 보일 수 있음을 시사한다.
 
 구체적으로, COVID-19 팬데믹 기간 동안 선형 DFM은 다음과 같은 한계를 보였다:
 \begin{itemize}
@@ -179,29 +179,6 @@ DDFM의 학습은 다음과 같은 과정으로 진행된다:
     \item 검증: 검증 데이터에 대해 성능을 평가한다.
     \item 조기 종료: 검증 성능이 개선되지 않으면 학습을 조기 종료한다.
 \end{enumerate}
-
-\subsection{다른 딥러닝 모형과의 비교}
-\label{sec:dl_comparison}
-
-\subsubsection{DeepAR}
-DeepAR은 자기회귀 순환 신경망 기반의 확률적 예측 모형으로, 시계열의 장기 의존성을 학습할 수 있다 \cite{salinas2020deepar}. DeepAR은 LSTM(Long Short-Term Memory) 네트워크를 활용하여 시계열의 시간적 패턴을 포착한다.
-
-DeepAR과 DDFM의 주요 차이점은 다음과 같다:
-\begin{itemize}
-    \item \textbf{요인 구조}: DDFM은 요인 구조를 명시적으로 모델링하지만, DeepAR은 요인 구조를 암묵적으로 학습한다.
-    \item \textbf{혼합 빈도 처리}: DDFM은 혼합 빈도 데이터를 자연스럽게 처리할 수 있으나, DeepAR은 추가적인 전처리가 필요하다.
-    \item \textbf{해석가능성}: DDFM은 추출된 요인을 해석할 수 있으나, DeepAR은 해석이 어렵다.
-\end{itemize}
-
-\subsubsection{Temporal Fusion Transformer (TFT)}
-TFT는 어텐션 메커니즘을 활용한 시계열 예측 모형으로, 시간적 패턴과 외생 변수 간의 관계를 동시에 학습한다. TFT는 변수 선택 어텐션(variable selection attention)과 시간적 어텐션(temporal attention)을 통해 해석 가능한 예측을 제공한다.
-
-TFT와 DDFM의 주요 차이점은 다음과 같다:
-\begin{itemize}
-    \item \textbf{아키텍처}: TFT는 트랜스포머 기반이며, DDFM은 자기인코더 기반이다.
-    \item \textbf{혼합 빈도 처리}: DDFM은 혼합 빈도 데이터를 자연스럽게 처리할 수 있으나, TFT는 추가적인 전처리가 필요하다.
-    \item \textbf{요인 해석}: DDFM은 요인을 명시적으로 추출하여 해석할 수 있으나, TFT는 어텐션 가중치를 통해 간접적으로 해석한다.
-\end{itemize}
 
 \subsection{DDFM 예측 결과 및 분석}
 \label{sec:ddfm_results}
