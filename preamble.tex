@@ -24,10 +24,23 @@
 \renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
 \renewcommand{\theparagraph}{\arabic{paragraph}.}
 
-% Custom paragraph style for "큰내용" (no numbering, just bold)
-\renewcommand{\paragraph}[1]{\vspace{0.5em}\noindent\textbf{#1}\par\vspace{0.3em}}
+% Custom paragraph style for "큰내용" (indented, bold with triangle symbol)
+\renewcommand{\paragraph}[1]{\vspace{0.5em}\noindent\hangindent=1.5em\hangafter=1\textbf{▲~#1}\par\vspace{0.3em}}
 
-% Custom subparagraph style for "◦ 세부내용"
-\renewcommand{\subparagraph}[1]{\vspace{0.3em}\noindent\textbullet~#1\par}
+% Custom subparagraph style for "◦ 세부내용" (more indented, bullet point)
+\renewcommand{\subparagraph}[1]{\vspace{0.2em}\noindent\hangindent=3em\hangafter=1\textbullet~#1\par}
+
+% Adjust section spacing
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus.2ex}%
+  {\normalfont\Large\bfseries}}
+
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+  {-2.5ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\large\bfseries}}
+\makeatother
 
 \title{고빈도 데이터를 활용한 생산, 투자 분야 거시 변수 예측 모델}
