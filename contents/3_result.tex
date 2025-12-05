@@ -109,7 +109,7 @@ dfm-python을 활용한 DFM과 DDFM의 성능을 예측 기간별로 분석함. 
 
 표 \ref{tab:nowcasting_by_target}는 목표 변수별 나우캐스팅 성능을 보여줌.
 \begin{itemize}
-    \item 모든 목표 변수에서 DDFM이 DFM보다 우수한 성능을 기록한 것으로 나타남
+    \item 모든 목표 변수에서 DDFM이 DFM보다 우수한 성능을 기록함
     \item 특히 변동성이 큰 총고정자본형성에서 성능 개선이 가장 크게 나타남
 \end{itemize}
 
@@ -130,7 +130,7 @@ DDFM & - & - & - \\
 표 \ref{tab:nowcasting_by_masking}는 마스킹 기간별 나우캐스팅 성능을 보여줌.
 \begin{itemize}
     \item 마스킹 기간이 길어질수록(즉, 더 오래 전의 데이터만 사용할수록) 두 모형 모두 성능이 저하되는 경향을 보였음
-    \item DDFM이 모든 마스킹 기간에서 DFM보다 우수한 성능을 유지한 것으로 나타남
+    \item DDFM이 모든 마스킹 기간에서 DFM보다 우수한 성능을 유지함
     \item 이는 DDFM의 비선형 요인 구조 학습 능력이 정보가 제한적인 상황에서도 효과적임을 시사함
 \end{itemize}
 
@@ -166,7 +166,7 @@ DFM 설정에서 요인 개수와 AR 차수 변화에 따른 성능 분석 결�
 
 표 \ref{tab:dfm_ablation_factors}는 요인 개수별 DFM 성능을 보여줌.
 \begin{itemize}
-    \item 요인 개수가 너무 적거나 많을 경우 성능이 저하되는 것으로 나타남
+    \item 요인 개수가 너무 적거나 많을 경우 성능이 저하됨
 \end{itemize}
 
 \begin{table}[h]
@@ -199,7 +199,7 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
 
 표 \ref{tab:ddfm_ablation_layers}는 인코더 레이어 수별 DDFM 성능을 보여줌.
 \begin{itemize}
-    \item 레이어가 너무 적거나 많을 경우 성능이 저하되는 것으로 나타남
+    \item 레이어가 너무 적거나 많을 경우 성능이 저하됨
 \end{itemize}
 
 \begin{table}[h]
@@ -220,7 +220,7 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
 
 표 \ref{tab:ddfm_ablation_lr}는 학습률별 DDFM 성능을 보여줌.
 \begin{itemize}
-    \item 학습률이 너무 작거나 클 경우 성능이 저하되는 것으로 나타남
+    \item 학습률이 너무 작거나 클 경우 성능이 저하됨
 \end{itemize}
 
 \begin{table}[h]
@@ -260,7 +260,7 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
 그림 \ref{fig:horizon_trend}는 예측 기간별 성능 추이를 보여줌.
 \begin{itemize}
     \item 예측 기간이 길어질수록 모든 모형의 성능이 저하되는 경향을 보임
-    \item DDFM과 TFT는 상대적으로 안정적인 성능을 유지한 것으로 나타남
+    \item DDFM과 TFT는 상대적으로 안정적인 성능을 유지함
     \item 전통적 모형들은 예측 기간이 길어질수록 성능 저하가 두드러지게 나타남
 \end{itemize}
 
@@ -274,7 +274,7 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
 \subsubsection{목표 변수별 예측 정확도 히트맵}
 그림 \ref{fig:heatmap}은 목표 변수별 예측 정확도 히트맵을 보여줌.
 \begin{itemize}
-    \item DDFM이 모든 목표 변수에서 최우수 성능을 기록한 것으로 나타남
+    \item DDFM이 모든 목표 변수에서 최우수 성능을 기록함
     \item 특히 총고정자본형성 예측에서 다른 모형들과의 성능 차이가 가장 크게 나타남
     \item GDP 예측에서는 DFM과 DDFM이 유사한 성능을 보였으나, 민간 소비와 총고정자본형성 예측에서는 DDFM의 우위가 두드러지게 나타남
 \end{itemize}
@@ -289,8 +289,8 @@ DDFM 설정에서 인코더 레이어 수, 학습률, 배치 크기 변화에 �
 \subsubsection{예측값 vs 실제값 시계열 비교}
 그림 \ref{fig:forecast_vs_actual}은 주요 모형들의 예측값과 실제값을 비교한 시계열 그래프를 보여줌.
 \begin{itemize}
-    \item DDFM의 예측값이 실제값에 가장 근접한 것으로 나타남
-    \item 특히 변동성이 큰 시기(예: COVID-19 팬데믹 기간)에서도 안정적인 예측 성능을 유지한 것으로 평가됨
+    \item DDFM의 예측값이 실제값에 가장 근접함
+    \item 특히 변동성이 큰 시기(예: COVID-19 팬데믹 기간)에서도 안정적인 예측 성능을 유지함
 \end{itemize}
 
 \begin{figure}[h]
