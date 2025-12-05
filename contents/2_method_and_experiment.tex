@@ -53,6 +53,52 @@
     \item 결측치는 선형 보간 또는 전방 채우기 방법을 사용하여 처리함
 \end{itemize}
 
+\subsection{dfm-python 패키지 개요}
+
+dfm-python은 고차원 시계열 데이터의 나우캐스팅과 예측을 위한 동적 요인 모형(Dynamic Factor Model, DFM)의 포괄적인 Python 구현체임. 본 연구에서는 dfm-python 패키지를 활용하여 DFM과 DDFM(Deep Dynamic Factor Model) 모형을 구현함.
+
+\subsubsection{dfm-python의 핵심 기능}
+dfm-python 패키지는 다음과 같은 핵심 기능을 제공함:
+\begin{itemize}
+    \item \textbf{혼합 빈도 데이터 처리}: 월간, 분기별, 반기별, 연간 등 서로 다른 빈도의 시계열 데이터를 하나의 모형에서 처리할 수 있음
+    \item \textbf{Clock 기반 프레임워크}: 모든 잠재 요인(global factor와 block-level factor)이 공통의 "clock" 빈도에서 진화하도록 동기화함. Clock 빈도는 일간('d'), 주간('w'), 월간('m'), 분기별('q'), 반기별('sa'), 연간('a') 중에서 선택 가능함
+    \item \textbf{텐트 커널 집계}: 낮은 빈도의 관측 변수를 높은 빈도의 잠재 상태로 매핑하기 위해 결정론적 텐트 커널(tent kernel)을 사용함. 예를 들어, 분기별 GDP를 월간 잠재 요인으로부터 모델링할 수 있음
+    \item \textbf{블록 구조}: 유연한 요인 조직화를 지원함. 전역 공통 요인(global common factor)과 부문별 요인(sector-specific factors)을 블록으로 구성할 수 있음
+    \item \textbf{결측치 처리}: 내부적으로 스플라인 보간을 사용하여 결측치를 강건하게 처리함
+    \item \textbf{News decomposition}: 특정 데이터 발표가 예측 변화에 미치는 기여도를 분석할 수 있는 기능을 제공함
+    \item \textbf{나우캐스팅 및 예측}: 모든 예측 기간에 대한 예측을 생성할 수 있음
+    \item \textbf{Deep Dynamic Factor Models (DDFM)}: 비선형 인코더를 사용하여 복잡한 요인 구조를 포착하는 DDFM을 지원함 (PyTorch 필요)
+\end{itemize}
+
+\subsubsection{dfm-python의 기술적 특징}
+dfm-python 패키지는 다음과 같은 기술적 특징을 가짐:
+\begin{itemize}
+    \item \textbf{다양한 설정 방법}: YAML 파일, CSV 스펙, Python 딕셔너리, 또는 Hydra를 통한 설정을 지원함. 본 연구에서는 Hydra 기반 YAML 설정 파일을 사용함
+    \item \textbf{수치적 안정성}: 
+    \begin{itemize}
+        \item 조건이 나쁜 행렬에 대한 적응형 릿지 정규화
+        \item Q 행렬 바닥값(요인에 대해 0.01) 설정으로 스케일 문제 방지
+        \item C 행렬 정규화(||C[:,j]|| = 1)로 clock 빈도 요인 정규화
+        \item 스펙트럼 반경 제한(< 0.99)으로 정상성 보장
+        \item 모든 공분산 행렬에 대한 분산 바닥값 설정
+    \end{itemize}
+    \item \textbf{PyTorch Lightning 기반}: 표준화된 Lightning 패턴을 따르는 모듈화된 API를 제공함. DFMDataModule, DFMTrainer, DDFMTrainer 등의 클래스를 통해 일관된 인터페이스를 제공함
+    \item \textbf{전처리 데이터 기대}: 패키지는 사용자로부터 전처리된 데이터를 기대하며, 사용자는 sktime 또는 다른 도구를 사용하여 모든 전처리(보간, 스케일링, 특징 공학)를 처리함
+    \item \textbf{프로덕션 준비}: 포괄적인 오류 처리, 광범위한 테스트, 잘 문서화된 코드로 구성됨
+\end{itemize}
+
+\subsubsection{dfm-python의 아키텍처}
+dfm-python 패키지는 다음과 같은 주요 모듈로 구성됨:
+\begin{itemize}
+    \item \textbf{config 모듈}: 설정 데이터 클래스(DFMConfig, SeriesConfig, BlockConfig) 및 설정 어댑터(YAML/Dict/CSV/Hydra)
+    \item \textbf{models 모듈}: 핵심 추정 클래스(DFM, DDFM) 및 베이스 클래스(BaseFactorModel)
+    \item \textbf{core 모듈}: EM 알고리즘 구현, 수치 유틸리티, 헬퍼 함수, 타임스탬프 유틸리티
+    \item \textbf{kalman 모듈}: Kalman 필터 및 스무더 구현
+    \item \textbf{lightning 모듈}: PyTorch Lightning 기반 데이터 모듈 및 트레이너
+    \item \textbf{nowcast 모듈}: 나우캐스팅 기능 및 News decomposition
+    \item \textbf{utils 모듈}: 혼합 빈도 유틸리티(텐트 가중치, 집계 구조, idio 체인 길이, 빈도 헬퍼)
+\end{itemize}
+
 \subsection{예측 모형}
 
 \subsubsection{본 연구에서는 총 9개의 예측 모형을 비교 분석함}
@@ -62,8 +108,6 @@
     \item 딥러닝 모형으로는 DeepAR과 TFT를 사용함 \cite{salinas2020deepar, lim2021temporal}
     \item 동적 요인 모형으로는 dfm-python 패키지를 활용하여 DFM과 DDFM을 구현함
 \end{itemize}
-
-dfm-python은 혼합 빈도 데이터를 처리할 수 있는 동적 요인 모형의 Python 구현체로, PyTorch Lightning 기반의 모듈화된 API를 제공함.
 
 \subsubsection{dfm-python을 활용한 DFM 구현}
 dfm-python 패키지는 PyTorch Lightning 패턴을 따르는 표준화된 인터페이스를 제공함. DFM 모형의 사용은 다음과 같은 단계로 구성됨:
