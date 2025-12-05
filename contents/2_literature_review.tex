@@ -9,13 +9,17 @@
     \item 이들의 연구는 많은 예측 변수 집합에서 주성분을 추출하여 요인을 구성하는 방법이 계산 효율성과 예측 성능의 균형을 제공함을 보여주었으며, 이후 DFM 연구의 기초가 되었음
     \item DFM의 핵심 아이디어는 관측된 많은 시계열 변수들이 소수의 공통 요인(common factors)에 의해 설명될 수 있다는 가정에 기반함
     \item 이러한 요인들은 시간에 따라 진화하며, Kalman 필터를 통해 추정됨
+    \item Bańbura 등 (2012)은 DFM을 활용한 나우캐스팅 프레임워크를 제시하며, 실시간 데이터 흐름을 고려한 혼합 빈도 모형의 이론적 기초를 정립함 \cite{banbura2012nowcasting}
+    \item Sims (1986)은 예측 모형이 정책 분석에 활용 가능한지에 대한 논의를 제시하며, 거시경제 예측의 중요성을 강조함 \cite{sims1986forecasting}
 \end{itemize}
 
 \subsubsection{혼합 빈도 데이터 처리의 발전}
 DFM의 가장 큰 장점 중 하나는 혼합 빈도(mixed-frequency) 데이터를 자연스럽게 처리할 수 있다는 점임.
 \begin{itemize}
     \item 분기별 GDP와 같은 저빈도 변수를 월간 또는 주간 고빈도 지표로부터 예측할 수 있으며, 이는 나우캐스팅에 매우 유용함
-    \item 텐트 커널(tent kernel) 집계 방식을 통해 저빈도 시계열을 고빈도 요인으로부터 생성할 수 있음
+    \item Bańbura 등 (2012)은 나우캐스팅과 실시간 데이터 흐름에 대한 포괄적인 프레임워크를 제시하였으며, 혼합 빈도 동적 요인 모형을 활용한 나우캐스팅 방법론을 정립함 \cite{banbura2012nowcasting}
+    \item 텐트 커널(tent kernel) 집계 방식을 통해 저빈도 시계열을 고빈도 요인으로부터 생성할 수 있으며, 이는 FRBNY Staff Nowcast에서 핵심적으로 사용되는 기법임 \cite{bok2017macroeconomic, bok2019frbny}
+    \item 텐트 커널은 분기 내 각 월의 기여도를 시간 가중치로 부여하여, 분기의 중간 시점이 더 큰 가중치를 갖도록 함. 이는 분기 중간 시점이 전체 분기 값을 더 잘 대표한다는 경제적 직관에 기반함
     \item 이러한 접근법은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 나우캐스팅에 널리 활용되고 있음
 \end{itemize}
 
@@ -24,9 +28,11 @@ DFM의 가장 큰 장점 중 하나는 혼합 빈도(mixed-frequency) 데이터�
 \subsubsection{나우캐스팅의 개념과 중요성}
 나우캐스팅(nowcasting)은 공식 통계가 발표되기 전에 다양한 고빈도 지표를 활용하여 현재 시점의 거시경제 변수를 추정하는 기법임.
 \begin{itemize}
+    \item Bańbura 등 (2012)은 나우캐스팅의 이론적 기초를 정립하고, 실시간 데이터 흐름을 활용한 나우캐스팅 프레임워크를 제시함. 이들은 혼합 빈도 동적 요인 모형을 활용하여 분기별 GDP를 월간 고빈도 지표로부터 예측하는 방법론을 제시함 \cite{banbura2012nowcasting}
     \item Bok 등 (2017)은 빅데이터를 활용한 거시경제 나우캐스팅과 예측의 중요성을 강조하였으며, 다양한 고빈도 지표들이 예측 정확도 향상에 기여함을 보여줌 \cite{bok2017macroeconomic}
+    \item Bok 등 (2019)은 FRBNY Staff Nowcast의 방법론을 상세히 설명하며, 텐트 커널을 활용한 혼합 빈도 데이터 처리와 News decomposition 기법을 제시함. 이들은 실시간으로 업데이트되는 GDP 나우캐스트를 생성하는 시스템을 구축함 \cite{bok2019frbny}
     \item 나우캐스팅은 특히 경제 위기 상황에서 신속한 정책 대응이 필요한 경우 그 중요성이 더욱 부각됨
-    \item Lewis 등 (2020)은 주간 경제 지수(Weekly Economic Index)를 개발하여 실시간 경제 활동을 측정하는 방법을 제시함 \cite{lewis2020measuring}
+    \item Lewis 등 (2020)은 주간 경제 지수(Weekly Economic Index)를 개발하여 실시간 경제 활동을 측정하는 방법을 제시함. 이들은 다양한 고빈도 지표를 통합하여 주간 단위의 경제 활동 지수를 생성함 \cite{lewis2020measuring}
 \end{itemize}
 
 \subsubsection{COVID-19 팬데믹 기간의 나우캐스팅 연구}
@@ -45,6 +51,7 @@ COVID-19 팬데믹 기간 동안 나우캐스팅의 중요성이 크게 부각�
     \item DeepAR은 자기회귀 순환 신경망을 활용한 확률적 예측 모형으로, 시계열의 장기 의존성을 효과적으로 모델링할 수 있음 \cite{salinas2020deepar}
     \item Temporal Fusion Transformer (TFT)는 어텐션 메커니즘을 활용하여 시계열의 시간적 패턴과 외생 변수 간의 관계를 동시에 학습하는 모형임 \cite{lim2021temporal}
     \item Deep State Space Models는 상태 공간 모형을 딥러닝에 접목한 모형으로, 시계열의 장기 의존성을 효과적으로 학습할 수 있음 \cite{rangapuram2018deep}
+    \item 이러한 딥러닝 모형들은 전통적인 통계 모형과 달리 비선형 관계를 학습할 수 있으며, 대규모 데이터셋에서 복잡한 패턴을 포착할 수 있는 장점을 가짐
 \end{itemize}
 
 \subsubsection{심층 동적 요인 모형의 등장}
