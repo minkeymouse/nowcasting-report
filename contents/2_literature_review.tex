@@ -13,21 +13,20 @@
 \subsubsection{전통적 동적 요인 모형의 기원과 발전}
 동적 요인 모형(Dynamic Factor Model, DFM)은 고차원 시계열 데이터에서 공통 요인을 추출하여 차원을 축소하고 예측 정확도를 향상시키는 통계적 방법론임.
 \begin{itemize}
-    \item Stock과 Watson (2002)은 주성분 분석(Principal Component Analysis)을 활용한 요인 추출 방법이 고차원 시계열 데이터의 차원 축소에 효과적임을 보여주었으며, 이를 통해 거시경제 변수 예측의 정확도를 향상시킬 수 있음을 입증함 \cite{stock2002forecasting}
+    \item Stock과 Watson (2002)은 주성분 분석(Principal Component Analysis)을 활용한 요인 추출 방법이 고차원 시계열 데이터의 차원 축소에 효과적임을 보여주었으며, 이를 통해 거시경제 변수 예측의 정확도를 향상시킬 수 있음을 제시함 \cite{stock2002forecasting}
     \item 이들의 연구는 많은 예측 변수 집합에서 주성분을 추출하여 요인을 구성하는 방법이 계산 효율성과 예측 성능의 균형을 제공함을 보여주었으며, 이후 DFM 연구의 기초가 되었음
     \item DFM의 핵심 아이디어는 관측된 많은 시계열 변수들이 소수의 공통 요인(common factors)에 의해 설명될 수 있다는 가정에 기반함
     \item 이러한 요인들은 시간에 따라 진화하며, Kalman 필터를 통해 추정됨
-    \item Bańbura 등 (2012)은 DFM을 활용한 nowcasting 프레임워크를 제시하며, 실시간 데이터 흐름을 고려한 혼합 빈도 모형의 이론적 기초를 정립함 \cite{banbura2012nowcasting}
+    \item Bańbura 등 (2012)은 DFM을 활용한 nowcasting 프레임워크를 제시하며, 실시간 데이터 흐름을 고려한 혼합 빈도 모형의 이론적 기초를 제시함 \cite{banbura2012nowcasting}
 \end{itemize}
 
 \subsubsection{혼합 빈도 데이터 처리의 발전}
 혼합 빈도(mixed-frequency) 데이터 처리는 거시경제 예측에서 핵심적인 과제임. 다양한 빈도의 데이터를 효과적으로 통합하기 위한 여러 방법론이 제안되어 왔음.
 \begin{itemize}
     \item \textbf{MIDAS (Mixed Data Sampling)}: Ghysels 등 (2004)은 MIDAS 회귀를 통해 서로 다른 빈도의 데이터를 효과적으로 통합하는 방법을 제시함 \cite{ghysels2004midas}. MIDAS는 고빈도 데이터를 직접적으로 저빈도 예측에 활용할 수 있도록 설계된 방법론으로, 분기별 GDP를 월간 또는 주간 지표로부터 예측하는 데 널리 활용됨
-    \item \textbf{텐트 커널 집계}: Mariano와 Murasawa (2003)는 텐트 커널(tent kernel) 집계 방식을 제안하여 저빈도 시계열을 고빈도 요인으로부터 생성하는 방법을 제시함 \cite{mariano2003new}. 텐트 커널은 분기 내 각 월의 기여도를 시간 가중치로 부여하여, 분기의 중간 시점이 더 큰 가중치를 갖도록 함. 이는 분기 중간 시점이 전체 분기 값을 더 잘 대표한다는 경제적 직관에 기반함. 이 방법은 FRBNY Staff Nowcast에서 핵심적으로 사용되는 기법으로, Bańbura 등 (2012)과 Bok 등 (2017, 2019)의 연구에서 실증적으로 검증됨 \cite{bok2017macroeconomic, bok2019frbny}
-    \item \textbf{Diffusion 모델의 활용}: 최근 연구에서는 확산 모델(diffusion models)을 활용하여 혼합 빈도 데이터의 복잡한 패턴을 학습하고 예측 성능을 향상시키는 방법이 제안되고 있음. 이러한 접근법은 고빈도 데이터의 노이즈를 제거하고 저빈도 목표 변수와의 관계를 더 정확하게 모델링할 수 있는 잠재력을 보유함
+    \item \textbf{텐트 커널 집계}: Mariano와 Murasawa (2003)는 텐트 커널(tent kernel) 집계 방식을 제안하여 저빈도 시계열을 고빈도 요인으로부터 생성하는 방법을 제시함 \cite{mariano2003new}. 텐트 커널은 분기 내 각 월의 기여도를 시간 가중치로 부여하여, 분기의 중간 시점이 더 큰 가중치를 갖도록 함. 이는 분기 중간 시점이 전체 분기 값을 더 잘 대표한다는 경제적 직관에 기반함. 이 방법은 FRBNY Staff Nowcast에서 핵심적으로 사용되는 기법으로, Bańbura 등 (2012)과 Bok 등 (2017, 2019)의 연구에서 활용됨 \cite{bok2017macroeconomic, bok2019frbny}
     \item 분기별 GDP와 같은 저빈도 변수를 월간 또는 주간 고빈도 지표로부터 예측할 수 있으며, 이는 nowcasting에 매우 유용함
-    \item Bańbura 등 (2012)은 nowcasting과 실시간 데이터 흐름에 대한 포괄적인 프레임워크를 제시하였으며, 혼합 빈도 동적 요인 모형을 활용한 nowcasting 방법론을 정립함 \cite{banbura2012nowcasting}
+    \item Bańbura 등 (2012)은 nowcasting과 실시간 데이터 흐름에 대한 포괄적인 프레임워크를 제시하였으며, 혼합 빈도 동적 요인 모형을 활용한 nowcasting 방법론을 제시함 \cite{banbura2012nowcasting}
 \end{itemize}
 
 \subsection{Nowcasting 연구의 발전}
@@ -35,7 +34,7 @@
 \subsubsection{Nowcasting의 개념과 중요성}
 Nowcasting은 공식 통계가 발표되기 전에 다양한 고빈도 지표를 활용하여 현재 시점의 거시경제 변수를 추정하는 기법임.
 \begin{itemize}
-    \item Bańbura 등 (2012)은 nowcasting의 이론적 기초를 정립하고, 실시간 데이터 흐름을 활용한 nowcasting 프레임워크를 제시함. 이들은 혼합 빈도 동적 요인 모형을 활용하여 분기별 GDP를 월간 고빈도 지표로부터 예측하는 방법론을 제시함 \cite{banbura2012nowcasting}
+    \item Bańbura 등 (2012)은 nowcasting의 이론적 기초를 제시하고, 실시간 데이터 흐름을 활용한 nowcasting 프레임워크를 제시함. 이들은 혼합 빈도 동적 요인 모형을 활용하여 분기별 GDP를 월간 고빈도 지표로부터 예측하는 방법론을 제시함 \cite{banbura2012nowcasting}
     \item Bok 등 (2017)은 빅데이터를 활용한 거시경제 nowcasting과 예측의 중요성을 강조하였으며, 다양한 고빈도 지표들이 예측 정확도 향상에 기여함을 보여줌 \cite{bok2017macroeconomic}
     \item Bok 등 (2019)은 FRBNY Staff Nowcast의 방법론을 상세히 설명하며, 텐트 커널을 활용한 혼합 빈도 데이터 처리와 News decomposition 기법을 제시함. 이들은 실시간으로 업데이트되는 GDP nowcast를 생성하는 시스템을 구축함 \cite{bok2019frbny}
     \item Nowcasting은 특히 경제 위기 상황에서 신속한 정책 대응이 필요한 경우 그 중요성이 더욱 부각됨
@@ -46,7 +45,7 @@ Nowcasting은 공식 통계가 발표되기 전에 다양한 고빈도 지표를
 COVID-19 팬데믹 기간 동안 nowcasting의 중요성이 크게 부각되었으며, 다양한 연구가 수행됨.
 \begin{itemize}
     \item Schorfheide와 Song (2020)은 팬데믹 기간 동안 비모수적 혼합 빈도 VAR을 활용한 nowcasting에서 예측 성능 저하가 관찰되었으며, 비모수적 접근법이 구조적 변화 시기에 더 효과적일 수 있음을 제시함 \cite{schorfheide2020nowcasting}
-    \item Huber 등 (2020)도 유사한 연구를 수행하여 혼합 빈도 VAR을 활용한 nowcasting에서 팬데믹 기간 동안의 성능 저하를 관찰함 \cite{huber2020nowcasting}
+    \item Huber 등 (2020)은 비모수적 혼합 빈도 VAR(Bayesian Additive Regression Trees, BART 기반)을 제안하여 팬데믹 기간 동안의 극단적 관측치를 효과적으로 처리할 수 있음을 보여줌 \cite{huber2020nowcasting}
     \item 이러한 연구들은 전통적인 선형 모형의 한계를 보여주며, 비선형 관계를 학습할 수 있는 모형의 필요성을 시사함
 \end{itemize}
 
@@ -64,7 +63,7 @@ COVID-19 팬데믹 기간 동안 nowcasting의 중요성이 크게 부각되었�
 \subsubsection{심층 동적 요인 모형의 등장}
 전통적인 DFM의 선형 가정을 완화하기 위해 딥러닝 기법을 DFM에 접목한 심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)이 제안됨.
 \begin{itemize}
-    \item Andreini 등 (2020)은 VAE를 활용하여 비선형 요인 구조를 학습할 수 있는 DDFM을 제안함 \cite{andreini2020deep}
+    \item Andreini 등 (2020)은 자기인코더(autoencoder)를 활용하여 잠재 상태를 생성하고 비선형 요인 구조를 학습할 수 있는 DDFM을 제안함 \cite{andreini2020deep}
     \item DDFM은 기존 DFM의 선형 가정을 완화하여 더 정확한 예측을 제공할 수 있는 잠재력을 보유함
     \item 특히 변동성이 큰 거시경제 변수에 대해서는 비선형 관계를 포착할 수 있는 DDFM의 장점이 두드러질 것으로 기대됨
 \end{itemize}
@@ -72,11 +71,11 @@ COVID-19 팬데믹 기간 동안 nowcasting의 중요성이 크게 부각되었�
 \subsection{한국 거시경제 예측 연구}
 
 \subsubsection{한국 데이터를 활용한 최근 연구}
-한국 거시경제 데이터를 활용한 최근 연구에서도 DDFM의 효과성이 검증되고 있음.
+한국 거시경제 데이터를 활용한 최근 연구에서도 딥러닝 모형의 효과성이 검증되고 있음.
 \begin{itemize}
-    \item Kim (2024)은 딥러닝 방법을 활용한 거시지표 nowcasting 모형을 제안하였으며, DDFM이 DFM보다 우수한 성능을 보인 것으로 보고됨 \cite{kim2024deep}
-    \item 특히 변동성이 큰 거시경제 변수에 대해서는 비선형 관계를 포착할 수 있는 DDFM의 장점이 더욱 두드러진 것으로 평가됨
-    \item 이러한 연구는 한국 거시경제 데이터에 대한 DDFM의 실용성을 보여주며, 본 연구의 기초가 됨
+    \item Kim (2024)은 딥러닝 방법(Mamba 모형)을 활용한 거시지표 nowcasting 모형을 제안하였으며, Mamba 모형이 DFM보다 우수한 성능을 보인 것으로 보고됨 \cite{kim2024deep}
+    \item 특히 변동성이 큰 거시경제 변수에 대해서는 비선형 관계를 포착할 수 있는 딥러닝 모형의 장점이 더욱 두드러진 것으로 평가됨
+    \item 이러한 연구는 한국 거시경제 데이터에 대한 딥러닝 기반 모형의 실용성을 보여주며, 본 연구의 기초가 됨
 \end{itemize}
 
 \subsection{연구 공백 및 본 연구의 기여}

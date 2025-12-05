@@ -5,7 +5,7 @@
 \label{sec:ddfm}
 
 \subsubsection{DDFM의 이론적 배경}
-심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)은 딥러닝 기법을 DFM에 접목한 모형으로, 변분 자기인코더(Variational Autoencoder, VAE)를 활용하여 비선형 요인 구조를 학습한다 \cite{andreini2020deep}. DDFM은 기존 DFM의 선형 가정을 완화하여 더 복잡한 요인 구조를 포착할 수 있다.
+심층 동적 요인 모형(Deep Dynamic Factor Model, DDFM)은 딥러닝 기법을 DFM에 접목한 모형으로, 자기인코더(autoencoder)를 활용하여 잠재 상태(latent state)를 생성하고 비선형 요인 구조를 학습한다 \cite{andreini2020deep}. DDFM은 기존 DFM의 선형 가정을 완화하여 더 복잡한 요인 구조를 포착할 수 있다.
 
 \paragraph{선형 DFM의 한계}
 선형 DFM은 다음과 같은 네 가지 핵심 가정에 기반한다:
@@ -36,16 +36,16 @@ z_t &= A z_{t-1} + \xi_t, \quad \xi_t \sim \mathcal{N}(0, Q_z) \label{eq:ddfm_st
 
 비선형 활성 함수(ReLU, tanh, sigmoid 등)를 추가하면, 자기인코더는 비선형 관계를 포착할 수 있다. 이는 구조적 변화 시기나 변동성이 큰 시기에 특히 유용하다.
 
-\subsubsection{변분 자기인코더 기반 요인 추출}
-DDFM은 변분 추론(variational inference)을 통해 요인의 사후 분포를 근사한다. 변분 자기인코더(VAE)는 확률적 인코더 $q_\phi(z|x)$와 확률적 디코더 $p_\theta(x|z)$로 구성되며, 변분 하한(variational lower bound)을 최대화함으로써 학습된다.
+\subsubsection{자기인코더 기반 요인 추출}
+DDFM은 자기인코더(autoencoder) 구조를 통해 잠재 상태를 생성하고 요인을 추출한다. 자기인코더는 입력 변수들을 저차원의 잠재 표현(요인)으로 인코딩하고, 이를 다시 원래 차원으로 디코딩하는 구조로, PCA의 비선형 일반화로 볼 수 있다 \cite{andreini2020deep}. 자기인코더를 통해 동적 상태 공간 모형의 잠재 상태를 생성할 수 있다.
 
-변분 하한은 다음과 같이 정의된다:
+자기인코더는 다음과 같은 손실 함수를 최소화하여 학습된다:
 
 \begin{equation}
-\mathcal{L} = \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - \text{KL}(q_\phi(z|x) || p(z))
+\mathcal{L} = \sum_{t=1}^T ||x_t - f_\theta(g_\phi(x_t))||^2
 \end{equation}
 
-여기서 첫 번째 항은 재구성 오차(reconstruction error)를, 두 번째 항은 사전 분포 $p(z)$와의 KL 발산을 나타낸다. KL 발산 항은 정규화 역할을 하여, 요인이 의미 있는 표현을 학습하도록 유도한다.
+여기서 $g_\phi$는 인코더, $f_\theta$는 디코더를 나타내며, 재구성 오차(reconstruction error)를 최소화함으로써 공통 정보를 요인 공간으로 압축한다.
 
 \paragraph{학습 과정}
 DDFM의 학습은 두 단계로 구성된다:
@@ -89,7 +89,7 @@ DDFM은 다음과 같은 비선형 관계를 포착할 수 있다:
 \end{itemize}
 
 \paragraph{실증적 증거}
-한국 GDP 나우캐스팅 연구 \cite{kim2024deep}에 따르면, 선형 DFM은 전체 기간(1985-2019) 동안 MAE 3.9\%를 달성했으나, 2020년 2-3분기(COVID-19 팬데믹) 동안 성능이 크게 저하되었다. 반면 DDFM은 전체 기간 동안 MAE 2.2\%를 달성하여 44\%의 개선을 보였으며, 특히 변동성이 큰 시기에 우수한 성능을 보였다.
+한국 GDP nowcasting 연구 \cite{kim2024deep}에 따르면, 선형 DFM은 전체 기간(1985-2019) 동안 MAE 3.9\%를 달성했으나, 2020년 2-3분기(COVID-19 팬데믹) 동안 성능이 크게 저하되었다. 반면 Mamba 모형(딥러닝 기반 상태공간모형)은 전체 기간 동안 MAE 2.2\%를 달성하여 44\%의 개선을 보였으며, 특히 변동성이 큰 시기에 우수한 성능을 보였다. 이는 비선형 딥러닝 모형이 구조적 변화 시기에 선형 DFM보다 우수한 성능을 보일 수 있음을 시사한다.
 
 구체적으로, COVID-19 팬데믹 기간 동안 선형 DFM은 다음과 같은 한계를 보였다:
 \begin{itemize}
@@ -201,7 +201,7 @@ TFT는 어텐션 메커니즘을 활용한 시계열 예측 모형으로, 시간
 
 TFT와 DDFM의 주요 차이점은 다음과 같다:
 \begin{itemize}
-    \item \textbf{아키텍처}: TFT는 트랜스포머 기반이며, DDFM은 VAE 기반이다.
+    \item \textbf{아키텍처}: TFT는 트랜스포머 기반이며, DDFM은 자기인코더 기반이다.
     \item \textbf{혼합 빈도 처리}: DDFM은 혼합 빈도 데이터를 자연스럽게 처리할 수 있으나, TFT는 추가적인 전처리가 필요하다.
     \item \textbf{요인 해석}: DDFM은 요인을 명시적으로 추출하여 해석할 수 있으나, TFT는 어텐션 가중치를 통해 간접적으로 해석한다.
 \end{itemize}
@@ -219,8 +219,8 @@ DDFM이 비선형 관계를 포착하는 능력을 검증하기 위해, 변동�
 
 \begin{center}[아직 실험 미진행]\end{center}
 
-\subsubsection{나우캐스팅 성능}
-DDFM의 나우캐스팅 성능을 마스킹된 데이터를 활용한 백테스팅을 통해 평가한다.
+\subsubsection{Nowcasting 성능}
+DDFM의 nowcasting 성능을 마스킹된 데이터를 활용한 백테스팅을 통해 평가한다.
 
 \begin{center}[아직 실험 미진행]\end{center}
 

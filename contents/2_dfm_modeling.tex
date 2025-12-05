@@ -92,7 +92,7 @@ u_{i,t} = \rho_i u_{i,t-1} + \xi_{i,t}, \quad \xi_{i,t} \sim \mathcal{N}(0, \sig
     \item \textbf{KOGFCF\_\_\_D}: 총고정자본형성(Gross Capital Formation, Fixed), 실질 기준, 사슬 연결 가중치. 총 162개의 관측치가 있으며, 평균 변화율은 5.01\%, 표준편차는 11.86\%로 가장 큰 변동성을 보인다.
 \end{itemize}
 
-이러한 목표 변수들은 분기별로 발표되며, 해당 분기 종료 후 약 25일 정도의 시차를 가지고 있다. 따라서 나우캐스팅을 통해 공식 발표 전에 현재 분기의 값을 추정하는 것이 가능하다.
+이러한 목표 변수들은 분기별로 발표되며, 해당 분기 종료 후 약 25일 정도의 시차를 가지고 있다. 따라서 nowcasting을 통해 공식 발표 전에 현재 분기의 값을 추정하는 것이 가능하다.
 
 \subsubsection{전처리 방법}
 본 연구에서는 sktime 라이브러리를 활용한 전처리 파이프라인을 구축하였다. dfm-python 패키지는 TransformerPipeline을 사용하여 원시 데이터를 자동으로 전처리할 수 있도록 지원한다.
@@ -289,8 +289,8 @@ DFM에서 추출된 요인들은 경제적 의미를 가질 수 있다. 예를 �
 
 \begin{center}[아직 실험 미진행]\end{center}
 
-\subsubsection{나우캐스팅 성능}
-DFM의 나우캐스팅 성능은 마스킹된 데이터를 활용한 백테스팅을 통해 평가된다. 구체적으로, 과거 시점에서 최근 관측치를 마스킹하여 실제 나우캐스팅 상황을 시뮬레이션한다.
+\subsubsection{Nowcasting 성능}
+DFM의 nowcasting 성능은 마스킹된 데이터를 활용한 백테스팅을 통해 평가된다. 구체적으로, 과거 시점에서 최근 관측치를 마스킹하여 실제 nowcasting 상황을 시뮬레이션한다.
 
 \begin{center}[아직 실험 미진행]\end{center}
 
