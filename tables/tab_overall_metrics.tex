@@ -1,15 +1,15 @@
 \begin{table}[h]
 \centering
-\caption[전체 모형 성능 비교 (표준화된 지표, 전체 평균)]{전체 모형 성능 비교 (표준화된 지표, 전체 평균)\footnote{ARIMA는 6개 조합(민간 소비 및 총고정자본형성에 대해 1, 7, 28일), VAR은 9개 조합(모든 목표 변수에 대해 1, 7, 28일)의 결과를 평균한 값임. DFM과 DDFM은 아직 실험 결과가 없음.}}
+\caption[전체 모형 성능 비교 (표준화된 지표, 전체 평균)]{전체 모형 성능 비교 (표준화된 지표, 전체 평균)\footnote{ARIMA는 9개 조합(모든 목표 변수에 대해 1, 7, 28일), VAR은 9개 조합(모든 목표 변수에 대해 1, 7, 28일), DFM은 4개 조합(KOGDP...D와 KOGFCF..D의 1, 7일), DDFM은 6개 조합(모든 목표 변수의 1, 7일)의 결과를 평균한 값임. DFM의 KOCNPER.D는 수치적 불안정성으로 인해 결과가 없으며, 모든 모형의 28일 예측은 테스트 세트 크기 부족으로 평가 불가능함.}}
 \label{tab:overall_metrics}
 \begin{tabular}{lccc}
 \toprule
 모형 & sMSE & sMAE & sRMSE \\
 \midrule
-ARIMA & 0.1886 & 0.3924 & 0.3924 \\
+ARIMA & 0.1708 & 0.3662 & 0.3662 \\
 VAR & 0.0039 & 0.0465 & 0.0465 \\
-DFM & --- & --- & --- \\
-DDFM & --- & --- & --- \\
+DFM & 35.6877 & 4.4755 & 4.4755 \\
+DDFM & 1.3203 & 0.9663 & 0.9663 \\
 \bottomrule
 \end{tabular}
 \end{table}

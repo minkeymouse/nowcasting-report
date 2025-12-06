@@ -1,15 +1,16 @@
 \begin{table}[h]
 \centering
-\caption[예측 기간별 모형 성능 비교 (표준화된 RMSE)]{예측 기간별 모형 성능 비교 (표준화된 RMSE)\footnote{ARIMA와 VAR은 모든 예측 기간에 대해 결과가 있음.}}
+\caption[예측 기간별 모형 성능 비교 (표준화된 RMSE)]{예측 기간별 모형 성능 비교 (표준화된 RMSE)\footnote{ARIMA와 VAR은 모든 예측 기간에 대해 결과가 있음. DFM과 DDFM의 28일 예측은 테스트 세트 크기 부족(80/20 분할로 인해 테스트 세트가 28개 미만)으로 인해 평가 불가능함.}}
 \label{tab:overall_metrics_by_horizon}
 \begin{tabular}{lccc}
 \toprule
 모형 & 1일 & 7일 & 28일 \\
 \midrule
-ARIMA & 0.3751 & 0.4722 & 0.3299 \\
+ARIMA & 0.4448 & 0.3764 & 0.2775 \\
 VAR & 0.0055 & 0.0356 & 0.0983 \\
-DFM & --- & --- & --- \\
-DDFM & --- & --- & --- \\
+DFM & 4.3388 & 4.6122 & N/A\footnotemark[1] \\
+DDFM & 0.8153 & 1.1173 & N/A\footnotemark[1] \\
 \bottomrule
 \end{tabular}
+\footnotetext[1]{테스트 세트 크기 부족으로 인해 28일 예측 평가 불가능.}
 \end{table}

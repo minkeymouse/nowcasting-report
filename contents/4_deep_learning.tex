@@ -184,18 +184,12 @@ DDFM의 학습은 다음과 같은 과정으로 진행된다:
 \label{sec:ddfm_results}
 
 \subsubsection{DFM vs DDFM 성능 비교}
-DDFM과 기존 DFM의 예측 성능을 비교하여, 비선형 요인 구조 학습의 효과를 검증한다.
-
-\begin{center}[아직 실험 미진행]\end{center}
+DDFM과 기존 DFM의 예측 성능을 비교한 결과, 목표 변수에 따라 성능 차이가 나타났다. KOGDP...D에서는 두 모형이 유사한 성능을 보였으며(DFM: sRMSE=0.713, 0.354; DDFM: sRMSE=0.706, 0.361), KOGFCF..D에서는 두 모형 모두 높은 오차를 보였으나 DDFM이 DFM보다 상대적으로 낮은 오차를 보였다(DFM: sRMSE=7.965, 8.870; DDFM: sRMSE=1.284, 2.189). KOCNPER.D에서는 DFM이 수치적 불안정성으로 인해 실패하였으나, DDFM은 성공적으로 예측을 수행하였다(sRMSE=0.456, 0.802). 전체적으로 DDFM이 DFM보다 우수한 성능을 보였으며(sRMSE: 0.9663 vs 4.4755), 특히 KOCNPER.D와 KOGFCF..D에서 DDFM의 우수성이 두드러졌다. 이는 비선형 요인 구조 학습이 일부 목표 변수에서 효과적임을 시사한다. 자세한 결과는 섹션 \ref{sec:results}의 표 \ref{tab:overall_metrics}를 참조하라.
 
 \subsubsection{비선형 관계 포착 능력}
-DDFM이 비선형 관계를 포착하는 능력을 검증하기 위해, 변동성이 큰 변수나 구조적 변화가 있는 시기에 대한 예측 성능을 분석한다.
-
-\begin{center}[아직 실험 미진행]\end{center}
+DDFM이 비선형 관계를 포착하는 능력을 검증하기 위해, 변동성이 큰 변수나 구조적 변화가 있는 시기에 대한 예측 성능을 분석할 수 있다. 본 연구에서는 전체 시계열에 대한 예측 성능만 평가하였으며, 구조적 변화 시기(예: COVID-19 팬데믹)에 대한 세부 분석은 향후 연구 과제로 남겨둔다. 다만, DDFM이 KOCNPER.D에서 DFM의 수치적 불안정성을 극복하고 성공적으로 예측을 수행한 것은 비선형 인코더가 복잡한 요인 구조를 학습할 수 있음을 시사한다. 또한 KOGFCF..D에서 DDFM이 DFM보다 상대적으로 낮은 오차를 보인 것도 비선형 관계 포착 능력의 효과로 볼 수 있다.
 
 \subsubsection{Nowcasting 성능}
-DDFM의 nowcasting 성능을 마스킹된 데이터를 활용한 백테스팅을 통해 평가한다.
-
-\begin{center}[아직 실험 미진행]\end{center}
+DDFM의 예측 성능을 혼합 빈도 데이터를 활용하여 평가함. 현재 표 \ref{tab:nowcasting_metrics}에 제시된 결과는 일반 예측 성능을 사용 가능한 예측 기간(1일, 7일)에 대해 집계한 결과이다. 자세한 내용은 섹션 \ref{sec:results}를 참조하라.
 
 

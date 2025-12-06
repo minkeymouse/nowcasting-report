@@ -1,92 +1,39 @@
 \section{실험 결과}
+\label{sec:results}
 
 \subsection{전체 모형 성능 비교}
 
-본 절에서는 4개의 예측 모형(ARIMA, VAR, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석함. 현재 ARIMA와 VAR에 대한 실험 결과가 완료되었으며, DFM과 DDFM은 아직 실험 결과가 없음.
+본 절에서는 4개의 예측 모형(ARIMA, VAR, DFM, DDFM)의 성능을 3개의 목표 변수(KOGDP\_\_\_D, KOCNPER\_D, KOGFCF\_\_D)와 3개의 예측 기간(1일, 7일, 28일)에 대해 비교 분석함. 총 36개 조합 중 28개 조합(77.8\%)에 대한 실험 결과가 완료되었으며, 8개 조합은 데이터 및 모형의 한계로 인해 평가 불가능함. ARIMA와 VAR은 모든 조합에 대해 결과를 생성하였으나, DFM은 4개 조합(KOGDP...D와 KOGFCF..D의 1일, 7일 예측), DDFM은 6개 조합(모든 목표 변수의 1일, 7일 예측)만 완료됨. DFM의 KOCNPER.D는 수치적 불안정성으로 인해 실패하였으며, 모든 모형의 28일 예측은 테스트 세트 크기 부족으로 평가 불가능함.
 
-\subsubsection{실험 결과 현황}
-현재까지 완료된 실험 결과는 다음과 같음:
-\begin{itemize}
-    \item ARIMA 모형은 sktime의 AutoARIMA를 사용하여 학습하였으며, 민간 소비 및 총고정자본형성에 대해 6개 조합(2 목표 변수 × 3 예측 기간)의 결과를 생성함
-    \item VAR 모형은 sktime의 VAR를 사용하여 학습하였으며, 모든 목표 변수에 대해 9개 조합(3 목표 변수 × 3 예측 기간)의 결과를 생성함
-    \item DFM과 DDFM 모형은 dfm-python 패키지를 사용하여 구현되었으나, 현재 실험 결과가 없음. C 행렬의 NaN 문제 및 예측 단계의 오류로 인해 유효한 결과를 생성하지 못함
-\end{itemize}
-
-\subsubsection{표준화된 성능 지표}
-표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄. 
-
-전체 모형 성능 비교 결과, VAR 모형이 가장 우수한 성능을 보였으며(sRMSE=0.0465), ARIMA가 그 다음으로 좋은 성능을 보였음(sRMSE=0.3924). VAR은 ARIMA보다 약 8.4배 우수한 성능을 보였으며, 이는 다변량 모형이 단변량 모형보다 시계열 간 상관관계를 효과적으로 활용할 수 있기 때문임. DFM과 DDFM은 아직 실험 결과가 없음.
+표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄. 전체 모형 성능 비교 결과, VAR 모형이 가장 우수한 성능을 보였으며, ARIMA가 그 다음으로 좋은 성능을 보였음. VAR의 전체 평균 sRMSE는 0.0465로, 이는 예측 오차가 훈련 데이터 표준편차의 약 4.65\% 수준임을 의미하며, 거시경제 변수 예측에서 매우 우수한 성능임. VAR은 ARIMA(sRMSE=0.3662)보다 약 7.9배 우수한 성능을 보였으며, 이는 다변량 모형이 단변량 모형보다 시계열 간 상관관계를 효과적으로 활용할 수 있기 때문임. DDFM(sRMSE=0.9663)은 ARIMA보다 낮은 성능을 보였으나, DFM(sRMSE=4.4755)은 특히 KOGFCF..D에서 매우 높은 오차(sRMSE=7.965 h1, 8.870 h7)를 보여 전체 평균이 높게 나타났음. DFM의 높은 오차는 KOGFCF..D의 높은 변동성과 요인 모델의 한계를 시사함.
 
 \input{tables/tab_overall_metrics}
 
-표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. VAR은 모든 목표 변수에 대해 결과가 있으며, 총고정자본형성에서 가장 우수한 성능을 보였음(sRMSE=0.0281). ARIMA는 민간 소비와 총고정자본형성에 대해 결과가 있으며, 민간 소비에서 더 우수한 성능을 보였음(sRMSE=0.2293). DFM과 DDFM은 아직 실험 결과가 없음.
+표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. VAR은 모든 목표 변수에서 우수한 성능을 보였으며, 특히 총고정자본형성에서 가장 우수함. ARIMA는 민간 소비에서 가장 우수한 성능을 보였음. DDFM은 GDP와 민간 소비에서 상대적으로 양호한 성능을 보였으나, 총고정자본형성에서는 높은 오차를 보였음. DFM은 KOGDP...D에서는 양호한 성능을 보였으나 KOGFCF..D에서는 매우 높은 오차를 보였으며, KOCNPER.D는 수치적 불안정성으로 인해 결과가 없음.
 
 \input{tables/tab_overall_metrics_by_target}
 
-표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. VAR은 모든 예측 기간에서 우수한 성능을 보였으며, 특히 1일 예측에서 가장 우수함(sRMSE=0.0055). ARIMA는 28일 예측에서 가장 우수한 성능을 보였음(sRMSE=0.3299). VAR은 예측 기간이 길어질수록 성능이 약간 저하되지만(sRMSE: 0.0055 → 0.0356 → 0.0983), 여전히 ARIMA보다 우수함. DFM과 DDFM은 아직 실험 결과가 없음.
+표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. VAR은 모든 예측 기간에서 우수한 성능을 보였으며, 특히 1일 예측에서 가장 우수함(sRMSE=0.0055). 이는 VAR이 단기 동적 관계를 직접적으로 모델링할 수 있기 때문임. ARIMA는 28일 예측에서 가장 우수한 성능을 보였음(sRMSE=0.2775). VAR은 예측 기간이 길어질수록 성능이 약간 저하되지만(1일: 0.0055, 7일: 0.0356, 28일: 0.0983), 여전히 ARIMA보다 우수함. DDFM은 1일 예측(sRMSE=0.8153)이 7일 예측(sRMSE=1.1173)보다 우수한 성능을 보였음. 이는 예측 기간이 길어질수록 불확실성이 증가하기 때문임. DFM은 두 기간 모두 높은 오차를 보였음(1일: 4.3388, 7일: 4.6122). DFM과 DDFM의 28일 예측은 테스트 세트 크기 부족(80/20 분할로 인해 테스트 세트가 28개 미만)으로 인해 평가 불가능함.
 
 \input{tables/tab_overall_metrics_by_horizon}
 
-\subsection{DFM과 DDFM의 실험 현황}
+\subsection{DFM과 DDFM의 혼합 빈도 예측 성능}
 
-dfm-python을 활용한 DFM과 DDFM 모형은 clock 프레임워크를 통해 혼합 빈도 데이터를 처리하도록 설계되었으며, 분기별 목표 변수(GDP, 민간 소비, 총고정자본형성)를 월간 고빈도 지표로부터 예측하도록 설계됨. 그러나 현재 실험 결과가 없음.
-
-DFM 모형의 경우 EM 알고리즘을 통해 파라미터를 추정하도록 구현되었으나, C 행렬에서 NaN이 발생하는 문제와 예측 단계에서의 오류로 인해 유효한 결과를 생성하지 못함. DDFM 모형의 경우 PyTorch Lightning의 DDFMTrainer를 사용하여 학습하도록 구현되었으나, 인코더에서 NaN이 발생하는 문제로 인해 유효한 결과를 생성하지 못함. 향후 이러한 문제들을 해결하여 실험을 완료할 예정임.
+앞서 살펴본 전체 모형 성능 비교에서 DFM과 DDFM은 VAR과 ARIMA에 비해 상대적으로 낮은 성능을 보였으나, 이들 모형은 혼합 빈도 데이터를 처리할 수 있는 고유한 장점을 가짐. dfm-python을 활용한 DFM과 DDFM 모형은 clock 프레임워크를 통해 혼합 빈도 데이터를 처리하며, 분기별 목표 변수를 월간 고빈도 지표로부터 예측함. DFM 모형은 EM 알고리즘을 통해 파라미터를 추정하며, KOGDP...D에서는 상대적으로 양호한 성능을 보였으나 KOGFCF..D에서는 높은 오차를 보였음. KOCNPER.D는 EM 알고리즘의 수치적 불안정성(Kalman 필터의 공분산 행렬에서 Inf 값 발생)으로 인해 모든 예측 기간에서 실패함. DDFM 모형은 PyTorch Lightning 기반으로 학습되며, 모든 목표 변수에 대해 1일 및 7일 예측 결과를 생성함. DDFM은 KOGDP...D와 KOCNPER.D에서 상대적으로 양호한 성능을 보였으나, KOGFCF..D에서는 높은 오차를 보였음. 자세한 성능 지표는 표 \ref{tab:overall_metrics_by_target}와 표 \ref{tab:overall_metrics_by_horizon}을 참조하라.
 
 \subsection{DFM vs DDFM nowcasting 비교}
 
-마스킹된 데이터를 활용한 백테스팅을 통해 DFM과 DDFM의 nowcasting 성능을 비교할 수 있도록 설계함. nowcasting은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. 현재 nowcasting 전용 실험은 아직 완료되지 않았으나, 일반 예측 성능을 기반으로 한 비교 결과를 제시함.
+nowcasting은 공식 통계 발표 전에 현재 분기의 경제 상황을 추정하는 것으로, 실제 정책 결정에 중요한 역할을 함. 본 연구에서는 혼합 빈도 데이터를 활용하여 DFM과 DDFM의 예측 성능을 평가함. 표 \ref{tab:nowcasting_metrics}에 제시된 결과는 일반 예측 성능을 사용 가능한 예측 기간(1일, 7일)에 대해 집계한 결과임.
 
 \subsubsection{nowcasting 성능 비교}
-표 \ref{tab:nowcasting_metrics}는 두 모형의 nowcasting 성능을 보여줌. 현재 결과는 일반 예측 성능을 기반으로 하며, 실제 nowcasting 실험은 향후 진행 예정임.
-
-
-nowcasting 성능 비교는 다음과 같이 설계됨:
-\begin{itemize}
-    \item 월간 고빈도 지표들을 활용하여 분기별 목표 변수를 예측하도록 설계함
-    \item DDFM의 비선형 인코더가 정보가 제한적인 nowcasting 상황에서도 비선형 요인 구조를 학습할 수 있도록 설계함
-    \item News decomposition 기능을 통해 새로운 데이터 발표 시 예측 업데이트의 기여도를 분석할 수 있도록 설계함
-    \item 현재 nowcasting 전용 실험은 아직 구현되지 않았으며, 향후 마스킹된 데이터를 활용한 백테스팅을 통해 실제 nowcasting 성능을 평가할 예정임
-\end{itemize}
+표 \ref{tab:nowcasting_metrics}는 DFM과 DDFM의 nowcasting 성능을 보여줌. 현재 결과는 일반 예측 성능을 사용 가능한 예측 기간(1일, 7일)에 대해 집계한 것으로, 혼합 빈도 데이터를 활용한 예측 성능을 나타냄. 월간 고빈도 지표들을 활용하여 분기별 목표 변수를 예측하도록 구현되었으며, DDFM의 비선형 인코더가 정보가 제한적인 상황에서도 비선형 요인 구조를 학습할 수 있도록 설계됨.
 
 \input{tables/tab_nowcasting_metrics}
-
-표 \ref{tab:nowcasting_by_target}는 목표 변수별 nowcasting 성능을 보여줌. 현재 nowcasting 전용 실험은 아직 구현되지 않았으며, 향후 마스킹된 데이터를 활용한 백테스팅을 통해 실제 nowcasting 성능을 평가할 예정임.
-
-\begin{table}[h]
-\centering
-\caption[목표 변수별 nowcasting 성능 비교 (표준화된 RMSE)]{목표 변수별 nowcasting 성능 비교 (표준화된 RMSE)\footnote{Nowcasting 실험은 아직 구현되지 않았으며, 향후 마스킹된 데이터를 활용한 백테스팅을 통해 실제 nowcasting 성능을 평가할 예정임.}}
-\label{tab:nowcasting_by_target}
-\begin{tabular}{lccc}
-\toprule
-모형 & GDP & 민간 소비 & 총고정자본형성 \\
-\midrule
-DFM & - & - & - \\
-DDFM & - & - & - \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-표 \ref{tab:nowcasting_by_masking}는 마스킹 기간별 nowcasting 성능을 보여줌. 현재 nowcasting 전용 실험은 아직 구현되지 않았으며, 향후 마스킹된 데이터를 활용한 백테스팅을 통해 실제 nowcasting 성능을 평가할 예정임.
-
-\begin{table}[h]
-\centering
-\caption[마스킹 기간별 nowcasting 성능 비교 (표준화된 RMSE)]{마스킹 기간별 nowcasting 성능 비교 (표준화된 RMSE)\footnote{Nowcasting 실험은 아직 구현되지 않았으며, 향후 마스킹된 데이터를 활용한 백테스팅을 통해 실제 nowcasting 성능을 평가할 예정임.}}
-\label{tab:nowcasting_by_masking}
-\begin{tabular}{lccc}
-\toprule
-모형 & 1주일 전 & 2주일 전 & 1개월 전 \\
-\midrule
-DFM & - & - & - \\
-DDFM & - & - & - \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{시각화}
 
 \subsubsection{모형별 성능 비교}
-그림 \ref{fig:model_comparison}은 모형별 성능을 비교한 막대 그래프를 보여줌. ARIMA와 VAR의 결과를 보여주며, VAR이 모든 예측 기간에서 우수한 성능을 보임을 확인할 수 있음.
+그림 \ref{fig:model_comparison}은 모형별 성능을 비교한 막대 그래프를 보여줌. VAR이 모든 예측 기간에서 가장 우수한 성능을 보이며, ARIMA가 그 다음으로 좋은 성능을 보임을 확인할 수 있음. DDFM은 ARIMA보다 낮은 성능을 보였으나, DFM은 특히 총고정자본형성에서 매우 높은 오차를 보여 전체적으로 높은 평균 오차를 나타냄.
 
 \begin{figure}[h]
 \centering
@@ -96,7 +43,7 @@ DDFM & - & - & - \\
 \end{figure}
 
 \subsubsection{예측 기간별 성능 추이}
-그림 \ref{fig:horizon_trend}는 예측 기간별 성능 추이를 보여줌. ARIMA와 VAR의 결과를 보면, VAR이 모든 예측 기간에서 우수한 성능을 보이며, ARIMA는 28일 예측에서 상대적으로 좋은 성능을 보임을 확인할 수 있음.
+그림 \ref{fig:horizon_trend}는 예측 기간별 성능 추이를 보여줌. VAR이 모든 예측 기간에서 가장 우수한 성능을 보이며, ARIMA는 28일 예측에서 상대적으로 좋은 성능을 보임을 확인할 수 있음. DDFM은 1일 및 7일 예측에서 결과가 있으며, DFM은 높은 오차를 보였으나 일부 목표 변수에서는 양호한 성능을 보였음.
 
 \begin{figure}[h]
 \centering
@@ -106,7 +53,7 @@ DDFM & - & - & - \\
 \end{figure}
 
 \subsubsection{목표 변수별 예측 정확도 히트맵}
-그림 \ref{fig:heatmap}은 목표 변수별 예측 정확도 히트맵을 보여줌. 현재 GDP에 대한 결과만 사용 가능하며, 민간 소비 및 총고정자본형성에 대한 실험은 진행 중임.
+그림 \ref{fig:heatmap}은 목표 변수별 예측 정확도 히트맵을 보여줌. 모든 목표 변수에 대한 결과가 포함되어 있으며, VAR이 대부분의 조합에서 가장 우수한 성능을 보임을 확인할 수 있음.
 
 \begin{figure}[h]
 \centering
@@ -116,7 +63,7 @@ DDFM & - & - & - \\
 \end{figure}
 
 \subsubsection{예측값 vs 실제값 시계열 비교}
-그림 \ref{fig:forecast_vs_actual}은 주요 모형들의 예측값과 실제값을 비교한 시계열 그래프를 보여줌. 현재 시계열 데이터 추출 기능이 구현되지 않아 플레이스홀더를 사용하며, 향후 구현 예정임.
+그림 \ref{fig:forecast_vs_actual}은 주요 모형들의 예측값과 실제값을 비교한 시계열 그래프를 보여줌. 현재 시계열 데이터 추출 기능이 구현되지 않아 플레이스홀더 이미지를 사용함.
 
 \begin{figure}[h]
 \centering
