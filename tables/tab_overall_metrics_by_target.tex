@@ -1,13 +1,13 @@
 \begin{table}[h]
 \centering
-\caption[목표 변수별 모형 성능 비교 (표준화된 RMSE)]{목표 변수별 모형 성능 비교 (표준화된 RMSE)\footnote{민간 소비 및 총고정자본형성에 대한 실험은 아직 진행 중임. GDP에 대한 값은 1일 및 7일 예측 기간의 평균임.}}
+\caption[목표 변수별 모형 성능 비교 (표준화된 RMSE)]{목표 변수별 모형 성능 비교 (표준화된 RMSE)\footnote{ARIMA는 GDP에 대한 결과가 없음. VAR은 모든 목표 변수에 대한 결과가 있음.}}
 \label{tab:overall_metrics_by_target}
 \begin{tabular}{lccc}
 \toprule
 모형 & GDP & 민간 소비 & 총고정자본형성 \\
 \midrule
-ARIMA & --- & --- & --- \\
-VAR & 0.8209 & --- & --- \\
+ARIMA & --- & 0.2293 & 0.5555 \\
+VAR & 0.0563 & 0.0549 & 0.0281 \\
 DFM & 0.8119 & --- & --- \\
 DDFM & 1.0511 & --- & --- \\
 \bottomrule

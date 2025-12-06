@@ -9,21 +9,22 @@ dfm-python 패키지를 사용하여 DFM과 DDFM 모형을 학습하고 예측�
 \begin{itemize}
     \item DFM은 EM 알고리즘을 통해 파라미터를 추정하였으며, GDP 목표 변수에 대해 99회 반복 후 수렴함 (로그 우도: 2684.30)
     \item DDFM은 PyTorch Lightning의 DDFMTrainer를 사용하여 학습하였으며, 인코더 구조는 [64, 32], 학습률은 0.001, 배치 크기는 32로 설정함. 200회 반복 후에도 수렴하지 않았으나 예측 결과를 생성함
-    \item ARIMA 모형은 의존성 문제(pmdarima 패키지 누락)로 인해 결과를 생성하지 못함
+    \item ARIMA 모형은 sktime의 AutoARIMA를 사용하여 학습하였으며, 민간 소비 및 총고정자본형성에 대해 6개 조합(2 목표 변수 × 3 예측 기간)의 결과를 생성함
+    \item VAR 모형은 sktime의 VAR를 사용하여 학습하였으며, 모든 목표 변수에 대해 9개 조합(3 목표 변수 × 3 예측 기간)의 결과를 생성함
 \end{itemize}
 
 \subsubsection{표준화된 성능 지표}
 표 \ref{tab:overall_metrics}는 모든 모형에 대한 표준화된 MSE, MAE, RMSE를 보여줌. 각 지표는 훈련 데이터의 표준편차로 정규화되어 있으며, 값이 낮을수록 우수한 성능을 나타냄. 
 
-GDP 목표 변수에 대한 실험 결과를 보면, VAR 모형이 전체 평균에서 가장 우수한 성능을 보였으며(sRMSE=0.8209), DFM이 그 다음으로 좋은 성능을 보였음(sRMSE=0.8119). DDFM은 sRMSE=1.0511로 DFM보다 낮은 성능을 보였는데, 이는 빠른 테스트 파라미터(epochs=1)로 인한 과소 학습 가능성이 있음.
+전체 모형 성능 비교 결과, VAR 모형이 가장 우수한 성능을 보였으며(sRMSE=0.0465), ARIMA가 그 다음으로 좋은 성능을 보였음(sRMSE=0.3924). VAR은 ARIMA보다 약 8.4배 우수한 성능을 보였으며, 이는 다변량 모형이 단변량 모형보다 시계열 간 상관관계를 효과적으로 활용할 수 있기 때문임. DFM과 DDFM은 현재 GDP 목표 변수에 대해서만 결과가 있으며, DFM이 sRMSE=0.8119, DDFM이 sRMSE=1.0511를 보였음.
 
 \input{tables/tab_overall_metrics}
 
-표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. 현재 GDP에 대한 결과만 사용 가능하며, 민간 소비 및 총고정자본형성에 대한 실험은 진행 중임.
+표 \ref{tab:overall_metrics_by_target}는 목표 변수별 모형 성능을 보여줌. VAR은 모든 목표 변수에 대해 결과가 있으며, 총고정자본형성에서 가장 우수한 성능을 보였음(sRMSE=0.0281). ARIMA는 민간 소비와 총고정자본형성에 대해 결과가 있으며, 민간 소비에서 더 우수한 성능을 보였음(sRMSE=0.2293). DFM과 DDFM은 현재 GDP에 대해서만 결과가 있음.
 
 \input{tables/tab_overall_metrics_by_target}
 
-표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. 1일 및 7일 예측 기간에 대해서는 유효한 결과가 있으나, 28일 예측 기간은 테스트 세트 크기 부족으로 인해 모든 모형에서 유효한 결과가 없음.
+표 \ref{tab:overall_metrics_by_horizon}는 예측 기간별 모형 성능을 보여줌. VAR은 모든 예측 기간에서 우수한 성능을 보였으며, 특히 1일 예측에서 가장 우수함(sRMSE=0.0055). ARIMA는 28일 예측에서 가장 우수한 성능을 보였음(sRMSE=0.3299). VAR은 예측 기간이 길어질수록 성능이 약간 저하되지만(sRMSE: 0.0055 → 0.0356 → 0.0983), 여전히 ARIMA보다 우수함. DFM과 DDFM은 1일 및 7일 예측 기간에 대해서만 결과가 있음.
 
 \input{tables/tab_overall_metrics_by_horizon}
 
