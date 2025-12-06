@@ -1,0 +1,35 @@
+\section{방법론}
+
+\subsection{동적 요인 모형}
+
+동적 요인 모형(DFM)은 많은 시계열에서 공통 요인을 추출하여 차원을 축소하고, 혼합 빈도 데이터를 효과적으로 처리할 수 있는 모형임 \cite{stock2002forecasting}. DFM은 다음과 같이 정의됨:
+
+\begin{align}
+x_t &= C z_t + \varepsilon_t, \quad \varepsilon_t \sim \mathcal{N}(0, R) \\
+z_t &= A z_{t-1} + \eta_t, \quad \eta_t \sim \mathcal{N}(0, Q)
+\end{align}
+
+여기서 $x_t$는 관측 시계열, $z_t$는 공통 요인, $C$는 요인 적재 행렬, $A$는 전이 행렬임. EM 알고리즘을 통해 파라미터를 추정하며, Kalman 필터와 스무더를 사용하여 요인을 추정함.
+
+\subsection{월간 지수 추정}
+
+분기별 목표 변수를 월간 고빈도 지표로부터 예측하기 위해 텐트 커널(tent kernel) 집계 방식을 사용함 \cite{mariano2003new}. 분기별 목표 변수 $y_t^q$는 다음과 같이 모델링됨:
+
+\begin{equation}
+y_t^q = \sum_{s \in S_t} w_s z_s^m + \varepsilon_t^q
+\end{equation}
+
+여기서 $z_s^m$는 월간 요인, $w_s$는 텐트 커널 가중치로 분기의 중간 시점에 더 큰 가중치를 부여함. 추정된 공통요인과 모수, 잔차항을 이용하여 발표된 분기 데이터로부터 월간 지수를 추정 가능함.
+
+\subsection{고빈도 모형}
+
+고빈도 모형은 월간 및 분기 데이터에 주간 금융시장 데이터(주가, 금리, 환율, 원자재가격 등)와 뉴스 심리지수를 추가하여 구성함. dfm-python 패키지의 clock 프레임워크를 사용하여 혼합 빈도 데이터를 처리하며, 금융시장 특성을 반영하기 위해 요인 개수를 1개 추가함.
+
+\subsection{딥러닝 모형}
+
+딥러닝 모형은 자기인코더(autoencoder)를 활용한 심층 동적 요인 모형(DDFM)을 사용함 \cite{andreini2020deep}. 비선형 인코더를 통해 복잡한 요인 구조를 학습할 수 있으며, PyTorch Lightning 기반으로 구현됨.
+
+\subsection{평가 지표}
+
+Nowcasting 성과는 평균 절대 예측오차(MAE)를 사용하여 평가하며, 4주 전 및 1주 전 예측 성능을 비교함. 실제 월간 데이터가 분기 GDP 발표 이후에 확보 가능하다는 점을 고려하여, 매월 익일에 월간 지수가 관측 가능한 것으로 가정하고 예측력을 측정함.
+

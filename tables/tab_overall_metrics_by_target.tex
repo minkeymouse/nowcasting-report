@@ -1,16 +1,16 @@
 \begin{table}[h]
 \centering
-\caption[목표 변수별 모형 성능 비교 (표준화된 RMSE)]{목표 변수별 모형 성능 비교 (표준화된 RMSE)\footnote{ARIMA와 VAR은 모든 목표 변수에 대한 결과가 있음. DFM의 KOCNPER.D(민간 소비)는 수치적 불안정성으로 인해 결과가 없음. DDFM은 모든 목표 변수에 대해 1일 및 7일 예측 결과가 있음.}}
+\caption[목표 변수별 모형 성능 비교 (표준화된 RMSE)]{목표 변수별 모형 성능 비교 (표준화된 RMSE)\footnote{4개 목표 변수에 대한 결과를 평균한 값임. 일부 모형은 특정 목표 변수에서 수치적 불안정성으로 인해 결과가 없을 수 있음.}}
 \label{tab:overall_metrics_by_target}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-모형 & GDP & 민간 소비 & 총고정자본형성 \\
+모형 & 설비투자 & 도소매판매액 & 전산업생산지수 & 제조업생산지수 \\
+ & (KOEQUIPTE) & (KOWRCCNSE) & (KOIPALL.G) & (KOMPRI30G) \\
 \midrule
-ARIMA & 0.3140 & 0.2293 & 0.5555 \\
-VAR & 0.0563 & 0.0549 & 0.0281 \\
-DFM & 0.5335 & N/A\footnotemark[1] & 8.4175 \\
-DDFM & 0.5335 & 0.6286 & 1.7368 \\
+ARIMA & -- & -- & -- & -- \\
+VAR & -- & -- & -- & -- \\
+DFM & -- & -- & -- & -- \\
+DDFM & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
-\footnotetext[1]{DFM의 KOCNPER.D는 EM 알고리즘의 수치적 불안정성으로 인해 모든 예측 기간에서 실패함.}
 \end{table}

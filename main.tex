@@ -7,31 +7,27 @@
 \begin{document}
 % Title without authors
 \begin{center}
-\Large\textbf{고빈도 데이터를 활용한 생산, 투자 분야 거시 변수 예측 모델}
+\Large\textbf{고빈도 데이터를 활용한 생산, 투자, 소비 분야 거시 변수 예측 모델}
 \end{center}
 \vspace{1cm}
 
 \begin{abstract}
-본 연구는 고빈도 데이터를 활용하여 한국의 주요 거시경제 변수(GDP, 소비, 투자)를 예측하는 다양한 모형들의 성능을 체계적으로 비교 분석한다. 4개의 예측 모형(ARIMA, VAR, DFM, DDFM)을 3개의 목표 변수와 3개의 예측 기간(1일, 7일, 28일)에 대해 평가하였으며, 표준화된 MSE, MAE, RMSE를 통해 성능을 비교하였다. 총 36개 조합 중 28개 조합(77.8\%)에 대한 실험 결과가 완료되었으며, 8개 조합은 데이터 및 모형의 한계로 인해 평가 불가능함. 연구 결과, VAR이 대부분의 조합에서 가장 우수한 성능을 보였으며, 특히 1일 예측에서 매우 우수한 성능(sRMSE=0.0055)을 보였다. ARIMA는 전체적으로 sRMSE=0.3662로 VAR 다음으로 좋은 성능을 보였으며, DDFM은 sRMSE=0.9663, DFM은 sRMSE=4.4755를 기록하였다. 다만 DFM의 경우 KOGDP...D에서는 상대적으로 양호한 성능(sRMSE=0.713, 0.354)을 보였으나, KOGFCF..D에서는 높은 오차를 보였으며, KOCNPER.D는 수치적 불안정성으로 인해 평가 불가능함. 본 연구는 고빈도 데이터를 활용한 거시경제 변수 예측에 대한 체계적인 분석을 제공하며, 실무에 활용 가능한 예측 시스템 구축의 기초 자료로 활용될 수 있다.
+본 연구는 고빈도 데이터를 활용하여 한국의 주요 거시경제 변수(생산: 전산업생산지수, 제조업생산지수, 투자: 설비투자지수, 소비: 도소매판매액)를 예측하는 동적 요인 모형(DFM)과 딥러닝 모형의 성능을 비교 분석한다. 월간 및 분기 데이터를 이용한 DFM 모형을 통해 월간 지수를 산출하고, 고빈도 금융시장 데이터를 추가한 고빈도 DFM 모형과 딥러닝 모형의 nowcasting 성과를 평가한다. 연구 결과, DFM 모형은 분기 데이터로부터 월간 지수를 추정하는 데 양호한 성과를 보였으며, 고빈도 모형은 실시간 경기진단에 효과적임을 확인하였다. 딥러닝 모형은 DFM 모형 대비 예측오차가 개선되었으나 변동폭 과소 추정 경향이 있어, 두 모형의 평균값 사용이 바람직함을 제시한다.
 \end{abstract}
 
-\textbf{키워드:} nowcasting, 동적 요인 모형, 고빈도 데이터, 거시경제 예측, 딥러닝, 시계열 예측
+\textbf{키워드:} nowcasting, 동적 요인 모형, 고빈도 데이터, 거시경제 예측, 딥러닝
 
 \input{contents/1_introduction}
 
-\input{contents/2_literature_review}
+\input{contents/2_methodology}
 
-\input{contents/3_theoretical_background}
+\input{contents/3_production_model}
 
-\input{contents/4_method_and_experiment}
+\input{contents/4_investment_model}
 
-\input{contents/5_result}
+\input{contents/5_consumption_model}
 
-\input{contents/6_discussion}
-
-\input{contents/7_conclusion}
-
-\input{contents/8_acknowledgement}
+\input{contents/6_conclusion}
 
 \bibliographystyle{unsrt}  
 \bibliography{references}
