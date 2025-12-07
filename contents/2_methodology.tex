@@ -70,23 +70,9 @@
 
 \textbf{VAR:} ARIMA를 다변량으로 확장, 여러 시계열 간 동적 관계 포착. 시차 1 사용. 긴 수평선에서 수치적 불안정성 발생 가능.
 
-\textbf{DFM:} 많은 시계열에서 공통 요인 추출, 차원 축소, 혼합주기 데이터 처리 \cite{stock2002forecasting}:
-\begin{align}
-x_t &= C z_t + \varepsilon_t, \quad \varepsilon_t \sim \mathcal{N}(0, R) \\
-z_t &= A z_{t-1} + \eta_t, \quad \eta_t \sim \mathcal{N}(0, Q)
-\end{align}
-\begin{itemize}
-    \item $x_t$: 관측 시계열, $z_t$: 공통 요인, $C$: 요인 적재 행렬, $A$: 전이 행렬
-    \item 파라미터: EM 알고리즘으로 추정
-    \item 요인 추정: 칼만 필터와 스무더 사용
-    \item 혼합주기 처리: 텐트 커널 집계 방법 \cite{mariano2003new}
-\end{itemize}
+\textbf{DFM:} 많은 시계열에서 공통 요인 추출, 차원 축소, 혼합주기 데이터 처리 \cite{stock2002forecasting}. EM 알고리즘으로 파라미터 추정, 칼만 필터로 요인 추정.
 
-\textbf{DDFM:} 오토인코더 기반 아키텍처, 복잡한 요인 구조 학습 \cite{andreini2020deep}:
-\begin{itemize}
-    \item 비선형 인코더로 요인 관계 학습
-    \item PyTorch Lightning 구현
-\end{itemize}
+\textbf{DDFM:} 오토인코더 기반 아키텍처로 비선형 요인 관계 학습 \cite{andreini2020deep}.
 
 \subsubsection{Forecasting과 Nowcasting}
 
