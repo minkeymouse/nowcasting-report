@@ -1,6 +1,6 @@
 \subsubsection{Forecasting}
 
-본 절에서는 세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 비교함. 실험은 1개월부터 22개월까지의 수평선에 대해 수행되었으며, 표에는 가독성을 위해 1개월, 11개월, 22개월 수평선의 결과만 제시함. 현재 KOEQUIPTE에 대한 결과만 사용 가능하며, KOIPALL.G와 KOWRCCNSE에 대한 결과는 추가 실험 실행 후 업데이트 예정임.
+본 절에서는 세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 비교함. 실험은 1개월부터 22개월까지의 수평선에 대해 수행되었으며, 표에는 가독성을 위해 1개월, 11개월, 22개월 수평선의 결과만 제시함. 현재 DFM과 DDFM에 대한 결과는 세 대상 변수 모두에서 사용 가능하며, ARIMA와 VAR에 대한 결과는 KOEQUIPTE에서만 사용 가능함.
 
 표~\ref{tab:forecasting_results}는 모형-수평선 조합별(12개 행: ARIMA-1, ARIMA-11, ARIMA-22, VAR-1, VAR-11, VAR-22, DFM-1, DFM-11, DFM-22, DDFM-1, DDFM-11, DDFM-22)로 각 대상 변수에 대한 표준화된 MAE와 MSE를 제시함. 각 셀은 해당 모형-수평선-대상 조합에 대한 지표값을 나타냄. 수평선은 개월 단위임(예: 1은 1개월, 11은 11개월, 22는 22개월).
 
