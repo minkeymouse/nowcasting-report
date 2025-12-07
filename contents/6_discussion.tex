@@ -71,17 +71,17 @@ DDFM 성능 분석:
 
 Nowcasting 실험 구성:
 \begin{itemize}
-    \item 모형: ARIMA, VAR, DFM, DDFM (4개)
+    \item 모형: DFM, DDFM (2개) - ARIMA와 VAR은 release date 마스킹 처리의 구조적 한계로 인해 제외
     \item 대상 변수: 3개
     \item 목표 월: 2024--01 ~ 2025--10 (22개월)
     \item 예측 시점: 4주 전, 1주 전
-    \item 결과: 네 가지 모형(ARIMA, VAR, DFM, DDFM) 모두 forecasting 평가에서 성공적으로 결과를 생성했으며, nowcasting에서는 DFM과 DDFM이 모든 대상 변수에서 성공적이며 ARIMA와 VAR은 일부 제한이 있음
+    \item 결과: DFM과 DDFM 모두 모든 대상 변수에서 성공적으로 결과를 생성함
 \end{itemize}
 
 \textbf{예상 성능 향상:} \cite{banbura2012nowcasting}
 \begin{itemize}
     \item 시간 경과에 따라 더 많은 데이터 사용 가능 $\to$ 예측 정확도 향상
     \item DFM/DDFM: 많은 시계열 활용, 요인 추출 $\to$ 데이터 증가 시 성능 향상 기대
-    \item Release date 마스킹: DFM/DDFM에서 더 정확, ARIMA/VAR은 근사화 구현으로 제한
+    \item Release date 마스킹: DFM/DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리 가능
 \end{itemize}
 
