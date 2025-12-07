@@ -613,25 +613,19 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
                             forecast_index = forecast_index[:len(forecast_series)]
                         forecast_series.index = forecast_index
                         
-                        # Aggregate to monthly (take last value of each month)
-                        forecast_monthly = forecast_series.resample('ME').last()
-                        # Filter to forecast period (2024-01 to 2025-10)
-                        forecast_monthly_filtered = forecast_monthly[
-                            (forecast_monthly.index >= forecast_start) & 
-                            (forecast_monthly.index <= forecast_end)
-                        ]
-                        # Ensure we have exactly 22 months
-                        if len(forecast_monthly_filtered) >= 22:
-                            forecast_data[model_key.upper()] = forecast_monthly_filtered.iloc[:22].values
+                        # Aggregate to monthly (take last value of each month) if needed
+                        # forecast_series already has monthly index from forecast_index
+                        # Just take first 22 values
+                        if len(forecast_series) >= 22:
+                            forecast_values = forecast_series.iloc[:22].values
                         else:
                             # Pad with NaN if needed
-                            forecast_values = forecast_monthly_filtered.values
+                            forecast_values = forecast_series.values
                             if len(forecast_values) < 22:
                                 padded = np.full(22, np.nan)
                                 padded[:len(forecast_values)] = forecast_values
-                                forecast_data[model_key.upper()] = padded
-                            else:
-                                forecast_data[model_key.upper()] = forecast_values
+                                forecast_values = padded
+                        forecast_data[model_key.upper()] = forecast_values
                         
                     except Exception as e:
                         print(f"Warning: Forecast generation failed for {model_key}: {e}")
