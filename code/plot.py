@@ -36,8 +36,12 @@ OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 IMAGES_DIR = PROJECT_ROOT / "nowcasting-report" / "images"
 
 
-def load_comparison_results(outputs_dir: Path) -> Dict[str, List[Dict]]:
-    """Load all comparison results from outputs/comparisons/."""
+def _load_comparison_results(outputs_dir: Path) -> Dict[str, List[Dict]]:
+    """Load all comparison results from outputs/comparisons/.
+    
+    This is a local helper that matches the interface of collect_all_comparison_results
+    but doesn't require importing from src.evaluation (which may have dependencies).
+    """
     comparisons_dir = outputs_dir / "comparisons"
     if not comparisons_dir.exists():
         return {}
@@ -60,10 +64,64 @@ def load_comparison_results(outputs_dir: Path) -> Dict[str, List[Dict]]:
                 if target_series not in all_results:
                     all_results[target_series] = []
                 all_results[target_series].append(data)
-        except Exception as e:
+        except Exception:
             continue
     
     return all_results
+
+
+def _load_backtest_results(target: str, outputs_dir: Path) -> Dict[str, Dict[str, Any]]:
+    """Load all backtest JSON files for a target.
+    
+    Returns:
+        Dictionary with structure: {timepoint: {month: {forecasts: [], actual: value}}}
+    """
+    backtest_dir = outputs_dir / "backtest"
+    if not backtest_dir.exists():
+        return {}
+    
+    models = ['arima', 'var', 'dfm', 'ddfm']
+    timepoints = ['4weeks', '1weeks']
+    data_by_timepoint = {tp: {} for tp in timepoints}
+    
+    for model in models:
+        backtest_file = backtest_dir / f"{target}_{model}_backtest.json"
+        if not backtest_file.exists():
+            continue
+        
+        try:
+            with open(backtest_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            results_by_timepoint = data.get('results_by_timepoint', {})
+            
+            for tp in timepoints:
+                if tp not in results_by_timepoint:
+                    continue
+                
+                tp_results = results_by_timepoint[tp]
+                monthly_results = tp_results.get('monthly_results', [])
+                
+                for month_data in monthly_results:
+                    month_str = month_data.get('month')
+                    if month_str is None:
+                        continue
+                    
+                    if month_str not in data_by_timepoint[tp]:
+                        data_by_timepoint[tp][month_str] = {'forecasts': [], 'actual': None}
+                    
+                    forecast_value = month_data.get('forecast_value')
+                    if forecast_value is not None and not np.isnan(forecast_value):
+                        data_by_timepoint[tp][month_str]['forecasts'].append(forecast_value)
+                    
+                    # Store actual value (same for all models)
+                    if data_by_timepoint[tp][month_str]['actual'] is None:
+                        data_by_timepoint[tp][month_str]['actual'] = month_data.get('actual_value')
+        except Exception as e:
+            print(f"Warning: Failed to load {backtest_file}: {e}")
+            continue
+    
+    return data_by_timepoint
 
 
 def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataFrame:
@@ -150,7 +208,7 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
     Four lines representing four models (ARIMA, VAR, DFM, DDFM).
     """
     # Load data
-    all_results = load_comparison_results(OUTPUTS_DIR)
+    all_results = _load_comparison_results(OUTPUTS_DIR)
     df = extract_metrics_from_results(all_results)
     
     # Check if we have any valid data
@@ -243,7 +301,7 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
 def plot_accuracy_heatmap(save_path: Optional[Path] = None):
     """Create accuracy heatmap (fig:accuracy_heatmap)."""
     # Load data
-    all_results = load_comparison_results(OUTPUTS_DIR)
+    all_results = _load_comparison_results(OUTPUTS_DIR)
     df = extract_metrics_from_results(all_results)
     
     # Check if we have any valid data
@@ -634,8 +692,11 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     save_path : Path, optional
         Output path for the plot
     """
-    backtest_dir = OUTPUTS_DIR / "backtest"
-    if not backtest_dir.exists():
+    # Load all backtest JSON files for this target
+    data_by_timepoint = _load_backtest_results(target, OUTPUTS_DIR)
+    
+    # Check if we have any data
+    if not any(data_by_timepoint.get(tp, {}) for tp in ['4weeks', '1weeks']):
         # No backtest results, create placeholder
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         for ax in axes:
@@ -656,59 +717,18 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
         print(f"Generated placeholder: {save_path.name}")
         return
     
-    # Load all backtest JSON files for this target
-    models = ['arima', 'var', 'dfm', 'ddfm']
-    timepoints = ['4weeks', '1weeks']
-    
-    # Structure: {timepoint: {month: [predictions from all models]}}
+    # Convert to format needed for this plot: {timepoint: {month: [predictions]}}
     predictions_by_timepoint = {'4weeks': {}, '1weeks': {}}
     actual_values = {}
     
-    for model in models:
-        backtest_file = backtest_dir / f"{target}_{model}_backtest.json"
-        if not backtest_file.exists():
-            continue
-        
-        try:
-            with open(backtest_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            # Fix: results_by_timepoint is directly in data, not nested under 'results'
-            results_by_timepoint = data.get('results_by_timepoint', {})
-            
-            for tp in timepoints:
-                if tp not in results_by_timepoint:
-                    continue
-                
-                tp_results = results_by_timepoint[tp]
-                # Fix: monthly_results is a list of dicts, not a dict
-                monthly_results = tp_results.get('monthly_results', [])
-                
-                for month_data in monthly_results:
-                    # Fix: month key is 'month', not used as dict key
-                    month_str = month_data.get('month')
-                    if month_str is None:
-                        continue
-                    
-                    if month_str not in predictions_by_timepoint[tp]:
-                        predictions_by_timepoint[tp][month_str] = []
-                    
-                    # Fix: key is 'forecast_value', not 'prediction'
-                    prediction = month_data.get('forecast_value')
-                    if prediction is not None:
-                        predictions_by_timepoint[tp][month_str].append(prediction)
-                    
-                    # Store actual value (same for all models)
-                    # Fix: key is 'actual_value', not 'actual'
-                    if month_str not in actual_values:
-                        actual_values[month_str] = month_data.get('actual_value')
-        
-        except Exception as e:
-            print(f"Warning: Failed to load {backtest_file}: {e}")
-            continue
+    for tp in ['4weeks', '1weeks']:
+        for month_str, month_data in data_by_timepoint.get(tp, {}).items():
+            predictions_by_timepoint[tp][month_str] = month_data.get('forecasts', [])
+            if month_str not in actual_values:
+                actual_values[month_str] = month_data.get('actual')
     
     # Check if we have any data
-    if not any(predictions_by_timepoint[tp] for tp in timepoints):
+    if not any(predictions_by_timepoint.get(tp, {}) for tp in ['4weeks', '1weeks']):
         # No data, create placeholder
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         for ax in axes:
@@ -842,8 +862,11 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     save_path : Path, optional
         Output path for the plot
     """
-    backtest_dir = OUTPUTS_DIR / "backtest"
-    if not backtest_dir.exists():
+    # Load all backtest JSON files for this target
+    data_by_timepoint = _load_backtest_results(target, OUTPUTS_DIR)
+    
+    # Check if we have any data
+    if not any(data_by_timepoint.get(tp, {}) for tp in ['4weeks', '1weeks']):
         # No backtest results, create placeholder
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         for ax in axes:
@@ -864,53 +887,8 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
         print(f"Generated placeholder: {save_path.name}")
         return
     
-    # Load all backtest JSON files for this target
-    models = ['arima', 'var', 'dfm', 'ddfm']
-    timepoints = ['4weeks', '1weeks']
-    
-    # Structure: {timepoint: {month: {forecast: [], actual: value}}}
-    data_by_timepoint = {'4weeks': {}, '1weeks': {}}
-    
-    for model in models:
-        backtest_file = backtest_dir / f"{target}_{model}_backtest.json"
-        if not backtest_file.exists():
-            continue
-        
-        try:
-            with open(backtest_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            results_by_timepoint = data.get('results_by_timepoint', {})
-            
-            for tp in timepoints:
-                if tp not in results_by_timepoint:
-                    continue
-                
-                tp_results = results_by_timepoint[tp]
-                monthly_results = tp_results.get('monthly_results', [])
-                
-                for month_data in monthly_results:
-                    month_str = month_data.get('month')
-                    if month_str is None:
-                        continue
-                    
-                    if month_str not in data_by_timepoint[tp]:
-                        data_by_timepoint[tp][month_str] = {'forecasts': [], 'actual': None}
-                    
-                    forecast_value = month_data.get('forecast_value')
-                    if forecast_value is not None and not np.isnan(forecast_value):
-                        data_by_timepoint[tp][month_str]['forecasts'].append(forecast_value)
-                    
-                    # Store actual value (same for all models)
-                    if data_by_timepoint[tp][month_str]['actual'] is None:
-                        data_by_timepoint[tp][month_str]['actual'] = month_data.get('actual_value')
-        
-        except Exception as e:
-            print(f"Warning: Failed to load {backtest_file}: {e}")
-            continue
-    
     # Check if we have any data
-    if not any(data_by_timepoint[tp] for tp in timepoints):
+    if not any(data_by_timepoint.get(tp, {}) for tp in ['4weeks', '1weeks']):
         # No data, create placeholder
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         for ax in axes:
@@ -934,8 +912,8 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     # Prepare data for plotting
     # Get all months (from both timepoints)
     all_months = set()
-    for tp in timepoints:
-        all_months.update(data_by_timepoint[tp].keys())
+    for tp in ['4weeks', '1weeks']:
+        all_months.update(data_by_timepoint.get(tp, {}).keys())
     months = sorted(all_months)
     
     # Convert month strings to datetime
@@ -957,31 +935,23 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     
     for month in months:
         # 4 weeks before
-        if month in data_by_timepoint['4weeks']:
-            forecasts_4w = data_by_timepoint['4weeks'][month]['forecasts']
-            if forecasts_4w:
-                avg_forecasts_4w.append(np.mean([f for f in forecasts_4w if not np.isnan(f)]))
-            else:
-                avg_forecasts_4w.append(np.nan)
+        month_data_4w = data_by_timepoint.get('4weeks', {}).get(month, {})
+        forecasts_4w = month_data_4w.get('forecasts', [])
+        if forecasts_4w:
+            avg_forecasts_4w.append(np.mean([f for f in forecasts_4w if not np.isnan(f)]))
         else:
             avg_forecasts_4w.append(np.nan)
         
         # 1 week before
-        if month in data_by_timepoint['1weeks']:
-            forecasts_1w = data_by_timepoint['1weeks'][month]['forecasts']
-            if forecasts_1w:
-                avg_forecasts_1w.append(np.mean([f for f in forecasts_1w if not np.isnan(f)]))
-            else:
-                avg_forecasts_1w.append(np.nan)
+        month_data_1w = data_by_timepoint.get('1weeks', {}).get(month, {})
+        forecasts_1w = month_data_1w.get('forecasts', [])
+        if forecasts_1w:
+            avg_forecasts_1w.append(np.mean([f for f in forecasts_1w if not np.isnan(f)]))
         else:
             avg_forecasts_1w.append(np.nan)
         
         # Actual (use from either timepoint)
-        actual = None
-        if month in data_by_timepoint['4weeks']:
-            actual = data_by_timepoint['4weeks'][month]['actual']
-        elif month in data_by_timepoint['1weeks']:
-            actual = data_by_timepoint['1weeks'][month]['actual']
+        actual = month_data_4w.get('actual') or month_data_1w.get('actual')
         actual_vals.append(actual)
     
     # Calculate forecast errors for error comparison plot
@@ -1098,7 +1068,7 @@ def generate_all_plots():
     
     # Load results
     print("\n1. Loading comparison results...")
-    all_results = load_comparison_results(OUTPUTS_DIR)
+    all_results = _load_comparison_results(OUTPUTS_DIR)
     print(f"   Found results for {len(all_results)} target series")
     
     # Generate images
