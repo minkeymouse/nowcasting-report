@@ -444,26 +444,32 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         # Extract target series
         y_full = data[[target]].dropna()
         
-        # Recreate train/test split (80/20 as in training.py)
-        split_idx = int(len(y_full) * 0.8)
-        y_train_data = y_full.iloc[:split_idx]
-        y_test_data = y_full.iloc[split_idx:]
+        # Define date ranges
+        # Historical period: 2023-01 to 2023-12 (12 months)
+        hist_start = pd.Timestamp('2023-01-01')
+        hist_end = pd.Timestamp('2023-12-31')
+        # Forecast period: 2024-01 to 2025-10 (22 months)
+        forecast_start = pd.Timestamp('2024-01-01')
+        forecast_end = pd.Timestamp('2025-10-31')
         
-        # Aggregate to monthly for plotting (take last value of each month)
-        y_train_monthly = y_train_data.resample('ME').last()
-        y_test_monthly = y_test_data.resample('ME').last()
+        # Filter data for historical period (2023)
+        y_historical = y_full[(y_full.index >= hist_start) & (y_full.index <= hist_end)]
+        # Aggregate to monthly (take last value of each month)
+        y_historical_monthly = y_historical.resample('ME').last()
         
-        # Get last 22 months of training data for historical plot (optional context)
-        n_historical_months = min(22, len(y_train_monthly))
-        y_historical = y_train_monthly.iloc[-n_historical_months:]
+        # Filter data for forecast period (2024-2025)
+        y_actual_forecast = y_full[(y_full.index >= forecast_start) & (y_full.index <= forecast_end)]
+        # Aggregate to monthly (take last value of each month)
+        y_actual_forecast_monthly = y_actual_forecast.resample('ME').last()
         
-        # Get first 22 months of test data for forecast period (2024-01 to 2025-10)
-        n_forecast_months = min(22, len(y_test_monthly))
-        y_actual_forecast = y_test_monthly.iloc[:n_forecast_months]
+        # Get training data for model fitting (1985-2019)
+        train_start = pd.Timestamp('1985-01-01')
+        train_end = pd.Timestamp('2019-12-31')
+        y_train_data = y_full[(y_full.index >= train_start) & (y_full.index <= train_end)]
         
         # Prepare forecast data
         forecast_data = {}
-        forecast_data['Actual'] = y_actual_forecast[target].values
+        forecast_data['Actual'] = y_actual_forecast_monthly[target].values
         
         # Load models and generate forecasts
         models_to_load = ['arima', 'var', 'dfm', 'ddfm']
@@ -602,7 +608,23 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
                         
                         # Aggregate to monthly (take last value of each month)
                         forecast_monthly = forecast_series.resample('ME').last()
-                        forecast_data[model_key.upper()] = forecast_monthly.iloc[:n_forecast_months].values
+                        # Filter to forecast period (2024-01 to 2025-10)
+                        forecast_monthly_filtered = forecast_monthly[
+                            (forecast_monthly.index >= forecast_start) & 
+                            (forecast_monthly.index <= forecast_end)
+                        ]
+                        # Ensure we have exactly 22 months
+                        if len(forecast_monthly_filtered) >= 22:
+                            forecast_data[model_key.upper()] = forecast_monthly_filtered.iloc[:22].values
+                        else:
+                            # Pad with NaN if needed
+                            forecast_values = forecast_monthly_filtered.values
+                            if len(forecast_values) < 22:
+                                padded = np.full(22, np.nan)
+                                padded[:len(forecast_values)] = forecast_values
+                                forecast_data[model_key.upper()] = padded
+                            else:
+                                forecast_data[model_key.upper()] = forecast_values
                         
                     except Exception as e:
                         print(f"Warning: Forecast generation failed for {model_key}: {e}")
@@ -622,26 +644,33 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         # Create plot
         fig, ax = plt.subplots(figsize=(14, 6))
         
-        # Plot historical data (single line)
-        hist_dates = y_historical.index
-        ax.plot(hist_dates, y_historical[target].values, 'k-', linewidth=2, label='Historical (Actual)', alpha=0.7)
+        # Plot historical data (2023-01 to 2023-12) - single line, actual values only
+        hist_dates = y_historical_monthly.index
+        ax.plot(hist_dates, y_historical_monthly[target].values, 'k-', linewidth=2, 
+               label='Historical (2023)', alpha=0.7)
         
-        # Plot forecast period
-        forecast_dates = y_actual_forecast.index
+        # Plot forecast period (2024-01 to 2025-10) - actual and predictions
+        forecast_dates = y_actual_forecast_monthly.index
         
         # Plot actual values in forecast period
-        ax.plot(forecast_dates, forecast_data['Actual'], 'k-', linewidth=2, label='Actual', alpha=0.7)
+        ax.plot(forecast_dates, forecast_data['Actual'], 'k-', linewidth=2, 
+               label='Actual (2024-2025)', alpha=0.7)
         
         # Plot model forecasts
         colors = {'ARIMA': '#1f77b4', 'VAR': '#ff7f0e', 'DFM': '#2ca02c', 'DDFM': '#d62728'}
         for model_name in ['ARIMA', 'VAR', 'DFM', 'DDFM']:
             if model_name in forecast_data:
-                ax.plot(forecast_dates, forecast_data[model_name], '--', linewidth=1.5, 
-                       label=model_name, color=colors.get(model_name, 'gray'), alpha=0.8)
+                # Only plot non-NaN values
+                valid_mask = ~np.isnan(forecast_data[model_name])
+                if np.any(valid_mask):
+                    valid_dates = forecast_dates[valid_mask]
+                    valid_values = forecast_data[model_name][valid_mask]
+                    ax.plot(valid_dates, valid_values, '--', linewidth=1.5, 
+                           label=model_name, color=colors.get(model_name, 'gray'), alpha=0.8)
         
-        # Add vertical line at train/test split
-        split_date = y_train_data.index[-1]
-        ax.axvline(x=split_date, color='red', linestyle=':', linewidth=1, alpha=0.5, label='Train/Test Split')
+        # Add vertical line at start of forecast period (2024-01-01)
+        ax.axvline(x=forecast_start, color='red', linestyle=':', linewidth=1, alpha=0.5, 
+                  label='Forecast Start (2024-01)')
         
         ax.set_xlabel('Date', fontsize=11)
         ax.set_ylabel(f'{target} Value', fontsize=11)
