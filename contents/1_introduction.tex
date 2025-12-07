@@ -1,7 +1,7 @@
-\section{Introduction}
+\section{서론}
 
-Accurate forecasting of macroeconomic variables is crucial for policy decision-making and corporate strategic planning. In particular, production, investment, and consumption indicators represent the core of economic activity, and real-time assessment is essential. However, key indicators such as quarterly GDP are officially released only after approximately one month following the end of the quarter, making it difficult to assess the real-time economic situation and respond with timely policy measures.
+거시경제 변수의 정확한 예측은 정책 의사결정과 기업의 전략적 계획 수립에 핵심적이다. 특히 생산, 투자, 소비 지표는 경제 활동의 핵심을 나타내며, 실시간 평가가 필수적이다. 그러나 분기 GDP와 같은 주요 지표는 분기 종료 후 약 한 달이 지나야 공식 발표되므로, 실시간 경제 상황을 평가하고 시의적절한 정책 대응을 하기 어렵다.
 
-Accordingly, nowcasting techniques utilizing high-frequency data have gained attention \cite{bok2017macroeconomic}. Nowcasting is a technique that estimates current macroeconomic variables using various high-frequency indicators before official statistics are released. Its importance is particularly highlighted in crisis situations where rapid policy response is needed.
+이에 따라 고빈도 데이터를 활용한 나우캐스팅 기법이 주목받고 있다 \cite{bok2017macroeconomic}. 나우캐스팅은 공식 통계가 발표되기 전에 다양한 고빈도 지표를 사용하여 현재의 거시경제 변수를 추정하는 기법이다. 특히 신속한 정책 대응이 필요한 위기 상황에서 그 중요성이 부각된다.
 
-This study constructs a nowcasting system using Dynamic Factor Models (DFM) and deep learning models to forecast three key Korean macroeconomic indicators: production (Industrial Production Index, All Industries: KOIPALL.G), investment (Equipment Investment Index: KOEQUIPTE), and consumption (Wholesale and Retail Trade Sales: KOWRCCNSE). We compare the performance of four forecasting models: ARIMA, VAR, DFM, and Deep Dynamic Factor Model (DDFM) across three forecast horizons (1, 7, and 28 days).
+본 연구는 동적요인모형(Dynamic Factor Model, DFM)과 딥러닝 모형을 사용하여 세 가지 주요 한국 거시경제 지표를 예측하는 나우캐스팅 시스템을 구축한다: 생산(전산업생산지수: KOIPALL.G), 투자(설비투자지수: KOEQUIPTE), 소비(도소매판매액: KOWRCCNSE). 네 가지 예측 모형(ARIMA, VAR, DFM, 심층 동적요인모형 DDFM)의 성능을 세 가지 예측 수평선(1일, 7일, 28일)에서 비교한다.

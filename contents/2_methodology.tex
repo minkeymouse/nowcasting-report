@@ -1,44 +1,43 @@
-\section{Methodology}
+\section{방법론}
 \label{sec:methodology}
 
-\subsection{Forecasting Models}
+\subsection{예측 모형}
 
-This study compares four forecasting models: ARIMA, VAR, DFM, and DDFM. Each model is evaluated on three target variables (KOEQUIPTE, KOWRCCNSE, KOIPALL.G) across three forecast horizons (1, 7, and 28 days). Dataset details and model parameters are summarized in Table~\ref{tab:dataset_params}.
+본 연구는 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)을 비교한다. 각 모형은 세 가지 대상 변수(KOEQUIPTE, KOWRCCNSE, KOIPALL.G)에 대해 세 가지 예측 수평선(1일, 7일, 28일)에서 평가된다. 데이터셋 세부사항과 모형 파라미터는 표~\ref{tab:dataset_params}에 요약되어 있다.
 
 \input{tables/tab_dataset_params}
 
-\subsubsection{ARIMA Model}
+\subsubsection{ARIMA 모형}
 
-The ARIMA (AutoRegressive Integrated Moving Average) model is a univariate time series forecasting method that captures autoregressive and moving average components with differencing for stationarity. The model order is determined through standard time series analysis procedures.
+ARIMA(AutoRegressive Integrated Moving Average) 모형은 자기회귀 및 이동평균 성분을 포착하고 정상성을 위해 차분을 사용하는 단변량 시계열 예측 방법이다. 모형 차수는 표준 시계열 분석 절차를 통해 결정된다.
 
-\subsubsection{VAR Model}
+\subsubsection{VAR 모형}
 
-The Vector Autoregression (VAR) model extends ARIMA to multivariate settings, capturing dynamic relationships between multiple time series. The lag order is selected based on information criteria.
+벡터자기회귀(Vector Autoregression, VAR) 모형은 ARIMA를 다변량 설정으로 확장하여 여러 시계열 간의 동적 관계를 포착한다. 시차 차수는 정보 기준에 따라 선택된다.
 
-\subsubsection{Dynamic Factor Model (DFM)}
+\subsubsection{동적요인모형 (DFM)}
 
-The Dynamic Factor Model (DFM) extracts common factors from many time series to reduce dimensionality and effectively handle mixed-frequency data \cite{stock2002forecasting}. The DFM is defined as:
+동적요인모형(Dynamic Factor Model, DFM)은 많은 시계열에서 공통 요인을 추출하여 차원을 축소하고 혼합주기 데이터를 효과적으로 처리한다 \cite{stock2002forecasting}. DFM은 다음과 같이 정의된다:
 
 \begin{align}
 x_t &= C z_t + \varepsilon_t, \quad \varepsilon_t \sim \mathcal{N}(0, R) \\
 z_t &= A z_{t-1} + \eta_t, \quad \eta_t \sim \mathcal{N}(0, Q)
 \end{align}
 
-where $x_t$ is the observed time series, $z_t$ is the common factor, $C$ is the factor loading matrix, and $A$ is the transition matrix. Parameters are estimated via the EM algorithm, and factors are estimated using Kalman filter and smoother.
+여기서 $x_t$는 관측된 시계열, $z_t$는 공통 요인, $C$는 요인 적재 행렬, $A$는 전이 행렬이다. 파라미터는 EM 알고리즘을 통해 추정되며, 요인은 칼만 필터와 스무더를 사용하여 추정된다.
 
-\subsubsection{Deep Dynamic Factor Model (DDFM)}
+\subsubsection{심층 동적요인모형 (DDFM)}
 
-The Deep Dynamic Factor Model (DDFM) uses an autoencoder-based architecture to learn complex factor structures \cite{andreini2020deep}. The nonlinear encoder enables learning of sophisticated factor relationships and is implemented using PyTorch Lightning.
+심층 동적요인모형(Deep Dynamic Factor Model, DDFM)은 오토인코더 기반 아키텍처를 사용하여 복잡한 요인 구조를 학습한다 \cite{andreini2020deep}. 비선형 인코더는 정교한 요인 관계 학습을 가능하게 하며, PyTorch Lightning을 사용하여 구현된다.
 
-\subsection{Mixed-Frequency Aggregation}
+\subsection{혼합주기 집계}
 
-For handling mixed-frequency data, we use the tent kernel aggregation approach \cite{mariano2003new}. This method assigns greater weights to observations near the middle of the aggregation period, allowing effective combination of data at different frequencies.
+혼합주기 데이터 처리를 위해 텐트 커널(tent kernel) 집계 방법을 사용한다 \cite{mariano2003new}. 이 방법은 집계 기간 중간에 가까운 관측값에 더 큰 가중치를 부여하여 서로 다른 주기의 데이터를 효과적으로 결합할 수 있게 한다.
 
-\subsection{Evaluation Metrics}
+\subsection{평가 지표}
 
-Nowcasting performance is evaluated using standardized metrics to enable fair comparison across different series and scales. We report standardized Mean Squared Error (sMSE), standardized Mean Absolute Error (sMAE), and standardized Root Mean Squared Error (sRMSE), where standardization is performed using the standard deviation of the training data.
+나우캐스팅 성능은 표준화된 지표를 사용하여 평가되며, 이를 통해 서로 다른 시계열과 규모 간 공정한 비교가 가능하다. 표준화된 평균제곱오차(sMSE), 표준화된 평균절대오차(sMAE), 표준화된 평균제곱근오차(sRMSE)를 보고하며, 표준화는 훈련 데이터의 표준편차를 사용하여 수행된다.
 
-\subsection{Evaluation Design}
+\subsection{평가 설계}
 
-The evaluation uses a single-step forecast design, where each forecast horizon (1, 7, and 28 days) is evaluated using a single test point. This design choice limits statistical reliability but provides a focused assessment of model performance at each horizon. The train-test split uses 80\% of the data for training and 20\% for testing, which results in insufficient test data for evaluating 28-day forecasts for DFM and DDFM models (n\_valid = 0 for these combinations). This limitation is acknowledged in the results and conclusion sections.
-
+평가는 단일 단계 예측 설계를 사용하며, 각 예측 수평선(1일, 7일, 28일)은 단일 테스트 포인트를 사용하여 평가된다. 이 설계 선택은 통계적 신뢰성을 제한하지만 각 수평선에서 모형 성능에 대한 집중적인 평가를 제공한다. 훈련-테스트 분할은 데이터의 80\%를 훈련에, 20\%를 테스트에 사용하며, 이로 인해 DFM 및 DDFM 모형의 28일 예측 평가를 위한 테스트 데이터가 부족하다(이 조합에 대해 n\_valid = 0). 이 제한사항은 결과 및 결론 섹션에서 인정된다.
