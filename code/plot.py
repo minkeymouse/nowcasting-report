@@ -1213,10 +1213,10 @@ def generate_all_plots():
         print(f"   - forecast_vs_actual_{target.lower().replace('.', '_')}.png")
         plot_forecast_vs_actual(target)
     
-    # Plot2: Accuracy heatmap
-    print("\n   Plot2: Accuracy Heatmap")
-    print("   - accuracy_heatmap.png")
-    plot_accuracy_heatmap()
+    # Plot2: Accuracy heatmap (removed - confusing)
+    # print("\n   Plot2: Accuracy Heatmap")
+    # print("   - accuracy_heatmap.png")
+    # plot_accuracy_heatmap()
     
     # Plot3: Horizon trend (1-22 months, sMSE)
     print("\n   Plot3: Horizon Performance Trend (1-22 months, sMSE)")
