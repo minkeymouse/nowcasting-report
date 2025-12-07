@@ -796,24 +796,24 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     # Create side-by-side plots (similar to attached image)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
-    # Target name mapping for Korean labels
+    # Target name mapping for display
     target_names = {
-        'KOEQUIPTE': '총고정자본형성',
-        'KOWRCCNSE': '민간소비',
-        'KOIPALL.G': '생산'
+        'KOEQUIPTE': 'Equipment Investment',
+        'KOWRCCNSE': 'Wholesale/Retail Sales',
+        'KOIPALL.G': 'Industrial Production'
     }
-    target_name_kr = target_names.get(target, target)
+    target_name = target_names.get(target, target)
     
     # Plot 1: 4 weeks before
     ax1 = axes[0]
     # Actual value: blue solid line
-    ax1.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'm{target_name_kr}, %', alpha=0.9)
+    ax1.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'{target_name} (Actual)', alpha=0.9)
     # Nowcast: orange dashed line with circle markers (like DFM.w.i in image)
     ax1.plot(month_dates, avg_predictions_4weeks, '--', color='#FF8C00', marker='o', 
             linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
     ax1.set_xlabel('Date', fontsize=11)
     ax1.set_ylabel('Value (%)', fontsize=11)
-    ax1.set_title(f'월간 {target_name_kr} nowcasting, 4주 전', fontsize=12, fontweight='bold')
+    ax1.set_title(f'{target_name} Nowcasting (4 weeks before)', fontsize=12, fontweight='bold')
     ax1.legend(loc='best', fontsize=9)
     ax1.grid(alpha=0.3, linestyle='--')
     ax1.set_ylim([min(min(actual_vals), min(avg_predictions_4weeks)) - 1, 
@@ -831,7 +831,7 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
             linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
     ax2.set_xlabel('Date', fontsize=11)
     ax2.set_ylabel('Value (%)', fontsize=11)
-    ax2.set_title(f'nowcasting, 1주 전', fontsize=12, fontweight='bold')
+    ax2.set_title(f'{target_name} Nowcasting (1 week before)', fontsize=12, fontweight='bold')
     ax2.legend(loc='best', fontsize=9)
     ax2.grid(alpha=0.3, linestyle='--')
     ax2.set_ylim([min(min(actual_vals), min(avg_predictions_1weeks)) - 1, 
@@ -986,11 +986,11 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     
     # Target name mapping
     target_names = {
-        'KOEQUIPTE': '총고정자본형성',
-        'KOWRCCNSE': '민간소비',
-        'KOIPALL.G': '생산'
+        'KOEQUIPTE': 'Equipment Investment',
+        'KOWRCCNSE': 'Wholesale/Retail Sales',
+        'KOIPALL.G': 'Industrial Production'
     }
-    target_name_kr = target_names.get(target, target)
+    target_name = target_names.get(target, target)
     
     # Create side-by-side plots
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -1005,15 +1005,15 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     
     # 4 weeks before: gray dashed line (Bloomberg-like)
     ax1.plot(month_dates, avg_forecasts_4w, '--', color='gray', linewidth=1.5, 
-            label='4주 전', alpha=0.8)
+            label='4 weeks before', alpha=0.8)
     
     # 1 week before: yellow solid line (DFM.i-like)
     ax1.plot(month_dates, avg_forecasts_1w, '-', color='#FFD700', linewidth=2, 
-            label='1주 전 (DFM.i)', alpha=0.9)
+            label='1 week before (DFM.i)', alpha=0.9)
     
     ax1.set_xlabel('Date', fontsize=11)
     ax1.set_ylabel('Value (%)', fontsize=11)
-    ax1.set_title(f'{target_name_kr} Nowcasting 추이', fontsize=12, fontweight='bold')
+    ax1.set_title(f'{target_name} Nowcasting Trend', fontsize=12, fontweight='bold')
     ax1.legend(loc='best', fontsize=9)
     ax1.grid(alpha=0.3, linestyle='--')
     ax1.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: pd.Timestamp(x).strftime('%Y.%m')))
@@ -1022,7 +1022,7 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     # Plot 2: Forecast error comparison (right)
     ax2 = axes[1]
     # Plot average errors for each timepoint
-    weeks_labels = ['4주전', '1주전']
+    weeks_labels = ['4 weeks', '1 week']
     avg_errors = [avg_error_4w, avg_error_1w]
     colors = ['gray', '#FFD700']
     linestyles = ['--', '-']
@@ -1030,9 +1030,9 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     ax2.plot(weeks_labels, avg_errors, '-', color='#FFD700', linewidth=2, 
             marker='o', markersize=8, label='DFM.i', alpha=0.9)
     
-    ax2.set_xlabel('전망시점', fontsize=11)
-    ax2.set_ylabel('평균 예측오차', fontsize=11)
-    ax2.set_title('전망시점 별 Nowcasting 평균 예측오차 비교', fontsize=12, fontweight='bold')
+    ax2.set_xlabel('Forecast Timepoint', fontsize=11)
+    ax2.set_ylabel('Average Forecast Error', fontsize=11)
+    ax2.set_title('Nowcasting Average Forecast Error by Timepoint', fontsize=12, fontweight='bold')
     ax2.legend(loc='best', fontsize=9)
     ax2.grid(alpha=0.3, linestyle='--', axis='y')
     ax2.set_ylim(bottom=0)
