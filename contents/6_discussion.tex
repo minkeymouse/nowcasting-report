@@ -29,10 +29,10 @@
 
 \textbf{DDFM:}
 \begin{itemize}
-    \item KOEQUIPTE: 1개월 sRMSE = 0.0103 (최고 성능)
-    \item KOIPALL.G: 1개월 sRMSE = 0.46, 7개월 sRMSE = 0.18 (ARIMA보다 우수)
-    \item KOWRCCNSE: 1개월 ARIMA 유사, 7개월 더 높은 오차
-    \item 해석: 딥러닝 인코더가 복잡한 패턴 학습 가능 (투자, 생산)
+    \item KOEQUIPTE: 1개월 sMAE = 0.7574, sMSE = 0.5736 (VAR, DFM보다 높은 오차)
+    \item 11개월 수평선: sMAE = 2.0233, sMSE = 4.0938 (가장 낮은 오차)
+    \item 22개월 수평선: sMAE = 0.1545, sMSE = 0.0239 (ARIMA, DFM보다 높은 오차)
+    \item 특징: 중간 수평선(11개월)에서 우수하나, 단기(1개월)와 장기(22개월)에서는 상대적으로 높은 오차
 \end{itemize}
 
 \subsection{원인 분석}
@@ -50,16 +50,22 @@
     \item 적용 기법: 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 공분산 행렬 대칭성 강제 \cite{golub2013matrix, higham2002computing}
 \end{itemize}
 
-\subsubsection{DDFM의 비선형 패턴 포착 능력}
+\subsubsection{DDFM의 성능 특성 및 제한사항}
 
-DDFM 성능 차이의 원인 (시계열 비선형성 정도):
+DDFM 성능 분석:
 \begin{itemize}
-    \item \textbf{투자 (KOEQUIPTE):} 경기 순환, 정책 변화, 기업 심리 등 복잡한 비선형 요인 $\to$ DDFM 우수
-    \item \textbf{생산 (KOIPALL.G):} 산업별, 부문별 이질성으로 인한 비선형 패턴 $\to$ DDFM 우수
-    \item \textbf{소비 (KOWRCCNSE):} 상대적으로 안정적이고 선형적 패턴 $\to$ ARIMA 적합
+    \item \textbf{중간 수평선에서의 우수성:} 11개월 수평선에서 가장 낮은 오차를 보임. 이는 딥러닝 인코더가 중기 예측에서 복잡한 패턴을 포착할 수 있음을 시사함
+    \item \textbf{단기/장기 수평선에서의 제한:} 1개월과 22개월 수평선에서는 VAR, DFM, ARIMA보다 높은 오차를 보임
+    \item \textbf{가능한 원인:}
+    \begin{itemize}
+        \item \textbf{데이터 양 부족:} 딥러닝 모델은 충분한 데이터가 필요하나, 훈련 기간(1985-2019)이 제한적일 수 있음
+        \item \textbf{선형 관계:} 시계열이 선형적일 경우 비선형 인코더가 오히려 과도한 복잡성을 도입하여 일반화 성능 저하 가능 \cite{andreini2020deep}
+        \item \textbf{하이퍼파라미터:} epochs=100, learning\_rate=0.005 등 설정이 최적이 아닐 수 있음
+        \item \textbf{오버피팅:} 모델 복잡도에 비해 데이터가 부족하여 훈련 데이터에 과적합될 가능성
+    \end{itemize}
 \end{itemize}
 
-\textbf{시사점:} 모형 선택 시 시계열 특성 고려 필요 (비선형 패턴: DDFM, 선형 패턴: ARIMA)
+\textbf{시사점:} DDFM은 비선형 관계가 강하고 충분한 데이터가 있을 때 유리하나, 선형 관계가 강하거나 데이터가 제한적일 경우 단순 모델(ARIMA, VAR, DFM)이 더 효과적일 수 있음.
 
 \subsection{Nowcasting 시점별 분석}
 
