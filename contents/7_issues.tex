@@ -28,49 +28,13 @@ VAR & 성공 (41 시리즈) & 성공 (40 시리즈) & 성공 (47 시리즈) \\
 \end{tabular}
 \end{table}
 
-\paragraph{이론적 배경}
-
-DFM의 수치적 불안정성 문제를 이해하기 위해서는 수치 선형대수학과 Kalman filter의 이론적 배경을 고려해야 함 \cite{golub2013matrix, higham2002computing}.
-
-\textbf{1. 행렬의 Condition Number와 수치적 안정성}: 행렬 $A$의 condition number는 $\kappa(A) = \|A\| \|A^{-1}\|$로 정의되며, 이는 행렬의 역행렬 계산 시 입력 오차가 출력 오차로 얼마나 증폭되는지를 나타냄. Condition number가 클수록 (일반적으로 $10^8$ 이상) 행렬이 ill-conditioned라고 하며, 작은 수치 오차도 큰 오차로 증폭됨. 본 연구에서 F matrix의 condition number는 정상 범위 내였으나, Kalman filter의 반복적 업데이트 과정에서 오차가 누적됨.
-
-\textbf{2. Kalman Filter의 수치적 안정성}: Kalman filter는 반복적으로 공분산 행렬을 업데이트하는 과정에서 수치적 오차가 누적될 수 있음. 특히 posterior covariance $V_u = V - VCF @ VC^T$ 계산에서 두 큰 행렬의 차이를 계산할 때 cancellation error가 발생할 수 있음. 또한 prior covariance $V = A @ V_u @ A^T + Q$ 계산에서 행렬 곱셈과 덧셈 과정에서 오차가 누적됨. 이러한 오차는 여러 시간 단계를 거치면서 기하급수적으로 증가할 수 있음.
-
-\textbf{3. EM Algorithm의 수렴성과 수치적 안정성}: EM algorithm은 likelihood를 증가시키는 방향으로 파라미터를 업데이트하지만, 수치적 불안정성이 발생하면 수렴이 실패할 수 있음. 특히 M-step에서 요인 적재 행렬 $C$를 업데이트할 때, $C_{\text{new}} = \text{solve}(sum\_EZZ^T, sum\_yEZ^T)^T$ 계산이 필요함. 이때 $sum\_EZZ$가 ill-conditioned이면 역행렬 계산이 불안정해지고, 결과적으로 C matrix가 NaN으로 채워짐.
-
-\textbf{4. Robust Statistics와 Outlier 제거}: 손상된 데이터를 제외하는 것은 robust statistics의 관점에서 타당함 \cite{huber1981robust}. Huber (1981)와 같은 연구에서 outlier나 손상된 관측값을 제외하고 나머지 정상적인 관측값만으로 추정하는 방법이 제안됨. 본 연구에서 적용한 EZZ의 NaN/Inf 제거는 이러한 robust statistics 접근법과 유사함. 특히 시계열 데이터의 경우, 시간적 의존성이 있으므로 일부 시간 단계가 손상되어도 다른 시간 단계의 정보로 보완 가능함.
-
 \paragraph{문제 발생 원인}
 
-DFM의 수치적 불안정성은 다음과 같은 연쇄 반응으로 발생함:
-
-\textbf{1. Kalman Filter Forward Pass에서 수치적 오차 누적}: F matrix inversion 자체는 문제가 아님 (condition number가 정상 범위 내, 일반적으로 $10^8$ 미만). 실제 문제는 forward pass에서 V, Vu 업데이트 과정에서 수치적 오차가 누적되는 것임. 특히 $n_{\text{obs}} \geq 33$일 때 작은 수치 오차도 증폭되어 여러 시간 단계를 거치면서 NaN/Inf가 발생함. 수학적으로는 $V_u = V - VCF @ VC^T$ (posterior covariance 업데이트)에서 cancellation error가 발생하고, $V = A @ V_u @ A^T + Q$ (다음 시간의 prior covariance) 계산에서 행렬 곱셈과 덧셈 과정에서 오차가 누적됨. 이러한 오차는 기하급수적으로 증가하여 결국 NaN/Inf로 발산함.
-
-\textbf{2. Kalman Filter Backward Pass (Smoother)에서 NaN/Inf 전파}: Forward pass에서 손상된 V, Vu가 backward pass로 전파됨. Backward pass는 forward pass 결과에 의존하므로 손상이 전파되어 smoothed factors ($EZ$, $EZZ$)가 손상됨. 수학적으로는 backward pass의 recursion $V_{t|T} = V_{t|t} + J_t (V_{t+1|T} - V_{t+1|t}) J_t^T$에서 $V_{t|t}$ (forward pass 결과)가 이미 NaN/Inf를 포함하고 있어 backward pass에서 손상이 전파됨. 로그에서 확인된 바와 같이, `VmT` recursion에서 `VmU` (forward pass 결과)가 이미 NaN/Inf를 포함하고 있어 backward pass에서 손상이 전파됨.
-
-\textbf{3. 손상된 EZZ로 인한 sum\_EZZ ill-conditioning}: 손상된 Kalman filter smoother로 인해 smoothed factors의 공분산 행렬 $EZZ = E[Z_t Z_t^T]$가 손상됨. 손상된 $EZZ$가 $sum\_EZZ = \sum_t EZZ$ 계산에 포함되면, sum\_EZZ가 ill-conditioned가 되어 eigendecomposition이 실패함. 수학적으로는 손상된 $EZZ$가 sum\_EZZ에 포함되면, sum\_EZZ의 eigenvalue 분포가 왜곡되어 (error code 49: too many repeated eigenvalues, 또는 error code 55: ill-conditioned matrix) eigendecomposition이 실패함. 이는 condition number가 무한대에 가까워지는 것을 의미함.
-
-\textbf{4. C Matrix 업데이트 실패}: sum\_EZZ eigendecomposition 실패로 인해 condition number 계산이 불가능하며, adaptive regularization (최대 $10^{-3}$)도 충분하지 않아 $C_{\text{new}} = \text{solve}(sum\_EZZ_{\text{reg}}^T, sum\_yEZ^T)^T$ 계산이 실패함. 수학적으로는 $sum\_EZZ$가 ill-conditioned이면, $sum\_EZZ_{\text{reg}} = sum\_EZZ + \lambda I$ 형태의 regularization도 충분하지 않을 수 있음 (특히 $\lambda = 10^{-3}$은 너무 작음). 결과적으로 C matrix가 NaN으로 채워지고, EM algorithm이 조기 수렴함 (4 iterations).
-
-\textbf{시리즈 개수와의 관계}: 시리즈 개수가 33개 이상일 때 ($n_{\text{obs}} \geq 33$) 수치적 오차가 더 빠르게 누적되어 NaN/Inf가 발생함. 이는 행렬 크기가 클수록 수치 연산의 복잡도가 증가하고, 오차가 누적될 가능성이 높아지기 때문임. KOEQUIPTE (32개 시리즈, $n_{\text{obs}} \leq 32$)는 안정적이었으나, KOIPALL.G (33개 시리즈)와 KOWRCCNSE (39개 시리즈)에서는 문제가 발생함. State space 차원은 15차원(요인 3개 × tent kernel 파라미터 5개)이며, 시리즈/state space 비율이 클수록 (KOIPALL.G: 2.20, KOWRCCNSE: 2.60) 불안정성이 증가함. 이는 관측 차원이 state space 차원보다 훨씬 클 때, 요인 적재 행렬 $C$의 추정이 어려워지기 때문임.
+DFM의 수치적 불안정성은 Kalman filter의 forward/backward pass에서 수치적 오차가 누적되어 발생함. Forward pass에서 $V_u = V - VCF @ VC^T$ 계산 시 cancellation error가 발생하고, $V = A @ V_u @ A^T + Q$ 계산에서 오차가 누적되어 NaN/Inf로 발산함. Backward pass에서 손상된 V, Vu가 전파되어 smoothed factors ($EZ$, $EZZ$)가 손상되고, 손상된 $EZZ$가 $sum\_EZZ$ 계산에 포함되면 eigendecomposition이 실패하여 C matrix 업데이트가 실패함. 시리즈 개수가 33개 이상일 때 ($n_{\text{obs}} \geq 33$) 수치적 오차가 더 빠르게 누적됨.
 
 \paragraph{해결 방법}
 
-\textbf{EZZ의 NaN/Inf 제거} 방법을 적용하여 문제를 해결함. 이 방법은 sum\_EZZ 계산 전에 EZZ의 NaN/Inf를 0으로 대체하여 손상된 시간 단계를 sum\_EZZ 계산에서 제외함. 수학적으로는 다음과 같이 표현됨:
-
-\begin{align}
-EZZ_{\text{clean}}[t] &= \begin{cases}
-0 & \text{if } EZZ[t] \text{ contains NaN/Inf} \\
-EZZ[t] & \text{otherwise}
-\end{cases} \\
-sum\_EZZ &= \sum_t EZZ_{\text{clean}}[t]
-\end{align}
-
-이렇게 하면 손상된 시간 단계가 sum\_EZZ 계산에서 제외되어, 정상적인 시간 단계만 사용하여 sum\_EZZ가 계산됨. 결과적으로 sum\_EZZ eigendecomposition이 성공하고, C matrix 업데이트가 정상적으로 수행됨.
-
-\textbf{이론적 근거}: 이 해결책은 robust statistics의 관점에서 타당함. 손상된 관측값을 제외하고 나머지 정상적인 관측값만으로 추정하는 것은 Huber (1981)와 같은 robust statistics 연구에서 제안된 방법임. EM algorithm의 M-step에서 요인 적재 행렬 $C$를 추정할 때, 손상된 시간 단계의 정보를 제외하더라도 나머지 정상적인 시간 단계만으로도 충분한 정보를 제공할 수 있음. 특히 시계열 데이터의 경우, 시간적 의존성이 있으므로 일부 시간 단계가 손상되어도 다른 시간 단계의 정보로 보완 가능함.
-
-\textbf{적용된 추가 수치 안정화 기법}: (1) F Matrix Regularization 강화 (n\_obs 기반, $n_{\text{obs}} \geq 30$일 때 자동 강화): $F_{\text{reg}} = F + \lambda I$ 형태의 regularization을 적용하여 condition number를 제한함. (2) Pseudo-inverse 사용 (solve 실패 시 fallback, 원본 MATLAB 방식): $C_{\text{new}} = \text{pinv}(sum\_EZZ_{\text{reg}}^T) @ sum\_yEZ^T$ 형태로 계산하여 ill-conditioned 행렬에 대해 더 robust한 해를 제공함. (3) 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 대칭성 강제 등: 공분산 행렬의 수치적 안정성을 보장하기 위한 추가 기법들임. 이러한 기법들은 EZZ NaN/Inf 제거와 함께 작동하여 수치적 안정성을 향상시킴.
+\textbf{EZZ의 NaN/Inf 제거} 방법을 적용하여 문제를 해결함. sum\_EZZ 계산 전에 EZZ의 NaN/Inf를 0으로 대체하여 손상된 시간 단계를 제외함. 이는 robust statistics의 관점에서 타당하며 \cite{huber1981robust}, 손상된 시간 단계를 제외하더라도 나머지 정상적인 시간 단계만으로도 요인 적재 행렬 $C$를 충분히 추정할 수 있음. 추가로 F Matrix Regularization 강화, Pseudo-inverse 사용, 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 대칭성 강제 등의 수치 안정화 기법을 적용함.
 
 \paragraph{해결 결과}
 
@@ -84,48 +48,11 @@ sum\_EZZ &= \sum_t EZZ_{\text{clean}}[t]
 
 \paragraph{해결책의 의미와 한계}
 
-이 해결책은 근본 원인(Kalman filter의 forward/backward pass에서 수치적 오차 누적 및 NaN/Inf 전파)을 직접 해결하는 것이 아니라, 손상된 결과를 제외함으로써 문제를 우회하는 실용적 접근법임. 이는 다음과 같은 의미와 한계를 가짐:
-
-\textbf{1. 실용적 해결책}: Kalman filter의 forward/backward pass에서 수치적 오차를 완전히 제거하는 것은 매우 어려운 문제임. 수치 선형대수학 이론에 따르면, 부동소수점 연산의 근본적인 한계로 인해 완벽한 수치적 정확도는 불가능함 \cite{higham2002computing}. 대신, 손상된 시간 단계를 제외하고 정상적인 시간 단계만 사용하여 요인 적재 행렬 C를 업데이트함으로써, EM algorithm이 정상적으로 수렴할 수 있게 함. 이는 실용적인 관점에서 매우 효과적인 해결책임.
-
-\textbf{2. 통계적 타당성}: 손상된 시간 단계는 전체 데이터의 일부에 불과하므로, 나머지 정상적인 시간 단계만으로도 요인 적재 행렬을 충분히 추정할 수 있음. 이는 robust statistics의 관점에서 outlier를 제외하는 것과 유사한 접근법임. 다만, 손상된 시간 단계가 전체 데이터의 상당 부분을 차지하는 경우 (예: 50\% 이상), 유효 표본 크기가 크게 감소하여 추정 정확도가 저하될 수 있음.
-
-\textbf{3. 근본 원인 해결의 어려움}: Forward/backward pass에서 수치적 오차를 완전히 제거하려면 더 정밀한 수치 연산 방법(예: 고정밀도 부동소수점 연산, symbolic computation)이나 Kalman filter 알고리즘 자체의 개선(예: square-root Kalman filter, UD factorization)이 필요함. 이러한 방법들은 계산 비용이 크게 증가하거나 구현이 복잡하여 실용적이지 않을 수 있음. 따라서 현재의 해결책은 실용성과 정확도 사이의 합리적인 타협점임.
-
-\textbf{4. 확장 가능성과 한계}: 이 해결책은 시리즈 개수에 관계없이 적용 가능하며, 더 많은 시리즈를 사용하는 경우에도 안정적으로 작동할 것으로 예상됨. 다만, 다음과 같은 한계가 있음:
-
-\begin{itemize}
-    \item \textbf{손상된 시간 단계 비율}: 손상된 시간 단계가 전체 데이터의 상당 부분을 차지하는 경우, 유효 표본 크기가 감소하여 추정 정확도가 저하될 수 있음. 본 연구에서는 손상된 시간 단계가 전체의 일부에 불과하여 문제가 되지 않았으나, 더 극단적인 경우에는 추가적인 고려가 필요함.
-    \item \textbf{시간적 의존성 손실}: 손상된 시간 단계를 제외하면, 해당 시간 단계의 정보가 완전히 손실됨. 특히 시계열 데이터의 경우, 시간적 의존성이 중요한데, 손상된 시간 단계가 연속적으로 발생하면 시간적 의존성 정보가 손실될 수 있음.
-    \item \textbf{근본 원인 미해결}: 이 해결책은 근본 원인(Kalman filter의 forward/backward pass에서 수치적 오차 누적)을 해결하지 못함. 따라서 더 극단적인 상황(예: 더 많은 시리즈, 더 높은 missing data 비율)에서는 여전히 문제가 발생할 수 있음.
-    \item \textbf{해석의 어려움}: 손상된 시간 단계를 제외하면, 해당 시간 단계에 대한 요인 추정이 불가능함. 이는 해당 시간 단계의 요인 값을 해석하거나 예측하는 데 어려움을 줄 수 있음.
-\end{itemize}
-
-\textbf{5. 향후 개선 방향}: 근본 원인을 해결하기 위해서는 다음과 같은 방향을 고려할 수 있음: (1) Square-root Kalman filter: 공분산 행렬의 제곱근을 직접 업데이트하여 수치적 안정성을 향상시킴. (2) UD factorization: 공분산 행렬을 $U D U^T$ 형태로 분해하여 업데이트함. (3) 고정밀도 부동소수점 연산: double precision 대신 extended precision을 사용하여 수치적 오차를 감소시킴. (4) Adaptive regularization: 수치적 불안정성이 감지되면 자동으로 regularization을 강화함. 이러한 방법들은 계산 비용이 증가하거나 구현이 복잡하지만, 더 근본적인 해결책을 제공할 수 있음.
+이 해결책은 근본 원인을 직접 해결하는 것이 아니라, 손상된 결과를 제외함으로써 문제를 우회하는 실용적 접근법임. 부동소수점 연산의 근본적인 한계로 인해 완벽한 수치적 정확도는 불가능하므로 \cite{higham2002computing}, 손상된 시간 단계를 제외하고 정상적인 시간 단계만 사용하여 EM algorithm이 정상적으로 수렴할 수 있게 함. 다만, 손상된 시간 단계가 전체 데이터의 상당 부분을 차지하는 경우 유효 표본 크기가 감소하여 추정 정확도가 저하될 수 있음. 근본 원인을 해결하기 위해서는 square-root Kalman filter, UD factorization, 고정밀도 부동소수점 연산 등의 방법을 고려할 수 있으나, 계산 비용이 증가하거나 구현이 복잡함.
 
 \subsection{실험 설계의 제한사항}
 
-\subsubsection{훈련 기간과 예측 기간 사이의 간격}
-
-본 연구에서는 훈련 기간(1985-2019)과 예측 기간(2024-2025) 사이에 약 4년의 간격이 존재함. 이는 COVID-19 시기(2020-2023)를 제외하고 데이터 누수를 방지하기 위한 의도적인 설계임. 그러나 이 간격으로 인해 COVID-19 이후 경제 구조 변화가 모형의 예측 성능에 미치는 영향을 평가할 수 있지만, 훈련 데이터와 예측 기간 사이의 시간적 거리로 인해 모형이 최신 경제 패턴을 반영하지 못할 수 있음.
-
-\subsubsection{테스트 데이터 부족}
-
-80/20 훈련-테스트 분할 후 테스트 데이터가 부족하여 일부 수평선 평가가 제한됨. 특히 22개 월별 수평선(1개월부터 22개월까지)에 대해 평가를 수행했으나, 테스트 데이터 부족으로 인해 일부 수평선에서 평가가 제한될 수 있음. 평가 기간 확장이나 롤링 윈도우 평가를 고려할 수 있음.
-
-\subsubsection{통계적 신뢰성 제한}
-
-각 수평선당 단일 테스트 포인트를 사용하여 통계적 신뢰성이 제한됨. 더 긴 평가 기간이나 교차 검증을 고려할 수 있음.
-
-\subsection{Nowcasting 실험의 제한사항}
-
-\subsubsection{Release date 정보의 정확성}
-
-Release date 정보가 부정확하거나 누락된 경우, 마스킹이 정확하게 수행되지 않을 수 있음. 실제 운영 환경에서는 정기적인 업데이트가 필요함.
-
-\subsubsection{ARIMA/VAR 모형의 Release date 마스킹 구현}
-
-ARIMA와 VAR 모형의 경우 release date 기반 마스킹이 완전히 구현되지 않아 근사화된 방법을 사용하므로, DFM과 DDFM 모형과의 공정한 비교에 제한이 있을 수 있음.
+훈련 기간(1985-2019)과 예측 기간(2024-2025) 사이의 4년 간격은 COVID-19 시기를 제외하고 데이터 누수를 방지하기 위한 설계이나, 모형이 최신 경제 패턴을 반영하지 못할 수 있음. 80/20 훈련-테스트 분할 후 테스트 데이터 부족으로 인해 각 수평선당 단일 테스트 포인트를 사용하여 통계적 신뢰성이 제한됨. Nowcasting 실험에서는 release date 정보의 정확성과 ARIMA/VAR 모형의 release date 마스킹 구현 제한이 있음.
 
 \subsection{향후 연구 방향}
 
