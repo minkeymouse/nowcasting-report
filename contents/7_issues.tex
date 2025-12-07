@@ -117,11 +117,16 @@ ARIMA와 VAR 모형은 forecasting과 nowcasting 평가 모두에서 기술적 �
     \item \textbf{영향:} ARIMA와 VAR 모형의 nowcasting 백테스트가 모든 대상 변수에서 결과를 생성하지 못함
 \end{itemize}
 
-\textbf{해결 방안:}
+\textbf{해결 방안 (구현 완료):}
 \begin{itemize}
-    \item \texttt{evaluation.py}의 \texttt{is\_fitted} 체크 로직을 \texttt{train.py}와 동일하게 수정 (callable 체크 추가)
-    \item ARIMA/VAR의 release date 마스킹 구현 개선: 마스킹된 데이터를 imputation으로 처리하거나, 모형을 재훈련하는 대신 마스킹 전 데이터로 예측 후 보정하는 방법 검토
-    \item 데이터 뷰 생성 및 예측 과정의 오류 처리 강화: 더 상세한 로깅과 오류 복구 메커니즘 추가
+    \item \texttt{evaluation.py}의 \texttt{is\_fitted} 체크 로직을 \texttt{train.py}와 동일하게 수정 (callable 체크 추가) - \textbf{완료}
+    \item ARIMA/VAR의 release date 마스킹 구현 개선: 마스킹된 데이터를 imputation으로 처리 - \textbf{완료}
+    \begin{itemize}
+        \item Release date 마스킹 후 \texttt{impute\_missing\_values()} 함수를 사용하여 다단계 imputation 적용 (ffill $\to$ bfill $\to$ forecaster-based)
+        \item Imputation 실패 시 적절한 에러 처리 및 로깅 추가
+        \item 마스킹된 데이터로 모형을 재훈련 (re-fit)하여 nowcasting에 적합한 예측 생성
+    \end{itemize}
+    \item 데이터 뷰 생성 및 예측 과정의 오류 처리 강화: 더 상세한 로깅과 오류 복구 메커니즘 추가 - \textbf{완료}
 \end{itemize}
 
 \subsection{실험 설계의 제한사항}
