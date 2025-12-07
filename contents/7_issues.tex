@@ -24,97 +24,32 @@ DDFM은 중간 수평선(11개월)에서 우수한 성능을 보이나, 단기(1
 
 \subsubsection{DFM의 수치적 불안정성 및 해결}
 
-DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, 수치 안정화 기법 적용 후 모든 타겟에서 성공적으로 훈련됨. 이 문제는 DFM의 이론적 한계를 보여주며, DDFM과 같은 대안적 접근법의 필요성을 시사함.
+DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, 수치 안정화 기법 적용 후 모든 타겟에서 성공적으로 훈련됨. 
 
-\paragraph{이론적 배경}
-
-DFM의 수치적 불안정성은 Kalman filter의 재귀적 공분산 업데이트와 EM algorithm의 M-step에서 발생하는 근본적인 수치 선형대수학 문제임 \cite{golub2013matrix, higham2002computing}.
-
-\textbf{Kalman Filter의 수치적 한계:}
+\textbf{문제 원인:}
 \begin{itemize}
-    \item \textbf{재귀적 공분산 업데이트:} Forward pass에서 $V_u = V - VCF @ VC^T$ 계산 시 cancellation error 발생
-    \item \textbf{오차 누적:} $V = A @ V_u @ A^T + Q$ 계산에서 행렬 곱셈과 덧셈 과정에서 부동소수점 오차 누적
-    \item \textbf{조건수 증가:} 관측 차원($n_{\text{obs}}$)이 상태 공간 차원보다 클 때 ($n_{\text{obs}} \geq 33$), 공분산 행렬의 condition number가 증가하여 수치적 불안정성 가속화
-    \item \textbf{Backward pass 전파:} Forward pass의 손상이 backward pass로 전파되어 smoothed factors ($EZ$, $EZZ$) 손상
+    \item Kalman filter의 재귀적 공분산 업데이트 과정에서 부동소수점 오차 누적
+    \item 관측 차원이 증가할수록 공분산 행렬의 condition number 증가로 수치적 불안정성 가속화
+    \item EM algorithm의 M-step에서 ill-conditioned 행렬로 인한 수렴 실패
 \end{itemize}
 
-\textbf{EM Algorithm의 수렴성 문제:}
+\textbf{해결 방법:}
 \begin{itemize}
-    \item \textbf{M-step의 행렬 역행렬 계산:} 요인 적재 행렬 $C$ 업데이트 시 $C_{\text{new}} = \text{solve}(sum\_EZZ^T, sum\_yEZ^T)^T$ 계산 필요
-    \item \textbf{Ill-conditioned 행렬:} 손상된 $EZZ$가 $sum\_EZZ$에 포함되면 eigendecomposition 실패, condition number가 무한대에 가까워짐
-    \item \textbf{수렴 실패:} 결과적으로 C matrix가 NaN으로 채워지고, EM algorithm이 조기 수렴함
+    \item Robust statistics 접근법: 손상된 시간 단계의 EZZ 제외
+    \item 수치 선형대수학 기법: 사전정규화, 공분산 행렬 대칭성 강제, R 행렬 최소값 설정 \cite{golub2013matrix, higham2002computing}
 \end{itemize}
 
-\paragraph{이론적 의미}
-
-이 문제는 DFM의 근본적 한계를 보여줌:
-\begin{itemize}
-    \item \textbf{선형 가정의 취약성:} 선형 요인 적재 행렬 $C$는 고차원 관측 공간에서 저차원 요인 공간으로의 선형 매핑을 가정함. 관측 차원이 증가할수록 이 매핑의 추정이 어려워짐
-    \item \textbf{수치적 정확도와 확장성의 트레이드오프:} 부동소수점 연산의 근본적 한계로 인해 완벽한 수치적 정확도는 불가능하며 \cite{higham2002computing}, 더 많은 시계열을 사용할수록 수치적 오차가 누적됨
-    \item \textbf{데이터 품질 의존성:} 높은 상관관계, 극단적 결측치, 작은 유효 표본 크기 등 데이터 품질 문제가 수치적 불안정성을 악화시킴
-\end{itemize}
-
-이러한 한계는 비선형 인코더를 사용하는 DDFM과 같은 대안적 접근법의 이론적 정당성을 제공함. DDFM은 선형 매핑의 제약을 완화하고, 딥러닝 기반 요인 추출을 통해 수치적 안정성 문제를 우회할 수 있음 \cite{andreini2020deep}.
-
-\paragraph{해결 방법}
-
-수치 안정화를 위해 다음과 같은 기법을 적용함:
-
-\textbf{1. Robust Statistics 접근법:}
-\begin{itemize}
-    \item \textbf{EZZ의 NaN/Inf 제거:} sum\_EZZ 계산 전 손상된 시간 단계의 EZZ를 0으로 대체하여 제외
-    \item \textbf{이론적 근거:} Huber (1981)의 robust statistics 이론에 따라 outlier나 손상된 관측값을 제외하고 정상적인 관측값만으로 추정하는 것은 통계적으로 타당함 \cite{huber1981robust}
-    \item \textbf{시계열 특성:} 시간적 의존성이 있으므로 일부 시간 단계가 손상되어도 다른 시간 단계의 정보로 보완 가능
-\end{itemize}
-
-\textbf{2. 수치 선형대수학 기법:}
-\begin{itemize}
-    \item \textbf{사전정규화:} 조건수 $10^8$ 이상인 경우 적응적 정규화 적용 \cite{golub2013matrix}
-    \item \textbf{R 행렬 최소값 강제:} $10^{-4}$로 설정하여 innovation covariance의 수치 안정성 향상
-    \item \textbf{공분산 행렬 대칭성 강제:} 모든 공분산 행렬 업데이트 후 즉시 대칭성 강제 \cite{higham2002computing}
-    \item \textbf{Pseudo-inverse 사용:} solve 실패 시 fallback으로 더 robust한 해 제공
-    \item \textbf{F Matrix Regularization:} 관측 차원 기반 적응적 정규화
-\end{itemize}
-
-\paragraph{해결 결과 및 시사점}
-
-해결책 적용 후 모든 타겟에서 DFM 모델이 정상적으로 훈련됨:
-\begin{itemize}
-    \item \textbf{KOIPALL.G:} C matrix NaN 100\% $\to$ 0\%, log-likelihood -3102.04 $\to$ 356.35
-    \item \textbf{KOWRCCNSE:} C matrix NaN 94.9\% $\to$ 0\%, log-likelihood -2671.57 $\to$ 817.54
-    \item \textbf{KOEQUIPTE:} 이전부터 안정적, 해결 후 정상 훈련
-\end{itemize}
-
-이 결과는 다음과 같은 시사점을 제공함:
-\begin{itemize}
-    \item \textbf{DFM의 실용적 한계:} 수치 안정화 기법으로 문제를 우회할 수 있으나, 근본 원인(Kalman filter의 재귀적 오차 누적)은 해결되지 않음
-    \item \textbf{DDFM의 정당성:} 비선형 인코더를 사용하는 DDFM은 선형 매핑의 제약을 완화하고, Kalman filter의 재귀적 공분산 업데이트에 덜 의존하므로 수치적 안정성 문제를 우회할 수 있음
-    \item \textbf{모형 선택 기준:} 많은 시계열($n_{\text{obs}} \geq 33$)을 사용하거나 데이터 품질이 낮은 경우, DDFM이 더 안정적인 대안이 될 수 있음
-\end{itemize}
+\textbf{결과:} 모든 타겟에서 DFM 모델이 정상적으로 훈련됨. 이는 DFM의 실용적 한계를 보여주며, DDFM과 같은 대안적 접근법의 필요성을 시사함.
 
 \subsubsection{ARIMA/VAR 모형의 Nowcasting 제한사항}
 
 ARIMA와 VAR 모형은 forecasting 평가에서는 성공적으로 결과를 생성했으나, nowcasting 평가에서는 구조적 한계로 인해 제외됨:
 
-\textbf{Forecasting 평가 오류 (해결됨):}
-\begin{itemize}
-    \item \textbf{오류 메시지:} `'bool' object is not callable`
-    \item \textbf{원인:} \texttt{src/evaluation.py}의 \texttt{evaluate\_forecaster()} 함수에서 \texttt{forecaster.is\_fitted()}를 호출할 때, sktime의 ARIMA와 VAR 모형에서 \texttt{is\_fitted}가 메서드가 아닌 boolean 속성으로 구현되어 있어 발생
-    \item \textbf{해결:} \texttt{callable()} 체크를 추가하여 \texttt{is\_fitted}가 메서드인지 속성인지 확인 후 적절히 처리하도록 수정 (490-499번 줄)
-    \item \textbf{상태:} \texttt{src/evaluation.py}와 \texttt{src/train.py} 모두 수정 완료. 현재는 정상적으로 메트릭 추정이 가능함
-    \item \textbf{참고:} sktime의 \texttt{BaseForecaster}에서 \texttt{is\_fitted}는 boolean 속성이며, 일부 하위 클래스에서는 메서드로 구현될 수 있음. 따라서 두 경우를 모두 처리할 수 있도록 \texttt{callable()} 체크가 필요함
-\end{itemize}
-
 \textbf{Nowcasting에서의 구조적 한계:}
 \begin{itemize}
-    \item \textbf{결정:} ARIMA와 VAR 모형은 nowcasting 실험에서 제외됨
-    \item \textbf{이유:}
-    \begin{itemize}
-        \item \textbf{Release date 마스킹 처리의 구조적 한계:} ARIMA/VAR은 단변량/다변량 시계열 모형으로, release date 기반 데이터 마스킹을 DFM/DDFM처럼 직접적으로 처리하기 어려움. 요인 모형(DFM/DDFM)은 요인 공간에서 마스킹을 처리한 후 관측 공간으로 변환할 수 있으나, ARIMA/VAR은 이러한 구조적 유연성이 없음
-        \item \textbf{데이터 뷰 생성의 어려움:} 각 시점(view\_date)에서 사용 가능한 데이터만으로 구성된 뷰를 생성하고 이를 모형에 적용하는 과정이 복잡하며, imputation을 통한 근사화는 실제 nowcasting 시나리오와 차이가 있음
-        \item \textbf{모형 재훈련의 한계:} 마스킹된 데이터로 모형을 재훈련하는 것은 가능하나, 이는 실제 운영 환경에서의 nowcasting 시나리오와 다를 수 있으며, DFM/DDFM의 요인 기반 접근법이 더 적합함
-    \end{itemize}
-    \item \textbf{영향:} 본 연구에서는 nowcasting 실험을 DFM과 DDFM 모형에 대해서만 수행함
+    \item Release date 마스킹 처리의 구조적 한계: ARIMA/VAR은 단변량/다변량 시계열 모형으로, release date 기반 데이터 마스킹을 DFM/DDFM처럼 직접적으로 처리하기 어려움
+    \item 요인 모형(DFM/DDFM)은 요인 공간에서 마스킹을 처리한 후 관측 공간으로 변환할 수 있으나, ARIMA/VAR은 이러한 구조적 유연성이 없음
+    \item 본 연구에서는 nowcasting 실험을 DFM과 DDFM 모형에 대해서만 수행함
 \end{itemize}
 
 \subsection{실험 설계의 제한사항}

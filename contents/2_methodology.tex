@@ -57,22 +57,18 @@
 
 \subsubsection{데이터 품질 문제 및 시리즈 제거}
 
-KOIPALL.G DFM 훈련 중 수치적 불안정성 관찰:
+데이터 품질 개선을 위해 다음 시리즈를 제거:
 \begin{itemize}
-    \item 제거된 시리즈: 높은 상관관계(> 0.95) 시리즈, 극단적 결측치(91.3\%) 시리즈 (pmiall, pmiout)
-    \item 수치적 안정성 개선: 블록 구조 단일 글로벌 블록으로 단순화, 요인 수 3개 통일
+    \item 높은 상관관계(> 0.95) 시리즈
+    \item 극단적 결측치(91.3\%) 시리즈 (pmiall, pmiout)
+    \item 블록 구조 단일 글로벌 블록으로 단순화, 요인 수 3개 통일
 \end{itemize}
 
 \subsubsection{예측 모형}
 
 \textbf{ARIMA:} 자기회귀 및 이동평균 성분 포착, 정상성을 위해 차분 사용, 단변량 시계열 예측. 차수 (1,1,1) 사용.
 
-\textbf{VAR:} ARIMA를 다변량으로 확장, 여러 시계열 간 동적 관계 포착. 시차 1 사용. 
-\begin{itemize}
-    \item 긴 수평선에서 수치적 불안정성
-    \item Horizon 1에서 persistence 문제 (마지막 훈련 값 예측)
-    \item 평가 코드에서 VAR-1의 비정상적 작은 오차(sMSE $<$ 1e-6 또는 sMAE $<$ 1e-4) 감지하여 무효 처리
-\end{itemize}
+\textbf{VAR:} ARIMA를 다변량으로 확장, 여러 시계열 간 동적 관계 포착. 시차 1 사용. 긴 수평선에서 수치적 불안정성 발생 가능.
 
 \textbf{DFM:} 많은 시계열에서 공통 요인 추출, 차원 축소, 혼합주기 데이터 처리 \cite{stock2002forecasting}:
 \begin{align}

@@ -37,17 +37,10 @@
 
 \subsection{원인 분석}
 
-\subsubsection{VAR의 수치적 불안정성}
+\subsubsection{모형별 제한사항}
 \begin{itemize}
-    \item 1개월 예측: 낮은 오차
-    \item 긴 수평선: 공분산 행렬 특이성으로 인한 수치적 불안정성
-    \item 원인: 재귀적 예측 과정에서 수치 오차 누적 및 증폭
-\end{itemize}
-
-\subsubsection{DFM의 EM 알고리즘 수렴 문제}
-\begin{itemize}
-    \item 원인: MATLAB/Python 구현 차이 (R 행렬 최소값, 대칭성 강제, 칼만 필터 재귀적 업데이트)
-    \item 적용 기법: 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 공분산 행렬 대칭성 강제 \cite{golub2013matrix, higham2002computing}
+    \item VAR: 긴 수평선에서 공분산 행렬 특이성으로 인한 수치적 불안정성
+    \item DFM: EM 알고리즘 수렴 중 수치적 불안정성 발생, 수치 안정화 기법 적용으로 해결
 \end{itemize}
 
 \subsubsection{DDFM의 성능 특성 및 제한사항}
