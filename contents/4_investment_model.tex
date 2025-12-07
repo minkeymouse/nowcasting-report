@@ -27,7 +27,7 @@ The forecast vs actual plot (Figure~\ref{fig:forecast_vs_actual_koequipte}) show
 
 Results for KOEQUIPTE show that ARIMA provides moderate performance across all horizons, with standardized RMSE values of 0.32 (1-day), 1.59 (7-day), and 1.67 (28-day). The model maintains relatively stable performance as the forecast horizon increases, though errors are higher than for other targets. This suggests that equipment investment may be more difficult to forecast than production or consumption indicators.
 
-VAR again demonstrates excellent 1-day forecast accuracy (sMSE ≈ 3.7×10⁻⁹, sRMSE ≈ 6.0×10⁻⁵) but completely fails for longer horizons, with errors exploding to impractical magnitudes (sRMSE > 10¹³ for h=7, > 10⁶⁰ for h=28). This numerical instability renders VAR unsuitable for investment forecasting beyond the immediate next period.
+VAR again demonstrates excellent 1-day forecast accuracy (sMSE $\approx 3.7 \times 10^{-9}$, sRMSE $\approx 6.0 \times 10^{-5}$) but completely fails for longer horizons, with errors exploding to impractical magnitudes (sRMSE $> 10^{13}$ for h=7, $> 10^{60}$ for h=28). This numerical instability renders VAR unsuitable for investment forecasting beyond the immediate next period.
 
 The relatively higher ARIMA errors for KOEQUIPTE compared to other targets (average sRMSE = 1.19 vs. 0.71-0.73 for others) indicate that equipment investment exhibits more volatility or less predictable patterns. This may be due to the lumpy nature of capital investment decisions, which are subject to business cycle effects and policy changes.
 
