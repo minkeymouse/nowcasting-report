@@ -1,41 +1,28 @@
 \begin{table}[h]
 \centering
-\caption[Forecasting Results by Model-Horizon and Target-Metric]{Forecasting Results by Model-Horizon and Target-Metric\footnote{Experiments evaluate all horizons from 1 to 22 months (2024--01 to 2025--10), but table shows selected horizons (1, 2, 3, 4, 6, 12, 22 months) for readability. Full results for all horizons are available in aggregated\_results.csv. Bold values indicate the best (lowest) metric for each target-metric combination.}}
+\caption[Forecasting Results by Model-Target (Average across Horizons)]{Forecasting Results by Model-Target (Average across Horizons)\footnote{Experiments evaluate all horizons from 1 to 22 months (2024--01 to 2025--10). This table shows the average metric values across all horizons for each model-target combination. Bold values indicate the best (lowest) metric for each metric type. Full results for all horizons are available in the appendix.}}
 \label{tab:forecasting_results}
-\begin{tabular}{l|l|cc|cc|cc}
+\begin{tabular}{l|l|cc}
 \toprule
-\multirow{2}{*}{Model} & \multirow{2}{*}{Horizon} & \multicolumn{2}{c|}{KOIPALL.G} & \multicolumn{2}{c|}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
-\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
- & & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
+\multirow{2}{*}{Model} & Target & \multicolumn{2}{c}{Metrics} \\
+\cmidrule(lr){3-4}
+ & & sMAE & sMSE \\
 \midrule
-\multirow{7}{*}{ARIMA} & 1 & 0.6054 & 0.3665 & 0.9167 & 0.8403 & 0.2758 & 0.0760 \\
- & 2 & 0.4690 & 0.2200 & 0.8503 & 0.7231 & 0.1405 & 0.0197 \\
- & 3 & 1.1836 & 1.4009 & \textbf{0.0096} & \textbf{0.0001} & 0.3649 & 0.1332 \\
- & 4 & 0.9132 & 0.8339 & 0.0256 & 0.0007 & 0.1132 & 0.0128 \\
- & 6 & 0.4432 & 0.1964 & 0.1448 & 0.0210 & 0.0992 & 0.0098 \\
- & 12 & 0.4341 & 0.1884 & 0.4391 & 0.1928 & 0.1613 & 0.0260 \\
- & 22 & 0.6244 & 0.3899 & 0.0833 & 0.0069 & 0.2635 & 0.0694 \\
-\multirow{7}{*}{VAR} & 1 & 0.6186 & 0.3827 & 1.2303 & 1.5137 & 0.3447 & 0.1188 \\
- & 2 & 0.6073 & 0.3688 & 1.3757 & 1.8924 & 0.0361 & 0.0013 \\
- & 3 & 1.8627 & 3.4696 & 0.0913 & 0.0083 & 0.2090 & 0.0437 \\
- & 4 & 1.3422 & 1.8015 & 0.0865 & 0.0075 & 0.0545 & 0.0030 \\
- & 6 & 0.6808 & 0.4635 & 0.2088 & 0.0436 & 0.1823 & 0.0332 \\
- & 12 & 0.7088 & 0.5024 & 0.5517 & 0.3044 & 0.0379 & 0.0014 \\
- & 22 & 0.7943 & 0.6309 & 0.0976 & 0.0095 & 0.0286 & 0.0008 \\
-\multirow{7}{*}{DFM} & 1 & 0.2301 & 0.0529 & 0.7920 & 0.6272 & 0.6003 & 0.3603 \\
- & 2 & 0.0828 & 0.0068 & 0.6726 & 0.4524 & 0.3381 & 0.1143 \\
- & 3 & 1.8223 & 3.3208 & 0.0708 & 0.0050 & 0.6018 & 0.3622 \\
- & 4 & 0.2994 & 0.0896 & 0.1375 & 0.0189 & 0.3381 & 0.1143 \\
- & 6 & 1.0645 & 1.1332 & 0.0396 & 0.0016 & 0.1286 & 0.0165 \\
- & 12 & 1.0620 & 1.1279 & 0.3342 & 0.1117 & 0.3902 & 0.1522 \\
- & 22 & \textbf{0.0137} & \textbf{0.0002} & 0.1891 & 0.0358 & 0.4937 & 0.2438 \\
-\multirow{7}{*}{DDFM} & 1 & 0.4414 & 0.1949 & 0.7717 & 0.5956 & 0.4529 & 0.2051 \\
- & 2 & 0.5888 & 0.3467 & 0.6929 & 0.4801 & 0.1908 & 0.0364 \\
- & 3 & 1.1507 & 1.3242 & 0.0506 & 0.0026 & 0.4545 & 0.2066 \\
- & 4 & 0.9709 & 0.9427 & 0.1172 & 0.0137 & 0.1908 & 0.0364 \\
- & 6 & 0.3930 & 0.1544 & 0.0599 & 0.0036 & \textbf{0.0188} & \textbf{0.0004} \\
- & 12 & 0.3905 & 0.1525 & 0.3544 & 0.1256 & 0.2429 & 0.0590 \\
- & 22 & 0.6579 & 0.4328 & 0.1688 & 0.0285 & 0.3464 & 0.1200 \\
+\multirow{3}{*}{ARIMA} & KOIPALL.G & 0.5753 & 0.4425 \\
+ & KOEQUIPTE & 0.9215 & 1.4112 \\
+ & KOWRCCNSE & 0.3943 & 0.3087 \\
+\midrule
+\multirow{3}{*}{VAR} & KOIPALL.G & 0.8418 & 0.9614 \\
+ & KOEQUIPTE & 1.1775 & 2.2536 \\
+ & KOWRCCNSE & \textbf{0.2806} & \textbf{0.1312} \\
+\midrule
+\multirow{3}{*}{DFM} & KOIPALL.G & 0.7467 & 0.8076 \\
+ & KOEQUIPTE & 0.9250 & 1.4062 \\
+ & KOWRCCNSE & 0.4701 & 0.4085 \\
+\midrule
+\multirow{3}{*}{DDFM} & KOIPALL.G & 0.5695 & 0.4426 \\
+ & KOEQUIPTE & 0.9213 & 1.4011 \\
+ & KOWRCCNSE & 0.4049 & 0.3341 \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -24,6 +24,7 @@ from src.evaluation import (
     generate_latex_table_dataset_params,
     generate_latex_table_forecasting_results,
     generate_latex_table_nowcasting_backtest,
+    generate_latex_table_appendix_forecasting,
     aggregate_overall_performance,
     collect_all_comparison_results
 )
@@ -132,6 +133,55 @@ def generate_all_tables(
         import traceback
         logger.debug(traceback.format_exc())
         tables['nowcasting_backtest'] = None
+    
+    # Appendix tables: Forecasting results for all horizons (4 tables)
+    logger.info("\n[4/7] Generating appendix forecasting tables...")
+    targets = ['KOIPALL.G', 'KOEQUIPTE', 'KOWRCCNSE']
+    
+    # Load aggregated results if not already loaded
+    if 'aggregated_df' not in locals():
+        aggregated_file = outputs_dir / "experiments" / "aggregated_results.csv"
+        if not aggregated_file.exists():
+            logger.warning(f"  ⚠ Aggregated results file not found: {aggregated_file}")
+            logger.info("  Attempting to aggregate from comparison results...")
+            all_results = collect_all_comparison_results(outputs_dir)
+            if all_results:
+                aggregated_df = aggregate_overall_performance(all_results)
+                logger.info(f"  Aggregated {len(aggregated_df)} rows from comparison results")
+            else:
+                logger.error("  ✗ No comparison results found")
+                aggregated_df = pd.DataFrame()
+        else:
+            aggregated_df = pd.read_csv(aggregated_file)
+            logger.info(f"  Loaded {len(aggregated_df)} rows from aggregated_results.csv")
+    
+    # Generate 3 target-specific tables + 1 all-targets table
+    for idx, target in enumerate(targets + [None], start=1):
+        try:
+            if target is None:
+                table_name = 'appendix_forecasting_all'
+                table_file = tables_dir / "tab_appendix_forecasting_all.tex"
+                logger.info(f"  [{idx}/4] Generating {table_file.name} (all targets averaged)...")
+            else:
+                table_name = f'appendix_forecasting_{target.lower().replace(".", "_")}'
+                table_file = tables_dir / f"tab_appendix_forecasting_{target.lower().replace('.', '_')}.tex"
+                logger.info(f"  [{idx}/4] Generating {table_file.name} ({target})...")
+            
+            if not aggregated_df.empty:
+                tables[table_name] = generate_latex_table_appendix_forecasting(
+                    aggregated_df=aggregated_df,
+                    target=target,
+                    output_path=table_file
+                )
+                logger.info(f"    ✓ {table_file.name} generated")
+            else:
+                logger.warning(f"    ⚠ No data available for {table_file.name}")
+                tables[table_name] = None
+        except Exception as e:
+            logger.error(f"    ✗ Failed to generate {table_file.name}: {e}")
+            import traceback
+            logger.debug(traceback.format_exc())
+            tables[table_name] = None
     
     # Summary
     logger.info("\n" + "=" * 70)
