@@ -10,23 +10,7 @@ VAR은 1개월 예측을 넘어서는 수평선에서 큰 오차를 보이며, �
 
 \subsubsection{DFM의 수치적 불안정성 및 해결}
 
-DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, \textbf{EZZ의 NaN/Inf 제거} 해결책 적용 후 모든 타겟에서 성공적으로 훈련됨. 모델별 성공/실패 현황은 표~\ref{tab:model_success_failure}에 요약되어 있음.
-
-\begin{table}[h]
-\centering
-\caption{모델별 성공/실패 현황}
-\label{tab:model_success_failure}
-\begin{tabular}{lccc}
-\toprule
-모델 & KOEQUIPTE & KOIPALL.G & KOWRCCNSE \\
-\midrule
-DFM & 성공 (32 시리즈) & 성공 (33 시리즈) & 성공 (39 시리즈) \\
-DDFM & 성공 (32 시리즈) & 성공 (33 시리즈) & 성공 (39 시리즈) \\
-ARIMA & 성공 (41 시리즈) & 성공 (40 시리즈) & 성공 (47 시리즈) \\
-VAR & 성공 (41 시리즈) & 성공 (40 시리즈) & 성공 (47 시리즈) \\
-\bottomrule
-\end{tabular}
-\end{table}
+DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, \textbf{EZZ의 NaN/Inf 제거} 해결책 적용 후 모든 타겟에서 성공적으로 훈련됨.
 
 \paragraph{문제 발생 원인}
 
