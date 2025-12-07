@@ -825,7 +825,7 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     # Plot 2: 1 week before
     ax2 = axes[1]
     # Actual value: blue solid line
-    ax2.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'm{target_name_kr}, %', alpha=0.9)
+    ax2.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'{target_name} (Actual)', alpha=0.9)
     # Nowcast: orange dashed line with circle markers
     ax2.plot(month_dates, avg_predictions_1weeks, '--', color='#FF8C00', marker='o', 
             linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
