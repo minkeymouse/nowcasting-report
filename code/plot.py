@@ -1038,7 +1038,7 @@ def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = Non
     ax2.set_ylim(bottom=0)
     
     # Add note
-    fig.text(0.5, 0.02, f'주: 2024-01~2025-10 평균 예측오차', 
+    fig.text(0.5, 0.02, f'Note: Average forecast error for 2024-01 to 2025-10', 
             ha='center', fontsize=9, style='italic')
     
     plt.tight_layout()
