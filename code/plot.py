@@ -435,7 +435,8 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         return
     
     try:
-        data = pd.read_csv(data_file, parse_dates=['date'], index_col='date')
+        # Data file has first column as dates (no column name), use index_col=0
+        data = pd.read_csv(data_file, index_col=0, parse_dates=True)
         if target not in data.columns:
             print(f"Warning: Target {target} not found in data columns")
             return
