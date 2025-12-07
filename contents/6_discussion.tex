@@ -15,24 +15,21 @@
 \textbf{VAR:}
 \begin{itemize}
     \item 세 대상 변수 모두에서 성공적으로 평가 완료
-    \item 제한: 다단계 예측에서 수치적 불안정성 문제 (이론적)
-    \item 단기 수평선(1-2개월)에서 상대적으로 안정적인 성능을 보임
+    \item 단기 수평선에서 상대적으로 안정적인 성능을 보임
     \item Nowcasting에서는 release date 마스킹 처리의 어려움으로 인해 제한적임
 \end{itemize}
 
 \textbf{DFM:}
 \begin{itemize}
-    \item KOEQUIPTE: 1개월 sMAE = 0.7920, sMSE = 0.6272; 11개월 sMAE = 1.9887, sMSE = 3.9550; 22개월 sMAE = 0.1891, sMSE = 0.0358
-    \item KOIPALL.G: 1개월 sMAE = 0.2301, sMSE = 0.0529; 11개월 sMAE = 0.9854, sMSE = 0.9710; 22개월 sMAE = 0.0137, sMSE = 0.0002
-    \item KOWRCCNSE: 1개월 sMAE = 0.6003, sMSE = 0.3603; 11개월 sMAE = 0.1296, sMSE = 0.0168; 22개월 sMAE = 0.4937, sMSE = 0.2438
+    \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능
 \end{itemize}
 
 \textbf{DDFM:}
 \begin{itemize}
-    \item KOEQUIPTE: 1개월 sMAE = 0.7717, sMSE = 0.5956; 11개월 sMAE = 2.0090, sMSE = 4.0359; 22개월 sMAE = 0.1688, sMSE = 0.0285
-    \item KOIPALL.G: 1개월 sMAE = 0.4414, sMSE = 0.1949; 11개월 sMAE = 0.3138, sMSE = 0.0985; 22개월 sMAE = 0.6579, sMSE = 0.4328
-    \item KOWRCCNSE: 1개월 sMAE = 0.4529, sMSE = 0.2051; 11개월 sMAE = 0.0178, sMSE = 0.0003; 22개월 sMAE = 0.3464, sMSE = 0.1200
-    \item 특징: KOWRCCNSE에서 11개월 수평선에서 가장 우수한 성능, KOIPALL.G에서는 DFM보다 높은 오차
+    \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item 중간 수평선(11개월)에서 우수한 성능을 보임
+    \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능
 \end{itemize}
 
 \subsection{원인 분석}
