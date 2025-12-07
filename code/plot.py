@@ -191,8 +191,8 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
     
     fig, ax = plt.subplots(figsize=(12, 6))
     
-    # All horizons from 1 to 30
-    horizons = list(range(1, 31))
+    # All horizons from 1 to 22 (monthly: 2024-01 to 2025-10)
+    horizons = list(range(1, 23))
     models = ['ARIMA', 'VAR', 'DFM', 'DDFM']
     colors = {'ARIMA': '#1f77b4', 'VAR': '#ff7f0e', 'DFM': '#2ca02c', 'DDFM': '#d62728'}
     
@@ -223,12 +223,12 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
                 ax.plot(plot_horizons, plot_values, marker='o', label=model, 
                        linewidth=2, markersize=4, color=colors.get(model, 'gray'), alpha=0.8)
     
-    ax.set_xlabel('Forecast Horizon (days)', fontsize=11)
+    ax.set_xlabel('Forecast Horizon (months)', fontsize=11)
     ax.set_ylabel('Standardized MSE (sMSE)', fontsize=11)
     ax.set_title('Performance Trend by Forecast Horizon (Standardized MSE)', fontsize=13, fontweight='bold')
     ax.legend(loc='best', fontsize=9)
     ax.grid(alpha=0.3)
-    ax.set_xticks(range(1, 31, 5))  # Show every 5 days for readability
+    ax.set_xticks(range(1, 23, 3))  # Show every 3 months for readability
     
     plt.tight_layout()
     

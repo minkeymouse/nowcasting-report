@@ -1,8 +1,8 @@
 \subsubsection{Forecasting}
 
-본 절에서는 세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 비교함. 실험은 1일, 7일, 28일 수평선에 대해 수행되었으며, 표에는 이 세 수평선의 결과를 제시함.
+본 절에서는 세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 비교함. 실험은 1개월부터 22개월까지의 수평선에 대해 수행되었으며, 표에는 가독성을 위해 1개월, 7개월, 28개월 수평선의 결과만 제시함.
 
-표~\ref{tab:forecasting_results}는 모형-수평선 조합별(12개 행: ARIMA-1, ARIMA-7, ARIMA-28, VAR-1, VAR-7, VAR-28, DFM-1, DFM-7, DFM-28, DDFM-1, DDFM-7, DDFM-28)로 각 대상 변수에 대한 표준화된 MAE와 MSE를 제시함. 각 셀은 해당 모형-수평선-대상 조합에 대한 지표값을 나타냄.
+표~\ref{tab:forecasting_results}는 모형-수평선 조합별(12개 행: ARIMA-1, ARIMA-7, ARIMA-28, VAR-1, VAR-7, VAR-28, DFM-1, DFM-7, DFM-28, DDFM-1, DDFM-7, DDFM-28)로 각 대상 변수에 대한 표준화된 MAE와 MSE를 제시함. 각 셀은 해당 모형-수평선-대상 조합에 대한 지표값을 나타냄. 수평선은 개월 단위임(예: 1은 1개월, 7은 7개월, 28은 28개월).
 
 \input{tables/tab_forecasting_results}
 
