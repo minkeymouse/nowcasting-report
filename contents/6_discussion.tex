@@ -59,6 +59,7 @@ Nowcasting 실험 구성:
 \begin{itemize}
     \item 시간 경과에 따라 더 많은 데이터 사용 가능 $\to$ 예측 정확도 향상
     \item DFM/DDFM: 많은 시계열 활용, 요인 추출 $\to$ 데이터 증가 시 성능 향상 기대
-    \item Release date 마스킹: DFM/DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리 가능
+    \item Release date 마스킹: DFM/DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리 가능. Kalman filter는 각 시점의 데이터 발표를 재귀적으로 처리하여 예측을 업데이트하며, 데이터의 시의성과 품질을 자동으로 고려함
+    \item 실시간 데이터 흐름: 비동기적 데이터 발표로 인한 불규칙성(jagged edges)을 DFM/DDFM이 자연스럽게 처리할 수 있어, 실제 운영 환경에서의 nowcasting에 적합함
 \end{itemize}
 
