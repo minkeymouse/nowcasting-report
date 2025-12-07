@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  7 DEC 2025 10:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  7 DEC 2025 10:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -567,7 +567,12 @@ Package microtype Info: No adjustment of character kerning.
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg
 File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 )
-(./contents/1_introduction.tex) (./contents/2_methodology.tex
+(./contents/1_introduction.tex
+
+LaTeX Warning: Citation `bok2017macroeconomic' on page 1 undefined on input lin
+e 5.
+
+) (./contents/2_methodology.tex
 
 LaTeX Warning: Reference `tab:dataset_params' on page 1 undefined on input line
  6.
@@ -589,6 +594,10 @@ dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
+
+LaTeX Warning: Citation `stock2002forecasting' on page 2 undefined on input lin
+e 18.
+
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
@@ -611,6 +620,14 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
+
+LaTeX Warning: Citation `andreini2020deep' on page 2 undefined on input line 29
+.
+
+
+LaTeX Warning: Citation `mariano2003new' on page 2 undefined on input line 33.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -648,7 +665,7 @@ n input line 17.
 LaTeX Warning: Reference `tab:metrics_36_rows' on page 4 undefined on input lin
 e 17.
 
-<images/forecast_vs_actual_koipall_g.png, id=165, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_koipall_g.png, id=157, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_koipall_g.png Graphic file (type png)
 <use images/forecast_vs_actual_koipall_g.png>
 Package pdftex.def Info: images/forecast_vs_actual_koipall_g.png  used on input
@@ -793,7 +810,7 @@ n input line 17.
 LaTeX Warning: Reference `tab:metrics_36_rows' on page 5 undefined on input lin
 e 17.
 
-<images/forecast_vs_actual_koequipte.png, id=176, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_koequipte.png, id=167, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_koequipte.png Graphic file (type png)
 <use images/forecast_vs_actual_koequipte.png>
 Package pdftex.def Info: images/forecast_vs_actual_koequipte.png  used on input
@@ -948,7 +965,7 @@ n input line 17.
 LaTeX Warning: Reference `tab:metrics_36_rows' on page 7 undefined on input lin
 e 17.
 
-<images/forecast_vs_actual_kowrccnse.png, id=189, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_kowrccnse.png, id=181, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_kowrccnse.png Graphic file (type png)
 <use images/forecast_vs_actual_kowrccnse.png>
 Package pdftex.def Info: images/forecast_vs_actual_kowrccnse.png  used on input
@@ -1107,12 +1124,12 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [8 <./images/forecast_vs_actual_kowrccnse.png>]
-<images/accuracy_heatmap.png, id=201, 715.2321pt x 570.6921pt>
+<images/accuracy_heatmap.png, id=193, 715.2321pt x 570.6921pt>
 File: images/accuracy_heatmap.png Graphic file (type png)
 <use images/accuracy_heatmap.png>
 Package pdftex.def Info: images/accuracy_heatmap.png  used on input line 9.
 (pdftex.def)             Requested size: 375.80542pt x 299.86165pt.
-<images/horizon_trend.png, id=202, 716.6775pt x 426.393pt>
+<images/horizon_trend.png, id=194, 716.6775pt x 426.393pt>
 File: images/horizon_trend.png Graphic file (type png)
 <use images/horizon_trend.png>
 Package pdftex.def Info: images/horizon_trend.png  used on input line 16.
@@ -1191,11 +1208,11 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 7547A078D7F456AE3140F1F9D0A5077F;4811.
  ) 
 Here is how much of TeX's memory you used:
- 14489 strings out of 476182
- 234249 string characters out of 5795595
+ 14461 strings out of 476182
+ 233813 string characters out of 5795595
  1933975 words of memory out of 5000000
- 36013 multiletter control sequences out of 15000+600000
- 597002 words of font info for 180 fonts, out of 8000000 for 9000
+ 36004 multiletter control sequences out of 15000+600000
+ 593458 words of font info for 171 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,12n,96p,1001b,474s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
@@ -1205,11 +1222,11 @@ e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/u
-tmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (11 pages, 1368606 bytes).
+tmr8a.pfb>
+Output written on main.pdf (11 pages, 1356644 bytes).
 PDF statistics:
- 279 PDF objects out of 1000 (max. 8388607)
- 235 compressed objects within 3 object streams
- 56 named destinations out of 1000 (max. 500000)
- 38682 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 264 PDF objects out of 1000 (max. 8388607)
+ 222 compressed objects within 3 object streams
+ 51 named destinations out of 1000 (max. 500000)
+ 34586 words of extra memory for PDF output out of 35830 (max. 10000000)
 
