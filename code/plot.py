@@ -829,6 +829,258 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     print(f"Generated: {save_path.name}")
 
 
+def plot_nowcasting_trend_and_error(target: str, save_path: Optional[Path] = None):
+    """Create nowcasting trend and forecast error comparison plot.
+    
+    Left plot: Nowcasting trend over time (actual vs nowcast at 4 weeks and 1 week before)
+    Right plot: Average forecast error by forecast point (4 weeks vs 1 week before)
+    
+    Parameters
+    ----------
+    target : str
+        Target series name (KOEQUIPTE, KOWRCCNSE, or KOIPALL.G)
+    save_path : Path, optional
+        Output path for the plot
+    """
+    backtest_dir = OUTPUTS_DIR / "backtest"
+    if not backtest_dir.exists():
+        # No backtest results, create placeholder
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        for ax in axes:
+            ax.text(0.5, 0.5, f'Placeholder: No backtest data for {target}', 
+                    ha='center', va='center', fontsize=14, color='gray')
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+        
+        if save_path is None:
+            save_path = IMAGES_DIR / f"nowcasting_trend_error_{target.lower().replace('.', '_')}.png"
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.close()
+        print(f"Generated placeholder: {save_path.name}")
+        return
+    
+    # Load all backtest JSON files for this target
+    models = ['arima', 'var', 'dfm', 'ddfm']
+    timepoints = ['4weeks', '1weeks']
+    
+    # Structure: {timepoint: {month: {forecast: [], actual: value}}}
+    data_by_timepoint = {'4weeks': {}, '1weeks': {}}
+    
+    for model in models:
+        backtest_file = backtest_dir / f"{target}_{model}_backtest.json"
+        if not backtest_file.exists():
+            continue
+        
+        try:
+            with open(backtest_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            results_by_timepoint = data.get('results_by_timepoint', {})
+            
+            for tp in timepoints:
+                if tp not in results_by_timepoint:
+                    continue
+                
+                tp_results = results_by_timepoint[tp]
+                monthly_results = tp_results.get('monthly_results', [])
+                
+                for month_data in monthly_results:
+                    month_str = month_data.get('month')
+                    if month_str is None:
+                        continue
+                    
+                    if month_str not in data_by_timepoint[tp]:
+                        data_by_timepoint[tp][month_str] = {'forecasts': [], 'actual': None}
+                    
+                    forecast_value = month_data.get('forecast_value')
+                    if forecast_value is not None and not np.isnan(forecast_value):
+                        data_by_timepoint[tp][month_str]['forecasts'].append(forecast_value)
+                    
+                    # Store actual value (same for all models)
+                    if data_by_timepoint[tp][month_str]['actual'] is None:
+                        data_by_timepoint[tp][month_str]['actual'] = month_data.get('actual_value')
+        
+        except Exception as e:
+            print(f"Warning: Failed to load {backtest_file}: {e}")
+            continue
+    
+    # Check if we have any data
+    if not any(data_by_timepoint[tp] for tp in timepoints):
+        # No data, create placeholder
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        for ax in axes:
+            ax.text(0.5, 0.5, f'Placeholder: No backtest data for {target}', 
+                    ha='center', va='center', fontsize=14, color='gray')
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+        
+        if save_path is None:
+            save_path = IMAGES_DIR / f"nowcasting_trend_error_{target.lower().replace('.', '_')}.png"
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.close()
+        print(f"Generated placeholder: {save_path.name}")
+        return
+    
+    # Prepare data for plotting
+    # Get all months (from both timepoints)
+    all_months = set()
+    for tp in timepoints:
+        all_months.update(data_by_timepoint[tp].keys())
+    months = sorted(all_months)
+    
+    # Convert month strings to datetime
+    month_dates = []
+    for month_str in months:
+        try:
+            if len(month_str) == 7:  # "2024-01"
+                dt = pd.to_datetime(month_str + "-01")
+            else:
+                dt = pd.to_datetime(month_str)
+            month_dates.append(dt)
+        except:
+            month_dates.append(pd.Timestamp('2024-01-01') + pd.DateOffset(months=len(month_dates)))
+    
+    # Prepare trend data (average forecasts and actuals)
+    avg_forecasts_4w = []
+    avg_forecasts_1w = []
+    actual_vals = []
+    
+    for month in months:
+        # 4 weeks before
+        if month in data_by_timepoint['4weeks']:
+            forecasts_4w = data_by_timepoint['4weeks'][month]['forecasts']
+            if forecasts_4w:
+                avg_forecasts_4w.append(np.mean([f for f in forecasts_4w if not np.isnan(f)]))
+            else:
+                avg_forecasts_4w.append(np.nan)
+        else:
+            avg_forecasts_4w.append(np.nan)
+        
+        # 1 week before
+        if month in data_by_timepoint['1weeks']:
+            forecasts_1w = data_by_timepoint['1weeks'][month]['forecasts']
+            if forecasts_1w:
+                avg_forecasts_1w.append(np.mean([f for f in forecasts_1w if not np.isnan(f)]))
+            else:
+                avg_forecasts_1w.append(np.nan)
+        else:
+            avg_forecasts_1w.append(np.nan)
+        
+        # Actual (use from either timepoint)
+        actual = None
+        if month in data_by_timepoint['4weeks']:
+            actual = data_by_timepoint['4weeks'][month]['actual']
+        elif month in data_by_timepoint['1weeks']:
+            actual = data_by_timepoint['1weeks'][month]['actual']
+        actual_vals.append(actual)
+    
+    # Calculate forecast errors for error comparison plot
+    errors_4w = []
+    errors_1w = []
+    
+    for i, month in enumerate(months):
+        actual = actual_vals[i]
+        if actual is None or np.isnan(actual):
+            errors_4w.append(np.nan)
+            errors_1w.append(np.nan)
+            continue
+        
+        # 4 weeks before error
+        forecast_4w = avg_forecasts_4w[i]
+        if forecast_4w is not None and not np.isnan(forecast_4w):
+            errors_4w.append(abs(forecast_4w - actual))
+        else:
+            errors_4w.append(np.nan)
+        
+        # 1 week before error
+        forecast_1w = avg_forecasts_1w[i]
+        if forecast_1w is not None and not np.isnan(forecast_1w):
+            errors_1w.append(abs(forecast_1w - actual))
+        else:
+            errors_1w.append(np.nan)
+    
+    # Calculate average errors for each timepoint
+    avg_error_4w = np.nanmean(errors_4w) if any(not np.isnan(e) for e in errors_4w) else np.nan
+    avg_error_1w = np.nanmean(errors_1w) if any(not np.isnan(e) for e in errors_1w) else np.nan
+    
+    # Target name mapping
+    target_names = {
+        'KOEQUIPTE': '총고정자본형성',
+        'KOWRCCNSE': '민간소비',
+        'KOIPALL.G': '생산'
+    }
+    target_name_kr = target_names.get(target, target)
+    
+    # Create side-by-side plots
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Plot 1: Nowcasting trend (left)
+    ax1 = axes[0]
+    # Actual values: red squares (like in image)
+    actual_valid = [(d, v) for d, v in zip(month_dates, actual_vals) if v is not None and not np.isnan(v)]
+    if actual_valid:
+        actual_dates, actual_values = zip(*actual_valid)
+        ax1.plot(actual_dates, actual_values, 'rs', markersize=8, label='Actual', alpha=0.9, zorder=3)
+    
+    # 4 weeks before: gray dashed line (Bloomberg-like)
+    ax1.plot(month_dates, avg_forecasts_4w, '--', color='gray', linewidth=1.5, 
+            label='4주 전', alpha=0.8)
+    
+    # 1 week before: yellow solid line (DFM.i-like)
+    ax1.plot(month_dates, avg_forecasts_1w, '-', color='#FFD700', linewidth=2, 
+            label='1주 전 (DFM.i)', alpha=0.9)
+    
+    ax1.set_xlabel('Date', fontsize=11)
+    ax1.set_ylabel('Value (%)', fontsize=11)
+    ax1.set_title(f'{target_name_kr} Nowcasting 추이', fontsize=12, fontweight='bold')
+    ax1.legend(loc='best', fontsize=9)
+    ax1.grid(alpha=0.3, linestyle='--')
+    ax1.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: pd.Timestamp(x).strftime('%Y.%m')))
+    fig.autofmt_xdate()
+    
+    # Plot 2: Forecast error comparison (right)
+    ax2 = axes[1]
+    # Plot average errors for each timepoint
+    weeks_labels = ['4주전', '1주전']
+    avg_errors = [avg_error_4w, avg_error_1w]
+    colors = ['gray', '#FFD700']
+    linestyles = ['--', '-']
+    
+    ax2.plot(weeks_labels, avg_errors, '-', color='#FFD700', linewidth=2, 
+            marker='o', markersize=8, label='DFM.i', alpha=0.9)
+    
+    ax2.set_xlabel('전망시점', fontsize=11)
+    ax2.set_ylabel('평균 예측오차', fontsize=11)
+    ax2.set_title('전망시점 별 Nowcasting 평균 예측오차 비교', fontsize=12, fontweight='bold')
+    ax2.legend(loc='best', fontsize=9)
+    ax2.grid(alpha=0.3, linestyle='--', axis='y')
+    ax2.set_ylim(bottom=0)
+    
+    # Add note
+    fig.text(0.5, 0.02, f'주: 2024-01~2025-10 평균 예측오차', 
+            ha='center', fontsize=9, style='italic')
+    
+    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.1)
+    
+    if save_path is None:
+        save_path = IMAGES_DIR / f"nowcasting_trend_error_{target.lower().replace('.', '_')}.png"
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_path, bbox_inches='tight', dpi=300)
+    plt.close()
+    print(f"Generated: {save_path.name}")
+
+
 def generate_all_plots():
     """Generate all plots required by WORKFLOW.md.
     
@@ -836,6 +1088,7 @@ def generate_all_plots():
     Plot2: accuracy_heatmap
     Plot3: horizon_trend (1-22 months, sMSE)
     Plot4: nowcasting_comparison (3 pairs, one per target, 22 months)
+    Plot5: nowcasting_trend_and_error (3 plots, one per target)
     """
     print("=" * 70)
     print("Generating Report Images (WORKFLOW.md)")
@@ -874,6 +1127,13 @@ def generate_all_plots():
     for target in targets:
         print(f"   - nowcasting_comparison_{target.lower().replace('.', '_')}.png")
         plot_nowcasting_comparison(target)
+    
+    # Plot5: Nowcasting trend and error comparison (one plot per target)
+    print("\n   Plot5: Nowcasting Trend and Error Comparison (3 plots)")
+    targets = ['KOEQUIPTE', 'KOWRCCNSE', 'KOIPALL.G']
+    for target in targets:
+        print(f"   - nowcasting_trend_error_{target.lower().replace('.', '_')}.png")
+        plot_nowcasting_trend_and_error(target)
     
     print("\n" + "=" * 70)
     print("Image generation complete!")
