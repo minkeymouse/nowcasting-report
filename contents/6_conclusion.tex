@@ -4,6 +4,14 @@ This study compares the performance of four forecasting models (ARIMA, VAR, DFM,
 
 The main findings are presented based on experimental results comparing model performance across the three targets and three forecast horizons (1, 7, and 28 days). Overall performance metrics are summarized in Table~\ref{tab:overall_metrics}, while target-specific and horizon-specific comparisons are presented in Table~\ref{tab:overall_metrics_by_target} and Table~\ref{tab:overall_metrics_by_horizon}, respectively. Detailed results for all 36 combinations (3 targets × 4 models × 3 horizons) are provided in Table~\ref{tab:metrics_36_rows}. Performance is evaluated using standardized metrics (sMSE, sMAE, sRMSE) to enable fair comparison across different series scales.
 
+\input{tables/tab_overall_metrics}
+
+\input{tables/tab_overall_metrics_by_target}
+
+\input{tables/tab_overall_metrics_by_horizon}
+
+\input{tables/tab_metrics_36_rows}
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.8\textwidth]{images/accuracy_heatmap.png}
@@ -26,7 +34,7 @@ The experimental results reveal several important findings:
 
 \textbf{ARIMA Performance:} ARIMA demonstrates the most consistent and reliable performance across all three targets and forecast horizons. For industrial production (KOIPALL.G), ARIMA achieves excellent 1-day forecasts (sRMSE = 0.058) with reasonable performance extending to 28-day horizons (sRMSE = 0.62). For consumption (KOWRCCNSE), ARIMA shows particularly strong performance with sRMSE values between 0.65-0.81 across all horizons. Investment forecasting (KOEQUIPTE) proves more challenging, with ARIMA achieving sRMSE values of 0.32-1.67, reflecting the higher volatility of equipment investment.
 
-\textbf{VAR Limitations:} While VAR produces exceptional 1-day forecasts (sRMSE $< 10^{-4}$ for all targets), the model suffers from severe numerical instability for longer horizons. For 7-day and 28-day forecasts, VAR errors explode to impractical magnitudes (sRMSE $> 10^{11}$), rendering the model unsuitable for multi-step ahead forecasting. This instability is a fundamental limitation of VAR models when forecasting beyond very short horizons, likely due to error accumulation and potential non-stationarity issues.
+\textbf{VAR Limitations:} While VAR produces exceptional 1-day forecasts (sRMSE $<$ 10$^{-4}$ for all targets), the model suffers from severe numerical instability for longer horizons. For 7-day and 28-day forecasts, VAR errors explode to impractical magnitudes (sRMSE $>$ 10$^{11}$), rendering the model unsuitable for multi-step ahead forecasting. This instability is a fundamental limitation of VAR models when forecasting beyond very short horizons, likely due to error accumulation and potential non-stationarity issues.
 
 \textbf{DFM Performance:} DFM shows poor performance across all targets and horizons, with sRMSE values ranging from 4.2 to 9.3 for 1-day forecasts and 5.3 to 7.1 for 7-day forecasts. The model struggles particularly with consumption (KOWRCCNSE) and production (KOIPALL.G), showing numerical instability warnings during EM algorithm convergence. For investment (KOEQUIPTE), DFM performance is better but still worse than ARIMA. The 28-day horizon is unavailable for all DFM models due to insufficient test data.
 

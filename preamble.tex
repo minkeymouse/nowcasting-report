@@ -1,11 +1,10 @@
 \usepackage{arxiv}
 \usepackage{float}
 \usepackage{graphicx}
-% Korean support - works with pdfLaTeX, XeLaTeX, and LuaLaTeX
+% English support - works with pdfLaTeX, XeLaTeX, and LuaLaTeX
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage[english]{babel} % English language support
-%\usepackage{kotex}          % Korean language support (optional - comment out if not installed)
 \usepackage{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
@@ -18,10 +17,10 @@
 \usepackage{setspace}       % Line spacing control
 \setstretch{1.6}             % 1.6 line spacing (wider spacing like reference images)
 
-% Section numbering (English)
+% English section numbering: 1, a, 1, bullet
 \renewcommand{\thesection}{\arabic{section}.}
-\renewcommand{\thesubsection}{\arabic{section}.\alph{subsection}.}
-\renewcommand{\thesubsubsection}{\arabic{section}.\alph{subsection}.\arabic{subsubsection}.}
+\renewcommand{\thesubsection}{\alph{subsection}.}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
 
 % Adjust section spacing
 \makeatletter
@@ -44,4 +43,4 @@
 % Customize itemize spacing
 \setlist{leftmargin=*, topsep=0.5em, itemsep=0.3em, parsep=0.2em}
 
-% \title{고빈도 데이터를 활용한 생산, 투자 분야 거시 변수 예측 모델}  % Korean title (commented out - title is in main.tex)
+% Title is set in main.tex
