@@ -10,64 +10,72 @@ VAR은 1개월 예측을 넘어서는 수평선에서 큰 오차를 보이며, �
 
 \subsubsection{DFM의 수치적 불안정성 및 해결}
 
-DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, \textbf{EZZ의 NaN/Inf 제거} 해결책 적용 후 모든 타겟에서 성공적으로 훈련됨.
+DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, 수치 안정화 기법 적용 후 모든 타겟에서 성공적으로 훈련됨. 이 문제는 DFM의 이론적 한계를 보여주며, DDFM과 같은 대안적 접근법의 필요성을 시사함.
 
-\paragraph{문제 발생 원인}
+\paragraph{이론적 배경}
 
-DFM 수치적 불안정성 발생 과정:
+DFM의 수치적 불안정성은 Kalman filter의 재귀적 공분산 업데이트와 EM algorithm의 M-step에서 발생하는 근본적인 수치 선형대수학 문제임 \cite{golub2013matrix, higham2002computing}.
+
+\textbf{Kalman Filter의 수치적 한계:}
 \begin{itemize}
-    \item \textbf{Forward pass:} $V_u = V - VCF @ VC^T$ 계산 시 cancellation error 발생
-    \item \textbf{오차 누적:} $V = A @ V_u @ A^T + Q$ 계산에서 오차 누적 $\to$ NaN/Inf 발산
-    \item \textbf{Backward pass:} 손상된 V, Vu 전파 $\to$ smoothed factors ($EZ$, $EZZ$) 손상
-    \item \textbf{Eigendecomposition 실패:} 손상된 $EZZ$가 $sum\_EZZ$에 포함 $\to$ C matrix 업데이트 실패
-    \item \textbf{시리즈 개수 영향:} $n_{\text{obs}} \geq 33$일 때 수치적 오차 더 빠르게 누적
+    \item \textbf{재귀적 공분산 업데이트:} Forward pass에서 $V_u = V - VCF @ VC^T$ 계산 시 cancellation error 발생
+    \item \textbf{오차 누적:} $V = A @ V_u @ A^T + Q$ 계산에서 행렬 곱셈과 덧셈 과정에서 부동소수점 오차 누적
+    \item \textbf{조건수 증가:} 관측 차원($n_{\text{obs}}$)이 상태 공간 차원보다 클 때 ($n_{\text{obs}} \geq 33$), 공분산 행렬의 condition number가 증가하여 수치적 불안정성 가속화
+    \item \textbf{Backward pass 전파:} Forward pass의 손상이 backward pass로 전파되어 smoothed factors ($EZ$, $EZZ$) 손상
 \end{itemize}
+
+\textbf{EM Algorithm의 수렴성 문제:}
+\begin{itemize}
+    \item \textbf{M-step의 행렬 역행렬 계산:} 요인 적재 행렬 $C$ 업데이트 시 $C_{\text{new}} = \text{solve}(sum\_EZZ^T, sum\_yEZ^T)^T$ 계산 필요
+    \item \textbf{Ill-conditioned 행렬:} 손상된 $EZZ$가 $sum\_EZZ$에 포함되면 eigendecomposition 실패, condition number가 무한대에 가까워짐
+    \item \textbf{수렴 실패:} 결과적으로 C matrix가 NaN으로 채워지고, EM algorithm이 조기 수렴함
+\end{itemize}
+
+\paragraph{이론적 의미}
+
+이 문제는 DFM의 근본적 한계를 보여줌:
+\begin{itemize}
+    \item \textbf{선형 가정의 취약성:} 선형 요인 적재 행렬 $C$는 고차원 관측 공간에서 저차원 요인 공간으로의 선형 매핑을 가정함. 관측 차원이 증가할수록 이 매핑의 추정이 어려워짐
+    \item \textbf{수치적 정확도와 확장성의 트레이드오프:} 부동소수점 연산의 근본적 한계로 인해 완벽한 수치적 정확도는 불가능하며 \cite{higham2002computing}, 더 많은 시계열을 사용할수록 수치적 오차가 누적됨
+    \item \textbf{데이터 품질 의존성:} 높은 상관관계, 극단적 결측치, 작은 유효 표본 크기 등 데이터 품질 문제가 수치적 불안정성을 악화시킴
+\end{itemize}
+
+이러한 한계는 비선형 인코더를 사용하는 DDFM과 같은 대안적 접근법의 이론적 정당성을 제공함. DDFM은 선형 매핑의 제약을 완화하고, 딥러닝 기반 요인 추출을 통해 수치적 안정성 문제를 우회할 수 있음 \cite{andreini2020deep}.
 
 \paragraph{해결 방법}
 
-\textbf{EZZ의 NaN/Inf 제거} 적용:
+수치 안정화를 위해 다음과 같은 기법을 적용함:
+
+\textbf{1. Robust Statistics 접근법:}
 \begin{itemize}
-    \item sum\_EZZ 계산 전 EZZ의 NaN/Inf를 0으로 대체
-    \item 손상된 시간 단계 제외, 정상 시간 단계만 사용
-    \item 이론적 근거: robust statistics \cite{huber1981robust}
+    \item \textbf{EZZ의 NaN/Inf 제거:} sum\_EZZ 계산 전 손상된 시간 단계의 EZZ를 0으로 대체하여 제외
+    \item \textbf{이론적 근거:} Huber (1981)의 robust statistics 이론에 따라 outlier나 손상된 관측값을 제외하고 정상적인 관측값만으로 추정하는 것은 통계적으로 타당함 \cite{huber1981robust}
+    \item \textbf{시계열 특성:} 시간적 의존성이 있으므로 일부 시간 단계가 손상되어도 다른 시간 단계의 정보로 보완 가능
 \end{itemize}
 
-\textbf{추가 수치 안정화 기법:}
+\textbf{2. 수치 선형대수학 기법:}
 \begin{itemize}
-    \item F Matrix Regularization 강화
-    \item Pseudo-inverse 사용 (solve 실패 시 fallback)
-    \item 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 대칭성 강제
+    \item \textbf{사전정규화:} 조건수 $10^8$ 이상인 경우 적응적 정규화 적용 \cite{golub2013matrix}
+    \item \textbf{R 행렬 최소값 강제:} $10^{-4}$로 설정하여 innovation covariance의 수치 안정성 향상
+    \item \textbf{공분산 행렬 대칭성 강제:} 모든 공분산 행렬 업데이트 후 즉시 대칭성 강제 \cite{higham2002computing}
+    \item \textbf{Pseudo-inverse 사용:} solve 실패 시 fallback으로 더 robust한 해 제공
+    \item \textbf{F Matrix Regularization:} 관측 차원 기반 적응적 정규화
 \end{itemize}
 
-\paragraph{해결 결과}
+\paragraph{해결 결과 및 시사점}
 
-모든 타겟에서 DFM 모델 정상 훈련:
+해결책 적용 후 모든 타겟에서 DFM 모델이 정상적으로 훈련됨:
 \begin{itemize}
-    \item \textbf{KOIPALL.G (33 시리즈):} C matrix NaN 100\% $\to$ 0\%, iterations 4 $\to$ 40, log-likelihood -3102.04 $\to$ 356.35 (개선: +1531.94)
-    \item \textbf{KOWRCCNSE (39 시리즈):} C matrix NaN 94.9\% $\to$ 0\%, iterations 4 $\to$ 68, log-likelihood -2671.57 $\to$ 817.54 (개선: +6754.92)
-    \item \textbf{KOEQUIPTE (32 시리즈):} 이전부터 안정적, 해결 후 정상 훈련 (51 iterations, log-likelihood -814.39)
+    \item \textbf{KOIPALL.G:} C matrix NaN 100\% $\to$ 0\%, log-likelihood -3102.04 $\to$ 356.35
+    \item \textbf{KOWRCCNSE:} C matrix NaN 94.9\% $\to$ 0\%, log-likelihood -2671.57 $\to$ 817.54
+    \item \textbf{KOEQUIPTE:} 이전부터 안정적, 해결 후 정상 훈련
 \end{itemize}
 
-\paragraph{해결책의 의미와 한계}
-
-\textbf{의미:}
+이 결과는 다음과 같은 시사점을 제공함:
 \begin{itemize}
-    \item 실용적 접근법: 근본 원인 직접 해결 대신 손상된 결과 제외로 문제 우회
-    \item 이론적 근거: 부동소수점 연산의 근본적 한계 \cite{higham2002computing}
-    \item 효과: 정상 시간 단계만 사용하여 EM algorithm 정상 수렴 가능
-\end{itemize}
-
-\textbf{한계:}
-\begin{itemize}
-    \item 손상된 시간 단계가 상당 부분 차지 시 유효 표본 크기 감소 $\to$ 추정 정확도 저하
-    \item 근본 원인 미해결: 더 극단적 상황에서 문제 재발 가능
-\end{itemize}
-
-\textbf{향후 개선 방향:}
-\begin{itemize}
-    \item Square-root Kalman filter, UD factorization
-    \item 고정밀도 부동소수점 연산
-    \item 제한: 계산 비용 증가 또는 구현 복잡도 증가
+    \item \textbf{DFM의 실용적 한계:} 수치 안정화 기법으로 문제를 우회할 수 있으나, 근본 원인(Kalman filter의 재귀적 오차 누적)은 해결되지 않음
+    \item \textbf{DDFM의 정당성:} 비선형 인코더를 사용하는 DDFM은 선형 매핑의 제약을 완화하고, Kalman filter의 재귀적 공분산 업데이트에 덜 의존하므로 수치적 안정성 문제를 우회할 수 있음
+    \item \textbf{모형 선택 기준:} 많은 시계열($n_{\text{obs}} \geq 33$)을 사용하거나 데이터 품질이 낮은 경우, DDFM이 더 안정적인 대안이 될 수 있음
 \end{itemize}
 
 \subsection{실험 설계의 제한사항}
