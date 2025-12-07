@@ -1,7 +1,7 @@
-\section{서론}
+\section{Introduction}
 
-거시경제 변수의 정확한 예측은 정책 결정과 기업 경영 전략 수립에 핵심적임. 특히 생산, 투자, 소비 지표는 경제 활동의 핵심을 나타내며, 실시간으로 파악하는 것이 중요함. 그러나 분기별 GDP와 같은 주요 지표는 해당 분기 종료 후 약 한 달 이상이 지나야 공식 발표되어, 실시간 경제 상황 파악과 신속한 정책 대응을 어렵게 만듦.
+Accurate forecasting of macroeconomic variables is crucial for policy decision-making and corporate strategic planning. In particular, production, investment, and consumption indicators represent the core of economic activity, and real-time assessment is essential. However, key indicators such as quarterly GDP are officially released only after approximately one month following the end of the quarter, making it difficult to assess the real-time economic situation and respond with timely policy measures.
 
-이에 따라 고빈도 데이터를 활용한 nowcasting 기법이 주목받고 있음 \cite{bok2017macroeconomic}. Nowcasting은 공식 통계 발표 전에 다양한 고빈도 지표를 활용하여 현재 시점의 거시경제 변수를 추정하는 기법으로, 특히 경제 위기 상황에서 신속한 정책 대응이 필요한 경우 그 중요성이 더욱 부각됨.
+Accordingly, nowcasting techniques utilizing high-frequency data have gained attention \cite{bok2017macroeconomic}. Nowcasting is a technique that estimates current macroeconomic variables using various high-frequency indicators before official statistics are released. Its importance is particularly highlighted in crisis situations where rapid policy response is needed.
 
-본 연구는 동적 요인 모형(Dynamic Factor Model, DFM)과 딥러닝 모형을 활용하여 생산(전산업생산지수, 제조업생산지수), 투자(설비투자지수), 소비(도소매판매액) 지표를 예측하는 nowcasting 시스템을 구축함. 월간 및 분기 데이터를 이용한 DFM 모형을 통해 분기 데이터로부터 월간 지수를 추정하고, 고빈도 금융시장 데이터를 추가한 고빈도 DFM 모형과 딥러닝 모형의 성능을 비교 분석함.
+This study constructs a nowcasting system using Dynamic Factor Models (DFM) and deep learning models to forecast three key Korean macroeconomic indicators: production (Industrial Production Index, All Industries: KOIPALL.G), investment (Equipment Investment Index: KOEQUIPTE), and consumption (Wholesale and Retail Trade Sales: KOWRCCNSE). We compare the performance of four forecasting models: ARIMA, VAR, DFM, and Deep Dynamic Factor Model (DDFM) across three forecast horizons (1, 7, and 28 days).

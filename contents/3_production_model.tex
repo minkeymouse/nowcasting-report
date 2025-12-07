@@ -1,26 +1,35 @@
-\section{생산 모형}
+\section{Production Model: KOIPALL.G}
 
-\subsection{데이터 구성}
+\subsection{Target Variable}
 
-생산부문 데이터는 고용, 산업생산, 서베이(기업경기, 소비자 동향) 등 주요 월간 지수와 GDP 분기 데이터를 포함하여 총 41개로 구성됨. 주요 변수는 고용/노동(실업률, 취업자 수, 경제활동인구, 근로시간), 수출입(수출입액, 물가지수, 교역조건), 소비/지출(소매판매액), 물가(소비자물가지수, 생산자물가지수), 설비투자, 건설, 산업생산(제조업 출하/재고, 서비스업 활동지수, 전산업생산지수, 제조업생산지수), 기업경기(BSI, FKI 지수), 소비자동향(CSI) 등임.
+The Industrial Production Index, All Industries (KOIPALL.G) serves as the production indicator, representing overall industrial activity in the Korean economy. This index aggregates production across all industries and is a key indicator for assessing economic activity.
 
-\subsection{DFM 모형 추정}
+\subsection{Data Composition}
 
-4개 공통요인을 가정하고 DFM 모형을 추정하여, 이를 통해 월간 GDP 지수를 산출함. 추정된 공통요인 $z_t$와 모수, 잔차항 $\varepsilon_t$를 이용하여 발표된 분기 GDP로부터 월간 GDP를 추정함. 추정된 월간 GDP는 관측된 GDP 성장률을 적절히 반영하면서, 전산업 생산지수와 비교적 높은 유사성을 보임(상관관계 0.86).
+The production model utilizes monthly and quarterly time series data relevant to industrial production. The dataset includes variables related to employment, industrial production, business surveys, and other economic indicators that are predictive of overall industrial activity.
 
-\subsection{분기 Nowcasting 성과}
+\subsection{Model Comparison Results}
 
-월, 분기 데이터를 이용한 DFM 모형은 GDP nowcasting에서 양호한 성과를 보임. GDP nowcasting에 대한 예측오차는 약 9주 전부터 시장 전문가(Bloomberg) 서베이 수준으로 양호하며, 발표 시점 평균 오차는 ±0.5\%p 수준임.
+We compare the forecasting performance of four models (ARIMA, VAR, DFM, DDFM) on KOIPALL.G across three forecast horizons (1, 7, and 28 days). Performance metrics (standardized MSE, MAE, and RMSE) will be presented in Table~\ref{tab:overall_metrics_by_target} and visualized in Figure~\ref{fig:forecast_vs_actual_koipallg}.
 
-\subsection{고빈도 DFM 모형}
+\subsection{Forecast Performance}
 
-추정된 월간 GDP를 사용하여, 고빈도 데이터를 포함하여 주, 월간 데이터로 구성된 고빈도 DFM 모형을 추정함. 고빈도 데이터는 주가, 국채금리, 회사채금리, 환율 등 금융시장 데이터와 뉴스 심리지수를 활용함. 데이터 개수는 월, 분기 데이터 41개에 고빈도 데이터 5개를 추가하여 46개이며, 요인 개수는 5개로 가정함.
+The forecast vs actual plot (Figure~\ref{fig:forecast_vs_actual_koipallg}) shows the historical series and model forecasts over the evaluation period. Detailed performance metrics by forecast horizon are presented in Table~\ref{tab:overall_metrics_by_horizon}. Detailed metrics for all model-horizon combinations for KOIPALL.G are available in Table~\ref{tab:metrics_36_rows}.
 
-고빈도 DFM 모형은 월간 GDP에 대해 양호한 nowcasting 성과를 보임. 평균 절대 예측오차는 4주전 0.8\%p, 1주전 0.6\%p 수준임.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koipall_g.png}
+\caption{Forecast vs Actual: Industrial Production Index (KOIPALL.G). Shows 30 months of historical data followed by 30 months of forecasts from ARIMA, VAR, DFM, and DDFM models.}
+\label{fig:forecast_vs_actual_koipallg}
+\end{figure}
 
-\subsection{딥러닝 모형 비교}
+\subsection{Discussion}
 
-동일한 데이터를 이용하여 딥러닝 모형으로 추정 시 nowcasting 성과가 개선됨. 1주전 nowcasting 오차는 0.4\%로 DFM 모형보다 작지만, 월간 변동폭을 과소 추정하는 경향이 있음. AR(4) 모형도 대체로 유사한 예측력을 보이나 증감 방향성에서 lagging하는 경향이 있음.
+Experimental results for KOIPALL.G reveal significant differences in model performance across forecast horizons. ARIMA demonstrates the most consistent performance: excellent for 1-day forecasts (sMSE = 0.0034, sRMSE = 0.0584), moderate for 7-day forecasts (sMSE = 2.28, sRMSE = 1.51), and reasonable for 28-day forecasts (sMSE = 0.39, sRMSE = 0.62). The performance degradation from 1-day to 7-day forecasts suggests that short-term patterns are more predictable than medium-term trends.
 
-따라서 고빈도 모형을 이용한 생산 nowcasting에 있어 DFM 모형과 DNN 모형의 평균값을 사용하는 것이 바람직함. 월간 증감폭의 방향성, 정도에 대해 양호한 예측력을 보이며, 실제 월간 데이터가 분기 GDP 발표 이후에 확보 가능하다는 점을 고려하면 1주전 높은 예측력을 보이는 것만으로도 의미있는 결과임.
+VAR shows exceptional performance for 1-day forecasts (sMSE ≈ 3.5×10⁻⁹, sRMSE ≈ 6.0×10⁻⁵) but suffers from severe numerical instability for longer horizons. For 7-day and 28-day forecasts, VAR produces extremely large errors (sRMSE > 10²² for h=7, > 10⁵⁸ for h=28), indicating that the model is not suitable for multi-step ahead forecasting on this target. This instability is a known limitation of VAR models when forecasting beyond very short horizons.
+
+DFM shows moderate performance for 1-day forecasts (sRMSE = 5.92) but improves for 7-day forecasts (sRMSE = 5.28), indicating that the factor model captures medium-term trends better than short-term fluctuations. However, DFM performance is significantly worse than ARIMA across all horizons. DDFM demonstrates excellent performance for 1-day forecasts (sRMSE = 0.46) and exceptional performance for 7-day forecasts (sRMSE = 0.18), outperforming ARIMA for these horizons. The 28-day horizon is unavailable for both DFM and DDFM due to insufficient test data after the 80/20 train-test split.
+
+Overall, ARIMA provides the most reliable forecasts for industrial production across all horizons, with performance degrading gracefully as the forecast horizon increases.
 

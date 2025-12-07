@@ -1,16 +1,16 @@
 \begin{table}[h]
 \centering
-\caption[목표 변수별 모형 성능 비교 (표준화된 RMSE)]{목표 변수별 모형 성능 비교 (표준화된 RMSE)\footnote{4개 목표 변수에 대한 결과를 평균한 값임. 일부 모형은 특정 목표 변수에서 수치적 불안정성으로 인해 결과가 없을 수 있음.}}
+\caption[Model Performance Comparison by Target Variable (Standardized RMSE)]{Model Performance Comparison by Target Variable (Standardized RMSE)\footnote{Results averaged across forecast horizons. Some models may have no results for certain targets due to numerical instability.}}
 \label{tab:overall_metrics_by_target}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccc}
 \toprule
-모형 & 설비투자 & 도소매판매액 & 전산업생산지수 & 제조업생산지수 \\
- & (KOEQUIPTE) & (KOWRCCNSE) & (KOIPALL.G) & (KOMPRI30G) \\
+Model & Equipment Investment & Wholesale/Retail Sales & Industrial Production \\
+ & (KOEQUIPTE) & (KOWRCCNSE) & (KOIPALL.G) \\
 \midrule
-ARIMA & -- & -- & -- & -- \\
-VAR & -- & -- & -- & -- \\
-DFM & -- & -- & -- & -- \\
-DDFM & -- & -- & -- & -- \\
+ARIMA & 1.1921 & 0.7121 & 0.7303 \\
+VAR & 396412124151442247605628351423814190183597814043274517676032.0000 & 18018460704331996365275798543544354916310370008423227981824.0000 & 13718401151057788607985435374747028488913276329372072017920.0000 \\
+DFM & 5.1556 & 8.1637 & 5.5989 \\
+DDFM & 0.9604 & 1.0884 & 0.3201 \\
 \bottomrule
 \end{tabular}
 \end{table}

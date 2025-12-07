@@ -1,9 +1,41 @@
-\section{결론}
+\section{Conclusion}
 
-본 연구는 고빈도 데이터를 활용하여 한국의 주요 거시경제 변수(생산, 투자, 소비)를 예측하는 동적 요인 모형과 딥러닝 모형의 성능을 비교 분석함.
+This study compares the performance of four forecasting models (ARIMA, VAR, DFM, and DDFM) for nowcasting three key Korean macroeconomic variables: production (KOIPALL.G), investment (KOEQUIPTE), and consumption (KOWRCCNSE) across multiple forecast horizons.
 
-주요 결과는 다음과 같음: (1) DFM 모형은 분기 데이터로부터 월간 지수를 추정하는 데 양호한 성과를 보였으며, 추정된 월간 지수는 관측 지수와 높은 상관관계를 보임. (2) 고빈도 DFM 모형은 실시간 경기진단에 효과적이며, 1주전 예측에서 양호한 성능을 보임. (3) 딥러닝 모형은 DFM 모형 대비 예측오차가 개선되었으나, 월간 변동폭을 과소 추정하는 경향이 있어 두 모형의 평균값 사용이 바람직함.
+The main findings are presented based on experimental results comparing model performance across the three targets and three forecast horizons (1, 7, and 28 days). Overall performance metrics are summarized in Table~\ref{tab:overall_metrics}, while target-specific and horizon-specific comparisons are presented in Table~\ref{tab:overall_metrics_by_target} and Table~\ref{tab:overall_metrics_by_horizon}, respectively. Detailed results for all 36 combinations (3 targets × 4 models × 3 horizons) are provided in Table~\ref{tab:metrics_36_rows}. Performance is evaluated using standardized metrics (sMSE, sMAE, sRMSE) to enable fair comparison across different series scales.
 
-본 연구의 기여는 다음과 같음: (1) 생산, 투자, 소비 부문별 nowcasting 시스템 구축, (2) 고빈도 데이터를 활용한 실시간 경기진단 프레임워크 제시, (3) DFM과 딥러닝 모형의 앙상블 전략 제안.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{images/accuracy_heatmap.png}
+\caption{Accuracy Heatmap: Standardized RMSE by Model and Target Variable. Lower values (darker colors) indicate better performance.}
+\label{fig:accuracy_heatmap}
+\end{figure}
 
-향후 연구 방향으로는 더 많은 고빈도 데이터(실시간 소비 데이터, 카드 거래 데이터 등)의 통합, 구조적 변화 시점 감지 및 모형 적응, 외생 충격 고려 등이 제안됨.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{images/horizon_trend.png}
+\caption{Performance Trend by Forecast Horizon: Standardized RMSE across forecast horizons (1, 7, 28 days) for each model.}
+\label{fig:horizon_trend}
+\end{figure}
+
+A visual comparison of model accuracy across targets is shown in Figure~\ref{fig:accuracy_heatmap}, while performance trends across forecast horizons are illustrated in Figure~\ref{fig:horizon_trend}.
+
+\subsection{Key Findings}
+
+The experimental results reveal several important findings:
+
+\textbf{ARIMA Performance:} ARIMA demonstrates the most consistent and reliable performance across all three targets and forecast horizons. For industrial production (KOIPALL.G), ARIMA achieves excellent 1-day forecasts (sRMSE = 0.058) with reasonable performance extending to 28-day horizons (sRMSE = 0.62). For consumption (KOWRCCNSE), ARIMA shows particularly strong performance with sRMSE values between 0.65-0.81 across all horizons. Investment forecasting (KOEQUIPTE) proves more challenging, with ARIMA achieving sRMSE values of 0.32-1.67, reflecting the higher volatility of equipment investment.
+
+\textbf{VAR Limitations:} While VAR produces exceptional 1-day forecasts (sRMSE < 10⁻⁴ for all targets), the model suffers from severe numerical instability for longer horizons. For 7-day and 28-day forecasts, VAR errors explode to impractical magnitudes (sRMSE > 10¹¹), rendering the model unsuitable for multi-step ahead forecasting. This instability is a fundamental limitation of VAR models when forecasting beyond very short horizons, likely due to error accumulation and potential non-stationarity issues.
+
+\textbf{DFM Performance:} DFM shows poor performance across all targets and horizons, with sRMSE values ranging from 4.2 to 9.3 for 1-day forecasts and 5.3 to 7.1 for 7-day forecasts. The model struggles particularly with consumption (KOWRCCNSE) and production (KOIPALL.G), showing numerical instability warnings during EM algorithm convergence. For investment (KOEQUIPTE), DFM performance is better but still worse than ARIMA. The 28-day horizon is unavailable for all DFM models due to insufficient test data.
+
+\textbf{DDFM Performance:} DDFM demonstrates mixed performance. For investment (KOEQUIPTE), DDFM achieves exceptional 1-day forecast accuracy (sRMSE = 0.0103), outperforming all other models. For production (KOIPALL.G), DDFM shows excellent performance for both 1-day (sRMSE = 0.46) and 7-day (sRMSE = 0.18) forecasts, significantly outperforming ARIMA. However, for consumption (KOWRCCNSE), DDFM's performance is comparable to ARIMA for 1-day forecasts but worse for 7-day forecasts. The 28-day horizon is unavailable for all DDFM models due to insufficient test data. DDFM's superior performance for investment and production suggests that the deep learning encoder effectively captures complex patterns in these series.
+
+\subsection{Limitations}
+
+Several limitations should be acknowledged: (1) Only 30 of 36 planned model-target-horizon combinations have valid results, with DFM/DDFM 28-day forecasts unavailable due to insufficient test data after the 80/20 train-test split; (2) The evaluation uses a single test point per horizon (n\_valid = 1), which limits statistical reliability; (3) VAR's numerical instability for longer horizons was not addressed through regularization or alternative estimation methods; (4) DFM shows numerical instability warnings for some targets (KOWRCCNSE, KOIPALL.G) during EM algorithm convergence, though results are still produced; (5) The limited test data prevents evaluation of 28-day forecasts for DFM/DDFM models.
+
+\subsection{Future Research Directions}
+
+Future work should address these limitations by: (1) investigating regularization techniques or alternative VAR specifications to address numerical instability for longer horizons; (2) expanding the evaluation period to obtain multiple test points per horizon for more reliable statistical assessment; (3) addressing DFM numerical instability issues through improved EM algorithm convergence criteria or alternative estimation methods; (4) exploring ensemble methods combining ARIMA's stability with DDFM's superior performance for specific targets; (5) integrating additional high-frequency data sources to improve nowcasting accuracy; (6) developing methods for detecting structural breaks and adapting models accordingly; (7) investigating why DDFM outperforms ARIMA for investment and production but not for consumption.

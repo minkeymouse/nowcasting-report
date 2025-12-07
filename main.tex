@@ -1,5 +1,3 @@
-% Korean support: works with pdfLaTeX (default), XeLaTeX, or LuaLaTeX
-% In Overleaf: Menu -> Compiler -> pdfLaTeX (default) or XeLaTeX
 \documentclass[12pt]{article}
 
 \input{preamble}
@@ -7,15 +5,15 @@
 \begin{document}
 % Title without authors
 \begin{center}
-\Large\textbf{고빈도 데이터를 활용한 생산, 투자, 소비 분야 거시 변수 예측 모델}
+\Large\textbf{Nowcasting Korean Macroeconomic Variables: A Comparison of ARIMA, VAR, DFM, and DDFM Models}
 \end{center}
 \vspace{1cm}
 
 \begin{abstract}
-본 연구는 고빈도 데이터를 활용하여 한국의 주요 거시경제 변수(생산: 전산업생산지수, 제조업생산지수, 투자: 설비투자지수, 소비: 도소매판매액)를 예측하는 동적 요인 모형(DFM)과 딥러닝 모형의 성능을 비교 분석한다. 월간 및 분기 데이터를 이용한 DFM 모형을 통해 월간 지수를 산출하고, 고빈도 금융시장 데이터를 추가한 고빈도 DFM 모형과 딥러닝 모형의 nowcasting 성과를 평가한다. 연구 결과, DFM 모형은 분기 데이터로부터 월간 지수를 추정하는 데 양호한 성과를 보였으며, 고빈도 모형은 실시간 경기진단에 효과적임을 확인하였다. 딥러닝 모형은 DFM 모형 대비 예측오차가 개선되었으나 변동폭 과소 추정 경향이 있어, 두 모형의 평균값 사용이 바람직함을 제시한다.
+This study compares the performance of four forecasting models (ARIMA, VAR, Dynamic Factor Model, and Deep Dynamic Factor Model) for nowcasting three key Korean macroeconomic variables: production (Industrial Production Index, All Industries: KOIPALL.G), investment (Equipment Investment Index: KOEQUIPTE), and consumption (Wholesale and Retail Trade Sales: KOWRCCNSE). Models are evaluated across three forecast horizons (1, 7, and 28 days) using standardized metrics to enable fair comparison across different series scales. The results will be presented based on experimental evaluation of model performance across targets and horizons.
 \end{abstract}
 
-\textbf{키워드:} nowcasting, 동적 요인 모형, 고빈도 데이터, 거시경제 예측, 딥러닝
+\textbf{Keywords:} nowcasting, dynamic factor model, high-frequency data, macroeconomic forecasting, deep learning
 
 \input{contents/1_introduction}
 
