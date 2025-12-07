@@ -21,28 +21,6 @@
     \item 예측 기간: 2024--2025년
 \end{itemize}
 
-\textbf{훈련 기간과 예측 기간 사이의 4년 간격:}
-\begin{itemize}
-    \item \textbf{COVID-19 시기 제외:} 2020--2023년 비정상적 패턴 제외, 정상 경제 패턴만 학습
-    \item \textbf{데이터 누수 방지:} 미래 정보 누수 방지, 실제 예측 성능 공정 평가
-    \item \textbf{구조 변화 검증:} COVID-19 이후 경제 구조 변화 영향 평가
-\end{itemize}
-
-\textbf{모형 파라미터:}
-\begin{itemize}
-    \item \textbf{ARIMA:} 차수 (1,1,1)
-    \item \textbf{VAR:} 시차 1
-    \item \textbf{DFM:} 요인 3개, 최대 5000회 반복
-    \item \textbf{DDFM:} 64--32 레이어, 요인 3개, 100 에폭
-\end{itemize}
-
-\textbf{DFM/DDFM 공통 설정:}
-\begin{itemize}
-    \item 요인 수: 3개 (통일)
-    \item 블록 구조: 단일 글로벌 블록 (수치적 안정성)
-    \item 상태 공간 차원: 15차원 (요인 3개 $\times$ tent kernel 파라미터 5개)
-\end{itemize}
-
 \subsubsection{데이터 전처리}
 
 \begin{itemize}
