@@ -80,7 +80,7 @@ def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataF
     
     # Current targets: KOEQUIPTE, KOWRCCNSE, KOIPALL.G
     targets = ['KOEQUIPTE', 'KOWRCCNSE', 'KOIPALL.G']
-    horizons = [1, 7, 28]
+    horizons = list(range(1, 31))  # 1-30 days as per WORKFLOW.md
     metrics = ['sMSE', 'sMAE', 'sRMSE']
     
     for target in targets:
@@ -142,71 +142,13 @@ def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataF
     return pd.DataFrame(rows)
 
 
-def plot_model_comparison(save_path: Optional[Path] = None):
-    """Create model comparison bar plot (fig:model_comparison)."""
-    # Load data
-    all_results = load_comparison_results(OUTPUTS_DIR)
-    df = extract_metrics_from_results(all_results)
-    
-    # Check if we have any valid data
-    if df.empty or 'value' not in df.columns or df['value'].isna().all():
-        # No data, create placeholder text image
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.text(0.5, 0.5, 'Placeholder: No data available', 
-                ha='center', va='center', fontsize=16, color='gray')
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        
-        if save_path is None:
-            save_path = IMAGES_DIR / "model_comparison.png"
-        save_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, bbox_inches='tight', dpi=300)
-        plt.close()
-        print(f"Generated placeholder: {save_path.name}")
-        return
-    
-    # Aggregate by model (average across all targets and horizons)
-    model_avg = df.groupby(['model', 'metric'])['value'].mean().reset_index()
-    model_avg_pivot = model_avg.pivot(index='model', columns='metric', values='value')
-    
-    # Sort by sRMSE (ascending)
-    model_avg_pivot = model_avg_pivot.sort_values('sRMSE')
-    
-    fig, ax = plt.subplots(figsize=(12, 6))
-    x = np.arange(len(model_avg_pivot))
-    width = 0.25
-    
-    metrics = ['sMSE', 'sMAE', 'sRMSE']
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
-    
-    for i, metric in enumerate(metrics):
-        ax.bar(x + i * width, model_avg_pivot[metric].values, width, 
-               label=metric, color=colors[i], alpha=0.8)
-    
-    ax.set_xlabel('Model', fontsize=11)
-    ax.set_ylabel('Standardized Metric Value', fontsize=11)
-    ax.set_title('Model Performance Comparison (Standardized Metrics)', fontsize=13, fontweight='bold')
-    ax.set_xticks(x + width)
-    ax.set_xticklabels(model_avg_pivot.index, rotation=45, ha='right')
-    ax.legend()
-    ax.grid(axis='y', alpha=0.3)
-    
-    plt.tight_layout()
-    
-    if save_path is None:
-        save_path = IMAGES_DIR / "model_comparison.png"
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(save_path, bbox_inches='tight', dpi=300)
-    plt.close()
-    print(f"Generated: {save_path.name}")
-
-
 def plot_horizon_trend(save_path: Optional[Path] = None):
-    """Create horizon trend plot (fig:horizon_trend)."""
+    """Create horizon trend plot (Plot3: fig:horizon_performance_trend).
+    
+    Shows sMSE values for all horizons from 1 to 30 days.
+    X-axis: forecast horizon (1-30 days), Y-axis: sMSE value.
+    Four lines representing four models (ARIMA, VAR, DFM, DDFM).
+    """
     # Load data
     all_results = load_comparison_results(OUTPUTS_DIR)
     df = extract_metrics_from_results(all_results)
@@ -232,42 +174,61 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
         print(f"Generated placeholder: {save_path.name}")
         return
     
-    # Aggregate by model and horizon
+    # Aggregate by model and horizon (average across targets)
     # Exclude None values
     df_valid = df[df['value'].notna()].copy()
     if len(df_valid) == 0:
-        # Already handled above, but keep for safety
         return
     
-    horizon_avg = df_valid.groupby(['model', 'horizon', 'metric'])['value'].mean().reset_index()
-    horizon_avg_pivot = horizon_avg[horizon_avg['metric'] == 'sRMSE'].pivot(
+    # Filter for sMSE metric only (as per WORKFLOW.md Plot3)
+    horizon_avg = df_valid[df_valid['metric'] == 'sMSE'].groupby(['model', 'horizon'])['value'].mean().reset_index()
+    horizon_avg_pivot = horizon_avg.pivot(
         index='model', columns='horizon', values='value'
     )
     
     if horizon_avg_pivot.empty:
         return
     
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
     
-    horizons = [1, 7, 28]
-    for model in horizon_avg_pivot.index:
+    # All horizons from 1 to 30
+    horizons = list(range(1, 31))
+    models = ['ARIMA', 'VAR', 'DFM', 'DDFM']
+    colors = {'ARIMA': '#1f77b4', 'VAR': '#ff7f0e', 'DFM': '#2ca02c', 'DDFM': '#d62728'}
+    
+    for model in models:
+        if model not in horizon_avg_pivot.index:
+            continue
+        
         values = []
         for h in horizons:
             if h in horizon_avg_pivot.columns:
                 val = horizon_avg_pivot.loc[model, h]
-                values.append(val if pd.notna(val) else None)
+                values.append(val if pd.notna(val) and not np.isinf(val) else None)
             else:
                 values.append(None)
+        
         # Only plot if we have at least one valid value
-        if any(v is not None and not np.isnan(v) for v in values if v is not None):
-            ax.plot(horizons, values, marker='o', label=model, linewidth=2, markersize=6)
+        valid_values = [v for v in values if v is not None and not np.isnan(v)]
+        if valid_values:
+            # Filter out extreme values for plotting (numerical instability)
+            plot_values = []
+            plot_horizons = []
+            for h, v in zip(horizons, values):
+                if v is not None and not np.isnan(v) and abs(v) < 1e10:
+                    plot_values.append(v)
+                    plot_horizons.append(h)
+            
+            if plot_values:
+                ax.plot(plot_horizons, plot_values, marker='o', label=model, 
+                       linewidth=2, markersize=4, color=colors.get(model, 'gray'), alpha=0.8)
     
     ax.set_xlabel('Forecast Horizon (days)', fontsize=11)
-    ax.set_ylabel('Standardized RMSE', fontsize=11)
-    ax.set_title('Performance Trend by Forecast Horizon (Standardized RMSE)', fontsize=13, fontweight='bold')
-    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+    ax.set_ylabel('Standardized MSE (sMSE)', fontsize=11)
+    ax.set_title('Performance Trend by Forecast Horizon (Standardized MSE)', fontsize=13, fontweight='bold')
+    ax.legend(loc='best', fontsize=9)
     ax.grid(alpha=0.3)
-    ax.set_xticks(horizons)
+    ax.set_xticks(range(1, 31, 5))  # Show every 5 days for readability
     
     plt.tight_layout()
     
@@ -370,17 +331,20 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
     import sys
     from pathlib import Path as PathLib
     
-    # Add src and dfm-python to path for imports
+    # Add project root, src and dfm-python to path for imports
     project_root = Path(__file__).parent.parent.parent
     src_path = project_root / "src"
     dfm_path = project_root / "dfm-python" / "src"
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
     if str(src_path) not in sys.path:
         sys.path.insert(0, str(src_path))
     if str(dfm_path) not in sys.path:
         sys.path.insert(0, str(dfm_path))
     
     # Load comparison results to get model paths
-    all_results = load_comparison_results(OUTPUTS_DIR)
+    from src.evaluation import collect_all_comparison_results
+    all_results = collect_all_comparison_results(OUTPUTS_DIR)
     
     if target not in all_results or not all_results[target]:
         # No data, create placeholder
@@ -463,58 +427,137 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
             try:
                 # Set up paths for imports (needed for unpickling)
                 import sys
+                import os
                 project_root = Path(__file__).parent.parent.parent
                 src_path = project_root / "src"
                 dfm_path = project_root / "dfm-python" / "src"
-                if str(src_path) not in sys.path:
-                    sys.path.insert(0, str(src_path))
-                if str(dfm_path) not in sys.path:
-                    sys.path.insert(0, str(dfm_path))
                 
-                # Load model
-                with open(model_file, 'rb') as f:
-                    model_data = pickle.load(f)
+                # Add paths to sys.path if not already there (at the beginning for priority)
+                paths_to_add = [
+                    str(project_root),  # For 'src' imports
+                    str(src_path),      # Direct src path
+                    str(dfm_path),      # dfm-python path
+                ]
+                for path in paths_to_add:
+                    if path not in sys.path:
+                        sys.path.insert(0, path)
                 
-                forecaster = model_data.get('forecaster')
-                if forecaster is None:
-                    continue
-                
-                # Generate forecasts for test period
-                # Fit on training data
+                # Change to project root directory to help with relative imports in pickled models
+                original_cwd = os.getcwd()
                 try:
-                    forecaster.fit(y_train_data)
-                    # Predict for entire test period at once
-                    n_forecast = len(y_test_data)
-                    pred = forecaster.predict(fh=list(range(1, n_forecast + 1)))
+                    os.chdir(str(project_root))
                     
-                    # Extract predictions
-                    if isinstance(pred, pd.DataFrame):
-                        if target in pred.columns:
-                            forecast_series = pred[target]
+                    # Also set PYTHONPATH environment variable for subprocess imports
+                    env = os.environ.copy()
+                    env['PYTHONPATH'] = os.pathsep.join([str(project_root), str(src_path), str(dfm_path), env.get('PYTHONPATH', '')])
+                    os.environ.update(env)
+                    
+                    # Pre-import modules that might be needed for unpickling
+                    # This helps Python find modules when unpickling objects that reference them
+                    try:
+                        import importlib
+                        # Import modules that pickled models might reference
+                        if model_key in ['dfm', 'ddfm']:
+                            importlib.import_module('src.model.dfm_models')
+                            importlib.import_module('src.model.sktime_forecaster')
+                            importlib.import_module('src.train')
+                            importlib.import_module('src.utils.config_parser')
+                    except ImportError as import_err:
+                        # If imports fail, continue anyway - pickle might still work
+                        print(f"Warning: Pre-import failed (may be OK): {import_err}")
+                    
+                    # Custom unpickler to handle wrong module paths in pickled objects
+                    class CustomUnpickler(pickle.Unpickler):
+                        def find_class(self, module, name):
+                            # Handle wrong module paths that might be in pickled objects
+                            if module == 'src.model.dfm' and name in ['DFM', 'DFMForecaster']:
+                                # Redirect to correct module
+                                module = 'src.model.dfm_models'
+                            elif module == 'src.model.ddfm' and name in ['DDFM', 'DDFMForecaster']:
+                                # Redirect to correct module
+                                module = 'src.model.dfm_models'
+                            # Call parent method with potentially corrected module
+                            return super().find_class(module, name)
+                    
+                    # Load model with custom unpickler
+                    with open(model_file, 'rb') as f:
+                        unpickler = CustomUnpickler(f)
+                        model_data = unpickler.load()
+                    
+                    forecaster = model_data.get('forecaster')
+                    if forecaster is None:
+                        continue
+                    
+                    # Prepare training data based on model type
+                    if model_key == 'arima':
+                        # ARIMA uses univariate data (target series only)
+                        y_train_model = y_train_data[[target]]
+                    else:
+                        # VAR, DFM, DDFM use multivariate data (all series)
+                        # Use all numeric columns from full data
+                        y_train_model = data.select_dtypes(include=[np.number]).dropna()
+                        # Ensure target is included
+                        if target not in y_train_model.columns:
+                            y_train_model[target] = data[target]
+                        y_train_model = y_train_model.dropna()
+                    
+                    # Generate forecasts for test period
+                    # Fit on training data (if not already fitted)
+                    try:
+                        # Check if model is already fitted
+                        if hasattr(forecaster, '_is_fitted') and forecaster._is_fitted:
+                            # Model already fitted, just predict
+                            pass
                         else:
-                            forecast_series = pred.iloc[:, 0]
-                    elif isinstance(pred, pd.Series):
-                        forecast_series = pred
-                    else:
-                        forecast_series = pd.Series(pred.flatten() if hasattr(pred, 'flatten') else pred)
-                    
-                    # Align index with test data
-                    if len(forecast_series) == len(y_test_data):
-                        forecast_series.index = y_test_data.index[:len(forecast_series)]
-                    else:
-                        # Create index if needed
-                        forecast_series.index = y_test_data.index[:len(forecast_series)]
-                    
-                    # Aggregate to monthly (take last value of each month)
-                    forecast_monthly = forecast_series.resample('ME').last()
-                    forecast_data[model_key.upper()] = forecast_monthly.iloc[:n_forecast_months].values
-                    
-                except Exception as e:
-                    print(f"Warning: Forecast generation failed for {model_key}: {e}")
-                    continue
+                            # Fit on training data
+                            forecaster.fit(y_train_model)
+                        
+                        # Predict for entire test period at once
+                        n_forecast = len(y_test_data)
+                        pred = forecaster.predict(fh=list(range(1, n_forecast + 1)))
+                        
+                        # Extract predictions for target series
+                        if isinstance(pred, pd.DataFrame):
+                            if target in pred.columns:
+                                forecast_series = pred[target]
+                            else:
+                                # Try to find target by case-insensitive match
+                                target_lower = target.lower()
+                                matching_cols = [c for c in pred.columns if c.lower() == target_lower]
+                                if matching_cols:
+                                    forecast_series = pred[matching_cols[0]]
+                                else:
+                                    # Use first column as fallback
+                                    forecast_series = pred.iloc[:, 0]
+                        elif isinstance(pred, pd.Series):
+                            forecast_series = pred
+                        else:
+                            forecast_series = pd.Series(pred.flatten() if hasattr(pred, 'flatten') else pred)
+                        
+                        # Align index with test data
+                        if len(forecast_series) == len(y_test_data):
+                            forecast_series.index = y_test_data.index[:len(forecast_series)]
+                        else:
+                            # Create index if needed
+                            forecast_series.index = y_test_data.index[:len(forecast_series)]
+                        
+                        # Aggregate to monthly (take last value of each month)
+                        forecast_monthly = forecast_series.resample('ME').last()
+                        forecast_data[model_key.upper()] = forecast_monthly.iloc[:n_forecast_months].values
+                        
+                    except Exception as e:
+                        print(f"Warning: Forecast generation failed for {model_key}: {e}")
+                        import traceback
+                        traceback.print_exc()
+                        continue
+                finally:
+                    # Restore original working directory
+                    os.chdir(original_cwd)
                     
             except Exception as e:
                 print(f"Warning: Failed to load/generate forecasts for {model_key}: {e}")
+                import traceback
+                traceback.print_exc()
                 continue
         
         # Create plot
@@ -578,10 +621,204 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         print(f"Generated error placeholder: {save_path.name}")
 
 
+def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
+    """Create nowcasting comparison plot (Plot4: fig:nowcasting_comparison).
+    
+    For each target, create side-by-side plots comparing "4 weeks before" vs "1 week before" nowcasting.
+    Each plot shows 12 months (2024-01 to 2024-12) of predictions and actual values.
+    
+    Parameters
+    ----------
+    target : str
+        Target series name (KOEQUIPTE, KOWRCCNSE, or KOIPALL.G)
+    save_path : Path, optional
+        Output path for the plot
+    """
+    backtest_dir = OUTPUTS_DIR / "backtest"
+    if not backtest_dir.exists():
+        # No backtest results, create placeholder
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        for ax in axes:
+            ax.text(0.5, 0.5, f'Placeholder: No backtest data for {target}', 
+                    ha='center', va='center', fontsize=14, color='gray')
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+        
+        if save_path is None:
+            save_path = IMAGES_DIR / f"nowcasting_comparison_{target.lower().replace('.', '_')}.png"
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.close()
+        print(f"Generated placeholder: {save_path.name}")
+        return
+    
+    # Load all backtest JSON files for this target
+    models = ['arima', 'var', 'dfm', 'ddfm']
+    timepoints = ['4weeks', '1weeks']
+    
+    # Structure: {timepoint: {month: [predictions from all models]}}
+    predictions_by_timepoint = {'4weeks': {}, '1weeks': {}}
+    actual_values = {}
+    
+    for model in models:
+        backtest_file = backtest_dir / f"{target}_{model}_backtest.json"
+        if not backtest_file.exists():
+            continue
+        
+        try:
+            with open(backtest_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Fix: results_by_timepoint is directly in data, not nested under 'results'
+            results_by_timepoint = data.get('results_by_timepoint', {})
+            
+            for tp in timepoints:
+                if tp not in results_by_timepoint:
+                    continue
+                
+                tp_results = results_by_timepoint[tp]
+                # Fix: monthly_results is a list of dicts, not a dict
+                monthly_results = tp_results.get('monthly_results', [])
+                
+                for month_data in monthly_results:
+                    # Fix: month key is 'month', not used as dict key
+                    month_str = month_data.get('month')
+                    if month_str is None:
+                        continue
+                    
+                    if month_str not in predictions_by_timepoint[tp]:
+                        predictions_by_timepoint[tp][month_str] = []
+                    
+                    # Fix: key is 'forecast_value', not 'prediction'
+                    prediction = month_data.get('forecast_value')
+                    if prediction is not None:
+                        predictions_by_timepoint[tp][month_str].append(prediction)
+                    
+                    # Store actual value (same for all models)
+                    # Fix: key is 'actual_value', not 'actual'
+                    if month_str not in actual_values:
+                        actual_values[month_str] = month_data.get('actual_value')
+        
+        except Exception as e:
+            print(f"Warning: Failed to load {backtest_file}: {e}")
+            continue
+    
+    # Check if we have any data
+    if not any(predictions_by_timepoint[tp] for tp in timepoints):
+        # No data, create placeholder
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        for ax in axes:
+            ax.text(0.5, 0.5, f'Placeholder: No backtest data for {target}', 
+                    ha='center', va='center', fontsize=14, color='gray')
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+        
+        if save_path is None:
+            save_path = IMAGES_DIR / f"nowcasting_comparison_{target.lower().replace('.', '_')}.png"
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.close()
+        print(f"Generated placeholder: {save_path.name}")
+        return
+    
+    # Prepare data for plotting
+    # Sort months chronologically
+    months = sorted(actual_values.keys())
+    
+    # Calculate model average predictions for each timepoint
+    avg_predictions_4weeks = []
+    avg_predictions_1weeks = []
+    actual_vals = []
+    
+    for month in months:
+        # 4 weeks before
+        preds_4w = predictions_by_timepoint['4weeks'].get(month, [])
+        if preds_4w:
+            avg_4w = np.mean([p for p in preds_4w if p is not None and not np.isnan(p)])
+            avg_predictions_4weeks.append(avg_4w)
+        else:
+            avg_predictions_4weeks.append(np.nan)
+        
+        # 1 week before
+        preds_1w = predictions_by_timepoint['1weeks'].get(month, [])
+        if preds_1w:
+            avg_1w = np.mean([p for p in preds_1w if p is not None and not np.isnan(p)])
+            avg_predictions_1weeks.append(avg_1w)
+        else:
+            avg_predictions_1weeks.append(np.nan)
+        
+        # Actual
+        actual_vals.append(actual_values.get(month))
+    
+    # Convert month strings to datetime for x-axis
+    month_dates = []
+    for month_str in months:
+        try:
+            # Assume format like "2024-01" or "2024-01-31"
+            if len(month_str) == 7:  # "2024-01"
+                dt = pd.to_datetime(month_str + "-01")
+            else:
+                dt = pd.to_datetime(month_str)
+            month_dates.append(dt)
+        except:
+            # Fallback: use index
+            month_dates.append(pd.Timestamp('2024-01-01') + pd.DateOffset(months=len(month_dates)))
+    
+    # Create side-by-side plots
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Plot 1: 4 weeks before
+    ax1 = axes[0]
+    ax1.plot(month_dates, actual_vals, 'b-', linewidth=2, label='Actual', alpha=0.8)
+    ax1.plot(month_dates, avg_predictions_4weeks, 'r--', marker='^', linewidth=1.5, 
+            markersize=6, label='Model Average', alpha=0.8)
+    ax1.set_xlabel('Date', fontsize=11)
+    ax1.set_ylabel(f'{target} Value (%)', fontsize=11)
+    ax1.set_title('4 Weeks Before Nowcasting', fontsize=12, fontweight='bold')
+    ax1.legend(loc='best', fontsize=9)
+    ax1.grid(alpha=0.3)
+    fig.autofmt_xdate()
+    
+    # Plot 2: 1 week before
+    ax2 = axes[1]
+    ax2.plot(month_dates, actual_vals, 'b-', linewidth=2, label='Actual', alpha=0.8)
+    ax2.plot(month_dates, avg_predictions_1weeks, 'r--', marker='^', linewidth=1.5, 
+            markersize=6, label='Model Average', alpha=0.8)
+    ax2.set_xlabel('Date', fontsize=11)
+    ax2.set_ylabel(f'{target} Value (%)', fontsize=11)
+    ax2.set_title('1 Week Before Nowcasting', fontsize=12, fontweight='bold')
+    ax2.legend(loc='best', fontsize=9)
+    ax2.grid(alpha=0.3)
+    fig.autofmt_xdate()
+    
+    plt.tight_layout()
+    
+    if save_path is None:
+        save_path = IMAGES_DIR / f"nowcasting_comparison_{target.lower().replace('.', '_')}.png"
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_path, bbox_inches='tight', dpi=300)
+    plt.close()
+    print(f"Generated: {save_path.name}")
+
+
 def generate_all_plots():
-    """Generate all plots required by RESULTS_NEEDED.md section 6."""
+    """Generate all plots required by WORKFLOW.md.
+    
+    Plot1: forecast_vs_actual (3 plots, one per target)
+    Plot2: accuracy_heatmap
+    Plot3: horizon_trend (1-30 days, sMSE)
+    Plot4: nowcasting_comparison (3 pairs, one per target)
+    """
     print("=" * 70)
-    print("Generating Report Images")
+    print("Generating Report Images (WORKFLOW.md)")
     print("=" * 70)
     
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
@@ -594,23 +831,29 @@ def generate_all_plots():
     # Generate images
     print("\n2. Generating images...")
     
-    # Model comparison
-    print("   - model_comparison.png")
-    plot_model_comparison()
-    
-    # Horizon trend
-    print("   - horizon_trend.png")
-    plot_horizon_trend()
-    
-    # Heatmap
-    print("   - accuracy_heatmap.png")
-    plot_accuracy_heatmap()
-    
-    # Forecast vs actual (one plot per target)
+    # Plot1: Forecast vs actual (one plot per target)
+    print("\n   Plot1: Forecast vs Actual (3 plots)")
     targets = ['KOEQUIPTE', 'KOWRCCNSE', 'KOIPALL.G']
     for target in targets:
         print(f"   - forecast_vs_actual_{target.lower().replace('.', '_')}.png")
         plot_forecast_vs_actual(target)
+    
+    # Plot2: Accuracy heatmap
+    print("\n   Plot2: Accuracy Heatmap")
+    print("   - accuracy_heatmap.png")
+    plot_accuracy_heatmap()
+    
+    # Plot3: Horizon trend (1-30 days, sMSE)
+    print("\n   Plot3: Horizon Performance Trend (1-30 days, sMSE)")
+    print("   - horizon_trend.png")
+    plot_horizon_trend()
+    
+    # Plot4: Nowcasting comparison (one pair per target)
+    print("\n   Plot4: Nowcasting Comparison (3 pairs)")
+    targets = ['KOEQUIPTE', 'KOWRCCNSE', 'KOIPALL.G']
+    for target in targets:
+        print(f"   - nowcasting_comparison_{target.lower().replace('.', '_')}.png")
+        plot_nowcasting_comparison(target)
     
     print("\n" + "=" * 70)
     print("Image generation complete!")
