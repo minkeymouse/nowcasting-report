@@ -1,0 +1,29 @@
+\begin{thebibliography}{1}
+
+\bibitem{bok2017macroeconomic}
+Brandyn Bok, Daniele Caratelli, Domenico Giannone, Argia Sbordone, and Andrea
+  Tambalotti.
+\newblock Macroeconomic nowcasting and forecasting with big data.
+\newblock Staff Reports 830, Federal Reserve Bank of New York, November 2017.
+
+\bibitem{stock2002forecasting}
+James~H. Stock and Mark~W. Watson.
+\newblock Forecasting using principal components from a large number of
+  predictors.
+\newblock {\em Journal of the American Statistical Association},
+  97(460):1167--1179, 2002.
+
+\bibitem{andreini2020deep}
+Paolo Andreini, Cosimo Izzo, and Giovanni Ricco.
+\newblock Deep dynamic factor models.
+\newblock {\em Working Paper}, 2020.
+\newblock First Version: February 2020, This version: 23 May 2023.
+
+\bibitem{mariano2003new}
+Roberto~S. Mariano and Yasutomo Murasawa.
+\newblock A new coincident index of business cycles based on monthly and
+  quarterly series.
+\newblock {\em Journal of Econometrics}, 117(2):207--231, 2003.
+\newblock Tent kernel aggregation method for mixed-frequency data.
+
+\end{thebibliography}
