@@ -48,12 +48,12 @@
 
 \textbf{VAR:} ARIMA를 다변량으로 확장, 여러 시계열 간 동적 관계 포착. 시차 1 사용. 긴 수평선에서 수치적 불안정성 발생 가능.
 
-\textbf{DFM:} 많은 시계열에서 공통 요인 추출, 차원 축소, 혼합주기 데이터 처리 \cite{stock2002forecasting}. EM 알고리즘으로 파라미터 추정, 칼만 필터로 요인 추정.
+\textbf{DFM:} 많은 시계열에서 공통 요인 추출, 차원 축소, 혼합주기 데이터 처리 \cite{stock2002forecasting}. DFM은 state-space 형태로 표현되며, measurement equation과 transition equation으로 구성됨. EM 알고리즘으로 파라미터 추정, 칼만 필터와 스무더로 요인 추정. 칼만 필터는 실시간 데이터 흐름을 재귀적으로 처리하여 각 시점의 예측을 업데이트하며, 데이터의 품질과 시의성을 기반으로 가중치를 부여함. 이는 nowcasting에 특히 유용한 특성으로, 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있음.
 
-\textbf{DDFM:} 오토인코더 기반 아키텍처로 비선형 요인 관계 학습 \cite{andreini2020deep}.
+\textbf{DDFM:} 오토인코더 기반 아키텍처로 비선형 요인 관계 학습 \cite{andreini2020deep}. DDFM은 인코더를 통해 관측 변수에서 잠재 요인을 추출하고, 디코더를 통해 요인에서 관측 변수로 재구성함. 이 과정에서 선형 DFM의 제약을 완화하여 더 복잡한 요인 구조를 학습할 수 있음. 대규모 데이터셋에서도 효과적으로 작동하며, 전통적인 DFM의 계산적 한계를 극복함.
 
 \subsubsection{Forecasting과 Nowcasting}
 
 \textbf{Forecasting:} 과거 데이터로 미래 값 예측. 각 모형 훈련 후 1--22개월 수평선에 대해 예측 생성.
 
-\textbf{Nowcasting:} 공식 통계 발표 전 현재 시점 거시경제 변수 추정 \cite{banbura2012nowcasting}. 각 목표 월에 대해 4주 전, 1주 전 시점에서 예측. 시리즈별 발표 시차 기준으로 미발표 데이터 마스킹.
+\textbf{Nowcasting:} 공식 통계 발표 전 현재 시점 거시경제 변수 추정 \cite{banbura2012nowcasting}. Nowcasting은 실시간 경제 모니터링의 핵심 기법으로, 중앙은행과 정책기관에서 널리 활용됨. 각 목표 월에 대해 4주 전, 1주 전 시점에서 예측을 수행하며, 시리즈별 발표 시차(publication lag)를 기준으로 미발표 데이터를 마스킹함. 이는 실제 운영 환경에서 특정 시점에 사용 가능한 데이터만을 사용하여 예측하는 상황을 시뮬레이션함. 시간이 지날수록 더 많은 데이터가 사용 가능해지므로, 예측 정확도가 향상될 것으로 기대됨. DFM과 DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리할 수 있으나, ARIMA와 VAR은 이러한 구조적 유연성이 부족하여 nowcasting에 제한적임.
