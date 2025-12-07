@@ -96,13 +96,13 @@ DFM의 수치적 불안정성은 Kalman filter의 재귀적 공분산 업데이�
 
 ARIMA와 VAR 모형은 forecasting과 nowcasting 평가 모두에서 기술적 문제로 인해 결과를 생성하지 못함:
 
-\textbf{Forecasting 평가 오류:}
+\textbf{Forecasting 평가 오류 (해결됨):}
 \begin{itemize}
     \item \textbf{오류 메시지:} `'bool' object is not callable`
-    \item \textbf{원인:} \texttt{src/evaluation.py}의 \texttt{evaluate\_forecaster()} 함수에서 \texttt{forecaster.is\_fitted()}를 호출할 때, \texttt{is\_fitted}가 메서드가 아닌 boolean 속성인 경우 발생
-    \item \textbf{위치:} \texttt{src/evaluation.py} 491번 줄
-    \item \textbf{상태:} \texttt{src/train.py}에서는 이미 수정되었으나, \texttt{src/evaluation.py}는 아직 수정되지 않음
-    \item \textbf{영향:} ARIMA와 VAR 모형의 forecasting 평가가 모든 대상 변수(KOIPALL.G, KOEQUIPTE, KOWRCCNSE)에서 실패하여 결과를 생성하지 못함
+    \item \textbf{원인:} \texttt{src/evaluation.py}의 \texttt{evaluate\_forecaster()} 함수에서 \texttt{forecaster.is\_fitted()}를 호출할 때, sktime의 ARIMA와 VAR 모형에서 \texttt{is\_fitted}가 메서드가 아닌 boolean 속성으로 구현되어 있어 발생
+    \item \textbf{해결:} \texttt{callable()} 체크를 추가하여 \texttt{is\_fitted}가 메서드인지 속성인지 확인 후 적절히 처리하도록 수정 (490-499번 줄)
+    \item \textbf{상태:} \texttt{src/evaluation.py}와 \texttt{src/train.py} 모두 수정 완료. 현재는 정상적으로 메트릭 추정이 가능함
+    \item \textbf{참고:} sktime의 \texttt{BaseForecaster}에서 \texttt{is\_fitted}는 boolean 속성이며, 일부 하위 클래스에서는 메서드로 구현될 수 있음. 따라서 두 경우를 모두 처리할 수 있도록 \texttt{callable()} 체크가 필요함
 \end{itemize}
 
 \textbf{Nowcasting 백테스트 실패:}
