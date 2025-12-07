@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  7 DEC 2025 10:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  7 DEC 2025 11:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -567,17 +567,28 @@ Package microtype Info: No adjustment of character kerning.
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg
 File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 )
-(./contents/1_introduction.tex
+(./contents/1_introduction.tex) (./contents/2_methodology.tex
+(./tables/tab_dataset_params.tex
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
+(RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
 
-LaTeX Warning: Citation `bok2017macroeconomic' on page 1 undefined on input lin
-e 5.
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
 
-) (./contents/2_methodology.tex
-
-LaTeX Warning: Reference `tab:dataset_params' on page 1 undefined on input line
- 6.
-
-
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -593,44 +604,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 dist/fonts/enc/dvips/base/8r.enc}
 
 
-]
-
-LaTeX Warning: Citation `stock2002forecasting' on page 2 undefined on input lin
-e 18.
-
-(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg
-File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
-(RS)
-)
-LaTeX Font Info:    Trying to load font information for U+msa on input line 20.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 20.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
-
-LaTeX Warning: Citation `andreini2020deep' on page 2 undefined on input line 29
-.
-
-
-LaTeX Warning: Citation `mariano2003new' on page 2 undefined on input line 33.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+])
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -640,12 +614,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [2]) (./contents/3_production_model.tex
-
-LaTeX Warning: Reference `tab:overall_metrics_by_target' on page 3 undefined on
- input line 13.
-
-
-Underfull \vbox (badness 1622) has occurred while \output is active []
+Underfull \vbox (badness 1810) has occurred while \output is active []
 
 
 
@@ -657,136 +626,12 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [3]
-
-LaTeX Warning: Reference `tab:overall_metrics_by_horizon' on page 4 undefined o
-n input line 17.
-
-
-LaTeX Warning: Reference `tab:metrics_36_rows' on page 4 undefined on input lin
-e 17.
-
-<images/forecast_vs_actual_koipall_g.png, id=157, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_koipall_g.png, id=172, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_koipall_g.png Graphic file (type png)
 <use images/forecast_vs_actual_koipall_g.png>
 Package pdftex.def Info: images/forecast_vs_actual_koipall_g.png  used on input
  line 21.
 (pdftex.def)             Requested size: 422.77661pt x 179.45468pt.
-
-! LaTeX Error: Unicode character ≈ (U+2248)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ... performance for 1-day forecasts (sMSE ≈
-                                                   3.5×10⁻⁹, sRMSE ≈ ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
-0.
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...e for 1-day forecasts (sMSE ≈ 3.5×10⁻
-                                                  ⁹, sRMSE ≈ 6.0×10⁻�...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁹ (U+2079)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...or 1-day forecasts (sMSE ≈ 3.5×10⁻⁹
-                                                  , sRMSE ≈ 6.0×10⁻⁵)...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ≈ (U+2248)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...recasts (sMSE ≈ 3.5×10⁻⁹, sRMSE ≈
-                                                   6.0×10⁻⁵) but suffer...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...SE ≈ 3.5×10⁻⁹, sRMSE ≈ 6.0×10⁻
-                                                  ⁵) but suffers from seve...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁵ (U+2075)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...≈ 3.5×10⁻⁹, sRMSE ≈ 6.0×10⁻⁵
-                                                  ) but suffers from severe ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁵ (U+2075)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...ge errors (sRMSE > 10²² for h=7, > 10⁵
-                                                  ⁸ for h=28), indicating ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁸ (U+2078)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...errors (sRMSE > 10²² for h=7, > 10⁵⁸
-                                                   for h=28), indicating tha...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -798,26 +643,15 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 [4 <./images/forecast_vs_actual_koipall_g.png>])
 (./contents/4_investment_model.tex
-
-LaTeX Warning: Reference `tab:overall_metrics_by_target' on page 5 undefined on
- input line 13.
-
-
-LaTeX Warning: Reference `tab:overall_metrics_by_horizon' on page 5 undefined o
-n input line 17.
-
-
-LaTeX Warning: Reference `tab:metrics_36_rows' on page 5 undefined on input lin
-e 17.
-
-<images/forecast_vs_actual_koequipte.png, id=167, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_koequipte.png, id=189, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_koequipte.png Graphic file (type png)
 <use images/forecast_vs_actual_koequipte.png>
 Package pdftex.def Info: images/forecast_vs_actual_koequipte.png  used on input
  line 21.
 (pdftex.def)             Requested size: 422.77661pt x 179.45468pt.
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+Underfull \vbox (badness 4168) has occurred while \output is active []
+
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -827,123 +661,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[5]
-
-! LaTeX Error: Unicode character ≈ (U+2248)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...xcellent 1-day forecast accuracy (sMSE ≈
-                                                   3.7×10⁻⁹, sRMSE ≈ ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...day forecast accuracy (sMSE ≈ 3.7×10⁻
-                                                  ⁹, sRMSE ≈ 6.0×10⁻�...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁹ (U+2079)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ... forecast accuracy (sMSE ≈ 3.7×10⁻⁹
-                                                  , sRMSE ≈ 6.0×10⁻⁵)...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ≈ (U+2248)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...ccuracy (sMSE ≈ 3.7×10⁻⁹, sRMSE ≈
-                                                   6.0×10⁻⁵) but comple...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...SE ≈ 3.7×10⁻⁹, sRMSE ≈ 6.0×10⁻
-                                                  ⁵) but completely fails ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁵ (U+2075)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...≈ 3.7×10⁻⁹, sRMSE ≈ 6.0×10⁻⁵
-                                                  ) but completely fails for...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁶ (U+2076)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...agnitudes (sRMSE > 10¹³ for h=7, > 10⁶
-                                                  ⁰ for h=28). This numeri...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁰ (U+2070)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...itudes (sRMSE > 10¹³ for h=7, > 10⁶⁰
-                                                   for h=28). This numerical...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-) (./contents/5_consumption_model.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+[5]) (./contents/5_consumption_model.tex
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -953,138 +671,15 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [6 <./images/forecast_vs_actual_koequipte.png>]
-
-LaTeX Warning: Reference `tab:overall_metrics_by_target' on page 7 undefined on
- input line 13.
-
-
-LaTeX Warning: Reference `tab:overall_metrics_by_horizon' on page 7 undefined o
-n input line 17.
-
-
-LaTeX Warning: Reference `tab:metrics_36_rows' on page 7 undefined on input lin
-e 17.
-
-<images/forecast_vs_actual_kowrccnse.png, id=181, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_kowrccnse.png, id=205, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_kowrccnse.png Graphic file (type png)
 <use images/forecast_vs_actual_kowrccnse.png>
 Package pdftex.def Info: images/forecast_vs_actual_kowrccnse.png  used on input
  line 21.
 (pdftex.def)             Requested size: 422.77661pt x 179.45468pt.
 
+
 LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-! LaTeX Error: Unicode character ≈ (U+2248)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...ts: near-perfect 1-day forecasts (sMSE ≈
-                                                   5.8×10⁻⁹, sRMSE ≈ ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...rfect 1-day forecasts (sMSE ≈ 5.8×10⁻
-                                                  ⁹, sRMSE ≈ 7.6×10⁻�...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁹ (U+2079)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...ct 1-day forecasts (sMSE ≈ 5.8×10⁻⁹
-                                                  , sRMSE ≈ 7.6×10⁻⁵)...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ≈ (U+2248)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...recasts (sMSE ≈ 5.8×10⁻⁹, sRMSE ≈
-                                                   7.6×10⁻⁵) followed b...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...SE ≈ 5.8×10⁻⁹, sRMSE ≈ 7.6×10⁻
-                                                  ⁵) followed by catastrop...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁵ (U+2075)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...≈ 5.8×10⁻⁹, sRMSE ≈ 7.6×10⁻⁵
-                                                  ) followed by catastrophic...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁵ (U+2075)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ... horizons (sRMSE > 10¹¹ for h=7, > 10⁵
-                                                  ⁸ for h=28). The numeric...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁸ (U+2078)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.30 ...rizons (sRMSE > 10¹¹ for h=7, > 10⁵⁸
-                                                   for h=28). The numerical ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1095,23 +690,6 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [7]) (./contents/6_conclusion.tex
-
-LaTeX Warning: Reference `tab:overall_metrics' on page 8 undefined on input lin
-e 5.
-
-
-LaTeX Warning: Reference `tab:overall_metrics_by_target' on page 8 undefined on
- input line 5.
-
-
-LaTeX Warning: Reference `tab:overall_metrics_by_horizon' on page 8 undefined o
-n input line 5.
-
-
-LaTeX Warning: Reference `tab:metrics_36_rows' on page 8 undefined on input lin
-e 5.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1124,47 +702,48 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [8 <./images/forecast_vs_actual_kowrccnse.png>]
-<images/accuracy_heatmap.png, id=193, 715.2321pt x 570.6921pt>
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+(./tables/tab_overall_metrics.tex
+Overfull \hbox (879.07478pt too wide) in paragraph at lines 5--15
+ [][] 
+ []
+
+) (./tables/tab_overall_metrics_by_target.tex
+Overfull \hbox (569.07478pt too wide) in paragraph at lines 5--16
+ [][] 
+ []
+
+) (./tables/tab_overall_metrics_by_horizon.tex
+Overfull \hbox (54.07478pt too wide) in paragraph at lines 5--16
+ [][] 
+ []
+
+) (./tables/tab_metrics_36_rows.tex
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+)
+<images/accuracy_heatmap.png, id=225, 715.2321pt x 570.6921pt>
 File: images/accuracy_heatmap.png Graphic file (type png)
 <use images/accuracy_heatmap.png>
-Package pdftex.def Info: images/accuracy_heatmap.png  used on input line 9.
+Package pdftex.def Info: images/accuracy_heatmap.png  used on input line 17.
 (pdftex.def)             Requested size: 375.80542pt x 299.86165pt.
-<images/horizon_trend.png, id=194, 716.6775pt x 426.393pt>
-File: images/horizon_trend.png Graphic file (type png)
-<use images/horizon_trend.png>
-Package pdftex.def Info: images/horizon_trend.png  used on input line 16.
-(pdftex.def)             Requested size: 375.80542pt x 223.59291pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
+<images/horizon_trend.png, id=226, 716.6775pt x 426.393pt>
+File: images/horizon_trend.png Graphic file (type png)
+<use images/horizon_trend.png>
+Package pdftex.def Info: images/horizon_trend.png  used on input line 24.
+(pdftex.def)             Requested size: 375.80542pt x 223.59291pt.
 
-! LaTeX Error: Unicode character ⁻ (U+207B)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.29 ...exceptional 1-day forecasts (sRMSE < 10⁻
-                                                  ⁴ for all targets), the ...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ⁴ (U+2074)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.29 ...eptional 1-day forecasts (sRMSE < 10⁻⁴
-                                                   for all targets), the mod...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1174,7 +753,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[9 <./images/accuracy_heatmap.png>]
+[9]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1186,7 +765,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[10 <./images/horizon_trend.png>]) (./main.bbl)
+[10]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1195,38 +774,72 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[11] (./main.aux)
+[11 <./images/accuracy_heatmap.png>]) (./main.bbl
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[12 <./images/horizon_trend.png>])
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[13] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 7547A078D7F456AE3140F1F9D0A5077F;4811.
  ) 
 Here is how much of TeX's memory you used:
- 14461 strings out of 476182
- 233813 string characters out of 5795595
- 1933975 words of memory out of 5000000
- 36004 multiletter control sequences out of 15000+600000
- 593458 words of font info for 171 fonts, out of 8000000 for 9000
+ 14588 strings out of 476182
+ 236613 string characters out of 5795595
+ 1951975 words of memory out of 5000000
+ 36064 multiletter control sequences out of 15000+600000
+ 606719 words of font info for 201 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,12n,96p,1001b,474s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/u
-tmr8a.pfb>
-Output written on main.pdf (11 pages, 1356644 bytes).
+ 84i,13n,96p,1001b,592s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{Hfootnote.5} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
+, replaced by a fixed one
+
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utm
+r8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (13 pages, 1374240 bytes).
 PDF statistics:
- 264 PDF objects out of 1000 (max. 8388607)
- 222 compressed objects within 3 object streams
- 51 named destinations out of 1000 (max. 500000)
- 34586 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 319 PDF objects out of 1000 (max. 8388607)
+ 273 compressed objects within 3 object streams
+ 68 named destinations out of 1000 (max. 500000)
+ 49946 words of extra memory for PDF output out of 51595 (max. 10000000)
 

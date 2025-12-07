@@ -27,7 +27,7 @@ The forecast vs actual plot (Figure~\ref{fig:forecast_vs_actual_kowrccnse}) show
 
 For KOWRCCNSE, ARIMA shows the best overall performance among available models, with standardized RMSE values of 0.81 (1-day), 0.65 (7-day), and 0.68 (28-day). Notably, performance actually improves slightly from 1-day to 7-day forecasts, suggesting that short-term noise may be more problematic than medium-term trends for this series. The 28-day forecast performance (sRMSE = 0.68) is comparable to the 7-day forecast, indicating reasonable stability across medium-term horizons.
 
-VAR exhibits the same pattern as observed for other targets: near-perfect 1-day forecasts (sMSE ≈ 5.8×10⁻⁹, sRMSE ≈ 7.6×10⁻⁵) followed by catastrophic failure for longer horizons (sRMSE > 10¹¹ for h=7, > 10⁵⁸ for h=28). The numerical instability makes VAR unusable for consumption forecasting beyond the immediate next period.
+VAR exhibits the same pattern as observed for other targets: near-perfect 1-day forecasts (sMSE $\approx$ 5.8$\times$10$^{-9}$, sRMSE $\approx$ 7.6$\times$10$^{-5}$) followed by catastrophic failure for longer horizons (sRMSE $>$ 10$^{11}$ for h=7, $>$ 10$^{58}$ for h=28). The numerical instability makes VAR unusable for consumption forecasting beyond the immediate next period.
 
 ARIMA's superior performance for KOWRCCNSE compared to KOEQUIPTE (average sRMSE = 0.71 vs. 1.19) suggests that consumption patterns are more regular and predictable than investment patterns. This aligns with economic theory, as consumption tends to follow smoother trends driven by income and demographics, while investment is more volatile and subject to business cycle effects.
 
