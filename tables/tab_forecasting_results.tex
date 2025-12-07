@@ -1,24 +1,24 @@
 \begin{table}[h]
 \centering
 \caption[Forecasting Results by Model-Horizon and Target-Metric]{Forecasting Results by Model-Horizon and Target-Metric\footnote{Experiments evaluate all horizons from 1 to 22 months (2024--01 to 2025--10), but table shows only selected horizons (1, 11, 22 months) for readability. Full results for all horizons are available in aggregated\_results.csv.}}
-\label{tab:forecasting_results}
-\begin{tabular}{lcccccc}
-\toprule
-Model-Horizon & KOIPALL.G & KOIPALL.G & KOEQUIPTE & KOEQUIPTE & KOWRCCNSE & KOWRCCNSE \\
- & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
-\midrule
-ARIMA-1 & N/A & N/A & N/A & N/A & N/A & N/A \\
-ARIMA-11 & N/A & N/A & N/A & N/A & N/A & N/A \\
-ARIMA-22 & N/A & N/A & N/A & N/A & N/A & N/A \\
-VAR-1 & N/A & N/A & N/A & N/A & N/A & N/A \\
-VAR-11 & N/A & N/A & N/A & N/A & N/A & N/A \\
-VAR-22 & N/A & N/A & N/A & N/A & N/A & N/A \\
-DFM-1 & N/A & N/A & N/A & N/A & N/A & N/A \\
-DFM-11 & N/A & N/A & N/A & N/A & N/A & N/A \\
-DFM-22 & N/A & N/A & N/A & N/A & N/A & N/A \\
-DDFM-1 & N/A & N/A & N/A & N/A & N/A & N/A \\
-DDFM-11 & N/A & N/A & N/A & N/A & N/A & N/A \\
-DDFM-22 & N/A & N/A & N/A & N/A & N/A & N/A \\
+\\label{tab:forecasting_results}
+\\begin{tabular}{lcccccc}
+\\toprule
+Model-Horizon & KOIPALL.G & KOIPALL.G & KOEQUIPTE & KOEQUIPTE & KOWRCCNSE & KOWRCCNSE \\\\
+ & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\\\
+\\midrule
+ARIMA-1 & N/A & N/A & 0.8734 & 0.7628 & N/A & N/A \\
+ARIMA-11 & N/A & N/A & 2.0917 & 4.3751 & N/A & N/A \\
+ARIMA-22 & N/A & N/A & 0.0846 & 0.0071 & N/A & N/A \\
+VAR-1 & N/A & N/A & 0.2998 & 0.0899 & N/A & N/A \\
+VAR-11 & N/A & N/A & 2.5679 & 6.5939 & N/A & N/A \\
+VAR-22 & N/A & N/A & 0.1881 & 0.0354 & N/A & N/A \\
+DFM-1 & N/A & N/A & 0.4890 & 0.2391 & N/A & N/A \\
+DFM-11 & N/A & N/A & 2.2917 & 5.2519 & N/A & N/A \\
+DFM-22 & N/A & N/A & 0.1139 & 0.0130 & N/A & N/A \\
+DDFM-1 & N/A & N/A & 0.7574 & 0.5736 & N/A & N/A \\
+DDFM-11 & N/A & N/A & 2.0233 & 4.0938 & N/A & N/A \\
+DDFM-22 & N/A & N/A & 0.1545 & 0.0239 & N/A & N/A \\
 \bottomrule
 \end{tabular}
 \end{table}
