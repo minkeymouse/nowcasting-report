@@ -317,8 +317,8 @@ def plot_accuracy_heatmap(save_path: Optional[Path] = None):
 def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
     """Create forecast vs actual time series plot for a specific target.
     
-    Shows 60 months total: 30 months of original series (single line) before cutoff,
-    then 30 months of forecasts (5 lines: original, ARIMA, VAR, DFM, DDFM) after cutoff.
+    Shows 22 months of forecasts (2024-01 to 2025-10) with actual values and 4 model predictions.
+    Each plot consists of original series line, ARIMA, VAR, DFM, DDFM lines (5 lines total).
     
     Parameters
     ----------
@@ -394,12 +394,12 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         y_train_monthly = y_train_data.resample('ME').last()
         y_test_monthly = y_test_data.resample('ME').last()
         
-        # Get last 30 months of training data for historical plot
-        n_historical_months = min(30, len(y_train_monthly))
+        # Get last 22 months of training data for historical plot (optional context)
+        n_historical_months = min(22, len(y_train_monthly))
         y_historical = y_train_monthly.iloc[-n_historical_months:]
         
-        # Get first 30 months of test data for forecast period
-        n_forecast_months = min(30, len(y_test_monthly))
+        # Get first 22 months of test data for forecast period (2024-01 to 2025-10)
+        n_forecast_months = min(22, len(y_test_monthly))
         y_actual_forecast = y_test_monthly.iloc[:n_forecast_months]
         
         # Prepare forecast data
@@ -625,7 +625,7 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     """Create nowcasting comparison plot (Plot4: fig:nowcasting_comparison).
     
     For each target, create side-by-side plots comparing "4 weeks before" vs "1 week before" nowcasting.
-    Each plot shows 12 months (2024-01 to 2024-12) of predictions and actual values.
+    Each plot shows 22 months (2024-01 to 2025-10) of predictions and actual values.
     
     Parameters
     ----------

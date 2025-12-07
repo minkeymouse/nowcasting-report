@@ -2,32 +2,32 @@
 
 Nowcasting은 공식 통계가 발표되기 전에 현재 시점의 거시경제 변수를 추정하는 기법임. 본 연구에서는 모형(ARIMA, VAR, DFM, DDFM)과 대상 변수(3개)에 대해 Nowcasting 백테스트를 수행하여 실제 운영 환경에서의 성능을 평가함.
 
-Nowcasting 실험은 다음과 같이 구성됨: 각 목표 월(2024-01 ~ 2024-12, 12개월)에 대해 여러 시점에서 예측을 수행함. 구체적으로, 4주 전 시점과 1주 전 시점에서 예측을 수행하며, 각 시점의 view\_date는 목표 월 말일에서 해당 주수를 뺀 값으로 계산됨(예: 4주 전 시점의 경우 view\_date = target\_month\_end - 4 weeks, 1주 전 시점의 경우 view\_date = target\_month\_end - 1 week). 각 시점에서 시리즈별 발표 시차(release date)를 기준으로 미발표 데이터를 NaN으로 마스킹함. 이는 실제 운영 환경에서 특정 시점에 사용 가능한 데이터만을 사용하여 예측하는 상황을 시뮬레이션함. 각 시점에서 1 horizon forecast를 생성하며, 시점별 예측 정확도를 비교함.
+Nowcasting 실험은 다음과 같이 구성됨: 각 목표 월(2024-01 ~ 2025-10, 22개월)에 대해 여러 시점에서 예측을 수행함. 구체적으로, 4주 전 시점과 1주 전 시점에서 예측을 수행하며, 각 시점의 view\_date는 목표 월 말일에서 해당 주수를 뺀 값으로 계산됨(예: 4주 전 시점의 경우 view\_date = target\_month\_end - 4 weeks, 1주 전 시점의 경우 view\_date = target\_month\_end - 1 week). 각 시점에서 시리즈별 발표 시차(release date)를 기준으로 미발표 데이터를 NaN으로 마스킹함. 이는 실제 운영 환경에서 특정 시점에 사용 가능한 데이터만을 사용하여 예측하는 상황을 시뮬레이션함. 각 시점에서 1 horizon forecast를 생성하며, 시점별 예측 정확도를 비교함.
 
-표~\ref{tab:nowcasting_backtest}는 모형(ARIMA, VAR, DFM, DDFM)의 2024년 월별 백테스트 결과를 시점별로 제시함. 훈련 기간은 1985년부터 2019년까지이며, Nowcasting 기간은 2024년 1월부터 2024년 12월까지임. 표의 행은 모형-시점 조합(8개 행: ARIMA-4weeks, ARIMA-1week, VAR-4weeks, VAR-1week, DFM-4weeks, DFM-1week, DDFM-4weeks, DDFM-1week)을 나타내며, 열은 대상 변수-지표 조합(6개 열: KOIPALL.G\_sMAE, KOIPALL.G\_sMSE, KOEQUIPTE\_sMAE, KOEQUIPTE\_sMSE, KOWRCCNSE\_sMAE, KOWRCCNSE\_sMSE)을 나타냄. 총 8개 행 $\times$ 7개 열(모형-시점 열 포함)로 구성되며, 각 셀은 해당 모형-시점-대상 조합에 대한 평균 sMSE 또는 sMAE를 나타냄.
+표~\ref{tab:nowcasting_backtest}는 모형(ARIMA, VAR, DFM, DDFM)의 2024-2025년 월별 백테스트 결과를 시점별로 제시함. 훈련 기간은 1985년부터 2019년까지이며, Nowcasting 기간은 2024년 1월부터 2025년 10월까지(22개월)임. 표의 행은 모형-시점 조합(8개 행: ARIMA-4weeks, ARIMA-1week, VAR-4weeks, VAR-1week, DFM-4weeks, DFM-1week, DDFM-4weeks, DDFM-1week)을 나타내며, 열은 대상 변수-지표 조합(6개 열: KOIPALL.G\_sMAE, KOIPALL.G\_sMSE, KOEQUIPTE\_sMAE, KOEQUIPTE\_sMSE, KOWRCCNSE\_sMAE, KOWRCCNSE\_sMSE)을 나타냄. 총 8개 행 $\times$ 7개 열(모형-시점 열 포함)로 구성되며, 각 셀은 해당 모형-시점-대상 조합에 대한 평균 sMSE 또는 sMAE를 나타냄.
 
 \input{tables/tab_nowcasting_backtest}
 
-그림~\ref{fig:nowcasting_comparison_koipallg}, 그림~\ref{fig:nowcasting_comparison_koequipte}, 그림~\ref{fig:nowcasting_comparison_kowrccnse}는 Nowcasting 시점별 비교 플롯임. 각 대상 변수별로 "4주 전 nowcasting"과 "1주 전 nowcasting"을 나란히 비교하는 플롯으로, 총 3쌍(6개 플롯, 대상 변수별 1쌍)으로 구성됨. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선(실제값)과 빨간 점선(모형 평균 예측값)을 비교함. X축은 월별 타임스탬프(2024.01 ~ 2025.01), Y축은 대상 변수 값(\%)임. 이 플롯은 시간이 지날수록(1주 전이 4주 전보다) 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상될 수 있음을 나타냄.
+그림~\ref{fig:nowcasting_comparison_koipallg}, 그림~\ref{fig:nowcasting_comparison_koequipte}, 그림~\ref{fig:nowcasting_comparison_kowrccnse}는 Nowcasting 시점별 비교 플롯임. 각 대상 변수별로 "4주 전 nowcasting"과 "1주 전 nowcasting"을 나란히 비교하는 플롯으로, 총 3쌍(6개 플롯, 대상 변수별 1쌍)으로 구성됨. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선(실제값)과 빨간 점선(모형 평균 예측값)을 비교함. X축은 월별 타임스탬프(2024.01 ~ 2025.10), Y축은 대상 변수 값(\%)임. 이 플롯은 시간이 지날수록(1주 전이 4주 전보다) 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상될 수 있음을 나타냄.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_koipall_g.png}
-\caption{Nowcasting 시점별 비교: 전산업생산지수 (KOIPALL.G). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
+\caption{Nowcasting 시점별 비교: 전산업생산지수 (KOIPALL.G). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
 \label{fig:nowcasting_comparison_koipallg}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_koequipte.png}
-\caption{Nowcasting 시점별 비교: 설비투자지수 (KOEQUIPTE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
+\caption{Nowcasting 시점별 비교: 설비투자지수 (KOEQUIPTE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
 \label{fig:nowcasting_comparison_koequipte}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_kowrccnse.png}
-\caption{Nowcasting 시점별 비교: 도소매판매액 (KOWRCCNSE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
+\caption{Nowcasting 시점별 비교: 도소매판매액 (KOWRCCNSE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
 \label{fig:nowcasting_comparison_kowrccnse}
 \end{figure}
 
