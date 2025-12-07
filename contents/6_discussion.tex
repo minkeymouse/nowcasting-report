@@ -6,16 +6,18 @@
 
 \textbf{ARIMA:}
 \begin{itemize}
-    \item 평가 과정에서 기술적 문제로 인해 사용 가능한 결과가 제한적임
-    \item 특징: 단순성, 해석 가능성, 안정적 성능 (이론적)
-    \item 현재 실험에서는 세 대상 변수 모두에서 결과 생성에 실패함
+    \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item 특징: 단순성, 해석 가능성, 안정적 성능
+    \item 일부 수평선에서 우수한 성능을 보임 (예: KOEQUIPTE 3개월에서 최소 sMAE/sMSE)
+    \item Nowcasting에서는 release date 마스킹 처리의 어려움으로 인해 제한적임
 \end{itemize}
 
 \textbf{VAR:}
 \begin{itemize}
-    \item 평가 과정에서 기술적 문제로 인해 사용 가능한 결과가 제한적임
+    \item 세 대상 변수 모두에서 성공적으로 평가 완료
     \item 제한: 다단계 예측에서 수치적 불안정성 문제 (이론적)
-    \item 현재 실험에서는 세 대상 변수 모두에서 결과 생성에 실패함
+    \item 단기 수평선(1-2개월)에서 상대적으로 안정적인 성능을 보임
+    \item Nowcasting에서는 release date 마스킹 처리의 어려움으로 인해 제한적임
 \end{itemize}
 
 \textbf{DFM:}
@@ -73,7 +75,7 @@ Nowcasting 실험 구성:
     \item 대상 변수: 3개
     \item 목표 월: 2024--01 ~ 2025--10 (22개월)
     \item 예측 시점: 4주 전, 1주 전
-    \item 결과: DFM과 DDFM은 모든 대상 변수에서 성공적으로 결과를 생성했으며, ARIMA와 VAR은 기술적 제한사항으로 인해 결과가 제한적임
+    \item 결과: 네 가지 모형(ARIMA, VAR, DFM, DDFM) 모두 forecasting 평가에서 성공적으로 결과를 생성했으며, nowcasting에서는 DFM과 DDFM이 모든 대상 변수에서 성공적이며 ARIMA와 VAR은 일부 제한이 있음
 \end{itemize}
 
 \textbf{예상 성능 향상:} \cite{banbura2012nowcasting}
