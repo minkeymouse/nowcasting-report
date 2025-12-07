@@ -70,8 +70,17 @@ def _load_comparison_results(outputs_dir: Path) -> Dict[str, List[Dict]]:
     return all_results
 
 
-def _load_backtest_results(target: str, outputs_dir: Path) -> Dict[str, Dict[str, Any]]:
+def _load_backtest_results(target: str, outputs_dir: Path, model_filter: Optional[str] = None) -> Dict[str, Dict[str, Any]]:
     """Load all backtest JSON files for a target.
+    
+    Parameters
+    ----------
+    target : str
+        Target series name
+    outputs_dir : Path
+        Outputs directory
+    model_filter : str, optional
+        Filter by model ('dfm' or 'ddfm'). If None, loads both.
     
     Returns:
         Dictionary with structure: {timepoint: {month: {forecasts: [], actual: value}}}
@@ -80,7 +89,18 @@ def _load_backtest_results(target: str, outputs_dir: Path) -> Dict[str, Dict[str
     if not backtest_dir.exists():
         return {}
     
-    models = ['arima', 'var', 'dfm', 'ddfm']
+    # Filter by model if specified
+    if model_filter:
+        model_filter_lower = model_filter.lower()
+        if model_filter_lower == 'dfm':
+            models = ['dfm']
+        elif model_filter_lower == 'ddfm':
+            models = ['ddfm']
+        else:
+            models = []
+    else:
+        models = ['arima', 'var', 'dfm', 'ddfm']
+    
     timepoints = ['4weeks', '1weeks']
     data_by_timepoint = {tp: {} for tp in timepoints}
     
@@ -482,7 +502,11 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
             if not model_dir_str:
                 continue
             
+            # Convert relative path to absolute path if needed
             model_dir = PathLib(model_dir_str)
+            if not model_dir.is_absolute():
+                # If relative path, assume it's relative to project root
+                model_dir = project_root / model_dir_str
             model_file = model_dir / "model.pkl"
             
             if not model_file.exists():
@@ -578,53 +602,57 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
                             forecaster.fit(y_train_model)
                         
                         # Predict for forecast period (2024-01 to 2025-10, 22 months)
-                        # Generate forecasts for 22 months ahead
+                        # Generate forecasts for each horizon separately to get proper time-varying predictions
                         n_forecast = 22
-                        pred = forecaster.predict(fh=list(range(1, n_forecast + 1)))
+                        forecast_values_list = []
                         
-                        # Extract predictions for target series
-                        if isinstance(pred, pd.DataFrame):
-                            if target in pred.columns:
-                                forecast_series = pred[target]
-                            else:
-                                # Try to find target by case-insensitive match
-                                target_lower = target.lower()
-                                matching_cols = [c for c in pred.columns if c.lower() == target_lower]
-                                if matching_cols:
-                                    forecast_series = pred[matching_cols[0]]
+                        for h in range(1, n_forecast + 1):
+                            try:
+                                # Predict for each horizon separately
+                                pred = forecaster.predict(fh=[h])
+                                
+                                # Extract prediction for target series at this horizon
+                                if isinstance(pred, pd.DataFrame):
+                                    if target in pred.columns:
+                                        pred_value = pred[target].iloc[-1]  # Get last value (horizon h)
+                                    else:
+                                        # Try to find target by case-insensitive match
+                                        target_lower = target.lower()
+                                        matching_cols = [c for c in pred.columns if c.lower() == target_lower]
+                                        if matching_cols:
+                                            pred_value = pred[matching_cols[0]].iloc[-1]
+                                        else:
+                                            # Use first column as fallback
+                                            pred_value = pred.iloc[-1, 0]
+                                elif isinstance(pred, pd.Series):
+                                    pred_value = pred.iloc[-1] if len(pred) > 0 else np.nan
                                 else:
-                                    # Use first column as fallback
-                                    forecast_series = pred.iloc[:, 0]
-                        elif isinstance(pred, pd.Series):
-                            forecast_series = pred
-                        else:
-                            forecast_series = pd.Series(pred.flatten() if hasattr(pred, 'flatten') else pred)
+                                    pred_array = np.asarray(pred)
+                                    if pred_array.size > 0:
+                                        pred_value = pred_array.flatten()[-1]
+                                    else:
+                                        pred_value = np.nan
+                                
+                                # Check if value is valid
+                                if pd.isna(pred_value) or np.isinf(pred_value):
+                                    forecast_values_list.append(np.nan)
+                                else:
+                                    forecast_values_list.append(float(pred_value))
+                                    
+                            except Exception as e:
+                                print(f"Warning: Failed to predict horizon {h} for {model_key}: {e}")
+                                forecast_values_list.append(np.nan)
                         
-                        # Create index for forecast period (2024-01 to 2025-10)
-                        # Start from first day of forecast period
-                        forecast_index = pd.date_range(
-                            start=forecast_start,
-                            periods=min(len(forecast_series), 22),
-                            freq='MS'  # Month Start
-                        )
-                        if len(forecast_series) > len(forecast_index):
-                            forecast_series = forecast_series.iloc[:len(forecast_index)]
-                        elif len(forecast_series) < len(forecast_index):
-                            forecast_index = forecast_index[:len(forecast_series)]
-                        forecast_series.index = forecast_index
+                        # Convert to numpy array
+                        forecast_values = np.array(forecast_values_list)
                         
-                        # Aggregate to monthly (take last value of each month) if needed
-                        # forecast_series already has monthly index from forecast_index
-                        # Just take first 22 values
-                        if len(forecast_series) >= 22:
-                            forecast_values = forecast_series.iloc[:22].values
-                        else:
-                            # Pad with NaN if needed
-                            forecast_values = forecast_series.values
-                            if len(forecast_values) < 22:
-                                padded = np.full(22, np.nan)
-                                padded[:len(forecast_values)] = forecast_values
-                                forecast_values = padded
+                        # Debug: Print forecast values for first few horizons
+                        if model_key.upper() == 'DFM' and target == 'KOIPALL.G':
+                            print(f"Debug {model_key} {target} forecast values (first 5): {forecast_values[:5]}")
+                        
+                        # Note: DFM/DDFM predict() already returns values in original scale
+                        # (dfm-python's predict() does: X_forecast = X_forecast_std * Wx + Mx)
+                        # So no inverse transform is needed
                         forecast_data[model_key.upper()] = forecast_values
                         
                     except Exception as e:
@@ -652,6 +680,17 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         
         # Plot forecast period (2024-01 to 2025-10) - actual and predictions
         forecast_dates = y_actual_forecast_monthly.index
+        n_forecast_periods = len(forecast_dates)
+        
+        # Ensure all forecast arrays have the same length as forecast_dates
+        for model_name in forecast_data.keys():
+            if len(forecast_data[model_name]) > n_forecast_periods:
+                forecast_data[model_name] = forecast_data[model_name][:n_forecast_periods]
+            elif len(forecast_data[model_name]) < n_forecast_periods:
+                # Pad with NaN if needed
+                padded = np.full(n_forecast_periods, np.nan)
+                padded[:len(forecast_data[model_name])] = forecast_data[model_name]
+                forecast_data[model_name] = padded
         
         # Plot actual values in forecast period
         ax.plot(forecast_dates, forecast_data['Actual'], 'k-', linewidth=2, 
@@ -748,18 +787,35 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
         print(f"Generated placeholder: {save_path.name}")
         return
     
-    # Convert to format needed for this plot: {timepoint: {month: [predictions]}}
-    predictions_by_timepoint = {'4weeks': {}, '1weeks': {}}
+    # Convert to format needed for this plot: {timepoint: {model: {month: [predictions]}}}
+    # Separate predictions by model (DFM and DDFM)
+    predictions_by_timepoint_model = {'4weeks': {'DFM': {}, 'DDFM': {}}, '1weeks': {'DFM': {}, 'DDFM': {}}}
     actual_values = {}
     
-    for tp in ['4weeks', '1weeks']:
-        for month_str, month_data in data_by_timepoint.get(tp, {}).items():
-            predictions_by_timepoint[tp][month_str] = month_data.get('forecasts', [])
-            if month_str not in actual_values:
-                actual_values[month_str] = month_data.get('actual')
+    # Load backtest results separately for each model
+    for model in ['dfm', 'ddfm']:
+        model_upper = model.upper()
+        model_data = _load_backtest_results(target, OUTPUTS_DIR, model_filter=model)
+        
+        for tp in ['4weeks', '1weeks']:
+            for month_str, month_data in model_data.get(tp, {}).items():
+                if month_str not in predictions_by_timepoint_model[tp][model_upper]:
+                    predictions_by_timepoint_model[tp][model_upper][month_str] = []
+                predictions_by_timepoint_model[tp][model_upper][month_str].extend(month_data.get('forecasts', []))
+                if month_str not in actual_values:
+                    actual_values[month_str] = month_data.get('actual')
     
     # Check if we have any data
-    if not any(predictions_by_timepoint.get(tp, {}) for tp in ['4weeks', '1weeks']):
+    has_data = False
+    for tp in ['4weeks', '1weeks']:
+        for model in ['DFM', 'DDFM']:
+            if predictions_by_timepoint_model[tp][model]:
+                has_data = True
+                break
+        if has_data:
+            break
+    
+    if not has_data:
         # No data, create placeholder
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         for ax in axes:
@@ -784,27 +840,45 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     # Sort months chronologically
     months = sorted(actual_values.keys())
     
-    # Calculate model average predictions for each timepoint
-    avg_predictions_4weeks = []
-    avg_predictions_1weeks = []
+    # Calculate model-specific predictions for each timepoint
+    dfm_predictions_4weeks = []
+    dfm_predictions_1weeks = []
+    ddfm_predictions_4weeks = []
+    ddfm_predictions_1weeks = []
     actual_vals = []
     
     for month in months:
-        # 4 weeks before
-        preds_4w = predictions_by_timepoint['4weeks'].get(month, [])
-        if preds_4w:
-            avg_4w = np.mean([p for p in preds_4w if p is not None and not np.isnan(p)])
-            avg_predictions_4weeks.append(avg_4w)
+        # DFM - 4 weeks before
+        preds_dfm_4w = predictions_by_timepoint_model['4weeks']['DFM'].get(month, [])
+        if preds_dfm_4w:
+            avg_dfm_4w = np.mean([p for p in preds_dfm_4w if p is not None and not np.isnan(p)])
+            dfm_predictions_4weeks.append(avg_dfm_4w)
         else:
-            avg_predictions_4weeks.append(np.nan)
+            dfm_predictions_4weeks.append(np.nan)
         
-        # 1 week before
-        preds_1w = predictions_by_timepoint['1weeks'].get(month, [])
-        if preds_1w:
-            avg_1w = np.mean([p for p in preds_1w if p is not None and not np.isnan(p)])
-            avg_predictions_1weeks.append(avg_1w)
+        # DFM - 1 week before
+        preds_dfm_1w = predictions_by_timepoint_model['1weeks']['DFM'].get(month, [])
+        if preds_dfm_1w:
+            avg_dfm_1w = np.mean([p for p in preds_dfm_1w if p is not None and not np.isnan(p)])
+            dfm_predictions_1weeks.append(avg_dfm_1w)
         else:
-            avg_predictions_1weeks.append(np.nan)
+            dfm_predictions_1weeks.append(np.nan)
+        
+        # DDFM - 4 weeks before
+        preds_ddfm_4w = predictions_by_timepoint_model['4weeks']['DDFM'].get(month, [])
+        if preds_ddfm_4w:
+            avg_ddfm_4w = np.mean([p for p in preds_ddfm_4w if p is not None and not np.isnan(p)])
+            ddfm_predictions_4weeks.append(avg_ddfm_4w)
+        else:
+            ddfm_predictions_4weeks.append(np.nan)
+        
+        # DDFM - 1 week before
+        preds_ddfm_1w = predictions_by_timepoint_model['1weeks']['DDFM'].get(month, [])
+        if preds_ddfm_1w:
+            avg_ddfm_1w = np.mean([p for p in preds_ddfm_1w if p is not None and not np.isnan(p)])
+            ddfm_predictions_1weeks.append(avg_ddfm_1w)
+        else:
+            ddfm_predictions_1weeks.append(np.nan)
         
         # Actual
         actual_vals.append(actual_values.get(month))
@@ -834,20 +908,31 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     }
     target_name = target_names.get(target, target)
     
+    # Calculate y-axis limits (include all series)
+    all_values = [v for v in actual_vals if v is not None and not np.isnan(v)]
+    all_values.extend([v for v in dfm_predictions_4weeks if v is not None and not np.isnan(v)])
+    all_values.extend([v for v in dfm_predictions_1weeks if v is not None and not np.isnan(v)])
+    all_values.extend([v for v in ddfm_predictions_4weeks if v is not None and not np.isnan(v)])
+    all_values.extend([v for v in ddfm_predictions_1weeks if v is not None and not np.isnan(v)])
+    y_min = min(all_values) - 1 if all_values else -2
+    y_max = max(all_values) + 1 if all_values else 2
+    
     # Plot 1: 4 weeks before
     ax1 = axes[0]
     # Actual value: blue solid line
     ax1.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'{target_name} (Actual)', alpha=0.9)
-    # Nowcast: orange dashed line with circle markers (like DFM.w.i in image)
-    ax1.plot(month_dates, avg_predictions_4weeks, '--', color='#FF8C00', marker='o', 
-            linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
+    # DFM nowcast: orange dashed line with circle markers
+    ax1.plot(month_dates, dfm_predictions_4weeks, '--', color='#FF8C00', marker='o', 
+            linewidth=1.5, markersize=5, label='DFM', alpha=0.9, markeredgewidth=1)
+    # DDFM nowcast: red dashed line with square markers
+    ax1.plot(month_dates, ddfm_predictions_4weeks, '--', color='#d62728', marker='s', 
+            linewidth=1.5, markersize=5, label='DDFM', alpha=0.9, markeredgewidth=1)
     ax1.set_xlabel('Date', fontsize=11)
     ax1.set_ylabel('Value (%)', fontsize=11)
     ax1.set_title(f'{target_name} Nowcasting (4 weeks before)', fontsize=12, fontweight='bold')
     ax1.legend(loc='best', fontsize=9)
     ax1.grid(alpha=0.3, linestyle='--')
-    ax1.set_ylim([min(min(actual_vals), min(avg_predictions_4weeks)) - 1, 
-                  max(max(actual_vals), max(avg_predictions_4weeks)) + 1])
+    ax1.set_ylim([y_min, y_max])
     # Format x-axis as YYYY.MM
     ax1.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: pd.Timestamp(x).strftime('%Y.%m')))
     fig.autofmt_xdate()
@@ -856,19 +941,35 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     ax2 = axes[1]
     # Actual value: blue solid line
     ax2.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'{target_name} (Actual)', alpha=0.9)
-    # Nowcast: orange dashed line with circle markers
-    ax2.plot(month_dates, avg_predictions_1weeks, '--', color='#FF8C00', marker='o', 
-            linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
+    # DFM nowcast: orange dashed line with circle markers
+    ax2.plot(month_dates, dfm_predictions_1weeks, '--', color='#FF8C00', marker='o', 
+            linewidth=1.5, markersize=5, label='DFM', alpha=0.9, markeredgewidth=1)
+    # DDFM nowcast: red dashed line with square markers
+    ax2.plot(month_dates, ddfm_predictions_1weeks, '--', color='#d62728', marker='s', 
+            linewidth=1.5, markersize=5, label='DDFM', alpha=0.9, markeredgewidth=1)
     ax2.set_xlabel('Date', fontsize=11)
     ax2.set_ylabel('Value (%)', fontsize=11)
     ax2.set_title(f'{target_name} Nowcasting (1 week before)', fontsize=12, fontweight='bold')
     ax2.legend(loc='best', fontsize=9)
     ax2.grid(alpha=0.3, linestyle='--')
-    ax2.set_ylim([min(min(actual_vals), min(avg_predictions_1weeks)) - 1, 
-                  max(max(actual_vals), max(avg_predictions_1weeks)) + 1])
+    ax2.set_ylim([y_min, y_max])
     # Format x-axis as YYYY.MM
     ax2.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: pd.Timestamp(x).strftime('%Y.%m')))
     fig.autofmt_xdate()
+    
+    # Debug: Print first few values to check if masking is working
+    print(f"\nDebug {target} - Masking check:")
+    print(f"4 weeks before - DFM first 3: {dfm_predictions_4weeks[:3]}")
+    print(f"1 week before - DFM first 3: {dfm_predictions_1weeks[:3]}")
+    print(f"4 weeks before - DDFM first 3: {ddfm_predictions_4weeks[:3]}")
+    print(f"1 week before - DDFM first 3: {ddfm_predictions_1weeks[:3]}")
+    if len(dfm_predictions_4weeks) > 0 and len(dfm_predictions_1weeks) > 0:
+        diff_dfm = [abs(a - b) if not (np.isnan(a) or np.isnan(b)) else np.nan 
+                    for a, b in zip(dfm_predictions_4weeks, dfm_predictions_1weeks)]
+        non_nan_diff = [d for d in diff_dfm if not np.isnan(d)]
+        if non_nan_diff:
+            print(f"DFM 4w vs 1w difference (mean): {np.mean(non_nan_diff):.6f}")
+            print(f"DFM 4w vs 1w difference (max): {np.max(non_nan_diff):.6f}")
     
     plt.tight_layout()
     
