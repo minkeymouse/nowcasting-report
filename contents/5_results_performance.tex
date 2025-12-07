@@ -1,0 +1,36 @@
+\subsubsection{Performance}
+
+\paragraph{훈련 시간}
+
+각 모형의 훈련 시간은 모형의 복잡도와 데이터 크기에 따라 다름. 훈련 시간은 모형의 실용성을 평가하는 요소 중 하나임.
+
+모형별 훈련 시간 특성은 다음과 같음:
+\begin{itemize}
+    \item \textbf{ARIMA:} 가장 빠르게 훈련되며, 평균적으로 수 초 내에 완료됨. 단변량 모형이므로 계산 복잡도가 낮음.
+    \item \textbf{VAR:} 상대적으로 빠르며, 평균적으로 수십 초 내에 완료됨. 다변량 모형이지만 시차가 1로 작아 계산이 효율적임.
+    \item \textbf{DFM:} EM 알고리즘을 사용하여 훈련되며, 최대 5000회 반복으로 인해 상대적으로 오래 걸림. 평균적으로 수 분에서 수십 분이 소요되며, 수렴 속도는 데이터의 특성과 초기값에 따라 크게 달라짐.
+    \item \textbf{DDFM:} 딥러닝 기반이므로 가장 오래 걸리며, 100 에폭 훈련에 평균적으로 수십 분에서 수 시간이 소요될 수 있음. GPU 사용 시 훈련 시간이 크게 단축될 수 있음.
+\end{itemize}
+
+훈련 시간 외에도, 각 모형의 예측 시간도 실용성을 평가하는 요소임. ARIMA와 VAR은 예측이 빠르며(밀리초 단위), DFM과 DDFM은 칼만 필터를 사용하므로 상대적으로 느릴 수 있음(초 단위).
+
+\paragraph{Horizon별 성능 추세}
+
+그림~\ref{fig:horizon_performance_trend}는 예측 수평선(1일부터 30일까지)에 대한 sMSE 값을 플롯으로 제시함. 가로축은 예측 수평선(1-30일), 세로축은 sMSE 값임. 4개 모형(ARIMA, VAR, DFM, DDFM)에 대한 4개 선으로 표시되며, 이 플롯은 평가된 수평선에 걸친 성능 추세를 나타냄.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{images/horizon_trend.png}
+\caption{Horizon별 성능 추세: 각 모형에 대한 예측 수평선(1일부터 30일까지)에 걸친 표준화된 MSE. 4개 모형(ARIMA, VAR, DFM, DDFM)의 성능 추세를 비교함.}
+\label{fig:horizon_performance_trend}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{images/accuracy_heatmap.png}
+\caption{정확도 히트맵: 모형 및 대상 변수별 표준화된 RMSE. 낮은 값(어두운 색상)은 더 나은 성능을 나타냄.}
+\label{fig:accuracy_heatmap}
+\end{figure}
+
+그림~\ref{fig:horizon_performance_trend}에서 관찰된 바와 같이, ARIMA는 평가된 수평선에 걸쳐 안정적인 성능을 보이며, 수평선이 증가함에 따라 점진적으로 성능이 저하되는 경향을 보임. VAR은 1일 예측에서 낮은 오차를 보이지만, 수평선이 증가함에 따라 수치적 불안정성으로 인해 성능이 악화됨. DFM과 DDFM은 중간 수평선에서 상대적으로 낮은 오차를 보이지만, 전체적으로 ARIMA보다 높은 오차를 보임. 그림~\ref{fig:accuracy_heatmap}은 모형 및 대상 변수별 정확도를 히트맵으로 시각화하여, 모형별 성능을 비교할 수 있게 함.
+

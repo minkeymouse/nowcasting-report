@@ -80,7 +80,7 @@ def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataF
     
     # Current targets: KOEQUIPTE, KOWRCCNSE, KOIPALL.G
     targets = ['KOEQUIPTE', 'KOWRCCNSE', 'KOIPALL.G']
-    horizons = list(range(1, 31))  # 1-30 days as per WORKFLOW.md
+    horizons = list(range(1, 23))  # 1-22 months (2024-01 to 2025-10) as per WORKFLOW.md
     metrics = ['sMSE', 'sMAE', 'sRMSE']
     
     for target in targets:
@@ -145,8 +145,8 @@ def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataF
 def plot_horizon_trend(save_path: Optional[Path] = None):
     """Create horizon trend plot (Plot3: fig:horizon_performance_trend).
     
-    Shows sMSE values for all horizons from 1 to 30 days.
-    X-axis: forecast horizon (1-30 days), Y-axis: sMSE value.
+    Shows sMSE values for all horizons from 1 to 22 months (2024-01 to 2025-10).
+    X-axis: forecast horizon (1-22 months), Y-axis: sMSE value.
     Four lines representing four models (ARIMA, VAR, DFM, DDFM).
     """
     # Load data
@@ -772,31 +772,51 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
             # Fallback: use index
             month_dates.append(pd.Timestamp('2024-01-01') + pd.DateOffset(months=len(month_dates)))
     
-    # Create side-by-side plots
+    # Create side-by-side plots (similar to attached image)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Target name mapping for Korean labels
+    target_names = {
+        'KOEQUIPTE': '총고정자본형성',
+        'KOWRCCNSE': '민간소비',
+        'KOIPALL.G': '생산'
+    }
+    target_name_kr = target_names.get(target, target)
     
     # Plot 1: 4 weeks before
     ax1 = axes[0]
-    ax1.plot(month_dates, actual_vals, 'b-', linewidth=2, label='Actual', alpha=0.8)
-    ax1.plot(month_dates, avg_predictions_4weeks, 'r--', marker='^', linewidth=1.5, 
-            markersize=6, label='Model Average', alpha=0.8)
+    # Actual value: blue solid line
+    ax1.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'm{target_name_kr}, %', alpha=0.9)
+    # Nowcast: orange dashed line with circle markers (like DFM.w.i in image)
+    ax1.plot(month_dates, avg_predictions_4weeks, '--', color='#FF8C00', marker='o', 
+            linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
     ax1.set_xlabel('Date', fontsize=11)
-    ax1.set_ylabel(f'{target} Value (%)', fontsize=11)
-    ax1.set_title('4 Weeks Before Nowcasting', fontsize=12, fontweight='bold')
+    ax1.set_ylabel('Value (%)', fontsize=11)
+    ax1.set_title(f'월간 {target_name_kr} nowcasting, 4주 전', fontsize=12, fontweight='bold')
     ax1.legend(loc='best', fontsize=9)
-    ax1.grid(alpha=0.3)
+    ax1.grid(alpha=0.3, linestyle='--')
+    ax1.set_ylim([min(min(actual_vals), min(avg_predictions_4weeks)) - 1, 
+                  max(max(actual_vals), max(avg_predictions_4weeks)) + 1])
+    # Format x-axis as YYYY.MM
+    ax1.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: pd.Timestamp(x).strftime('%Y.%m')))
     fig.autofmt_xdate()
     
     # Plot 2: 1 week before
     ax2 = axes[1]
-    ax2.plot(month_dates, actual_vals, 'b-', linewidth=2, label='Actual', alpha=0.8)
-    ax2.plot(month_dates, avg_predictions_1weeks, 'r--', marker='^', linewidth=1.5, 
-            markersize=6, label='Model Average', alpha=0.8)
+    # Actual value: blue solid line
+    ax2.plot(month_dates, actual_vals, 'b-', linewidth=2, label=f'm{target_name_kr}, %', alpha=0.9)
+    # Nowcast: orange dashed line with circle markers
+    ax2.plot(month_dates, avg_predictions_1weeks, '--', color='#FF8C00', marker='o', 
+            linewidth=1.5, markersize=5, label='DFM.w.i', alpha=0.9, markeredgewidth=1)
     ax2.set_xlabel('Date', fontsize=11)
-    ax2.set_ylabel(f'{target} Value (%)', fontsize=11)
-    ax2.set_title('1 Week Before Nowcasting', fontsize=12, fontweight='bold')
+    ax2.set_ylabel('Value (%)', fontsize=11)
+    ax2.set_title(f'nowcasting, 1주 전', fontsize=12, fontweight='bold')
     ax2.legend(loc='best', fontsize=9)
-    ax2.grid(alpha=0.3)
+    ax2.grid(alpha=0.3, linestyle='--')
+    ax2.set_ylim([min(min(actual_vals), min(avg_predictions_1weeks)) - 1, 
+                  max(max(actual_vals), max(avg_predictions_1weeks)) + 1])
+    # Format x-axis as YYYY.MM
+    ax2.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: pd.Timestamp(x).strftime('%Y.%m')))
     fig.autofmt_xdate()
     
     plt.tight_layout()
@@ -812,10 +832,10 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
 def generate_all_plots():
     """Generate all plots required by WORKFLOW.md.
     
-    Plot1: forecast_vs_actual (3 plots, one per target)
+    Plot1: forecast_vs_actual (3 plots, one per target, 22 months)
     Plot2: accuracy_heatmap
-    Plot3: horizon_trend (1-30 days, sMSE)
-    Plot4: nowcasting_comparison (3 pairs, one per target)
+    Plot3: horizon_trend (1-22 months, sMSE)
+    Plot4: nowcasting_comparison (3 pairs, one per target, 22 months)
     """
     print("=" * 70)
     print("Generating Report Images (WORKFLOW.md)")
@@ -843,8 +863,8 @@ def generate_all_plots():
     print("   - accuracy_heatmap.png")
     plot_accuracy_heatmap()
     
-    # Plot3: Horizon trend (1-30 days, sMSE)
-    print("\n   Plot3: Horizon Performance Trend (1-30 days, sMSE)")
+    # Plot3: Horizon trend (1-22 months, sMSE)
+    print("\n   Plot3: Horizon Performance Trend (1-22 months, sMSE)")
     print("   - horizon_trend.png")
     plot_horizon_trend()
     

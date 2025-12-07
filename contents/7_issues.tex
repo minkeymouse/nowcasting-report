@@ -1,0 +1,67 @@
+\section{이슈 분석}
+
+관찰된 문제점 및 제한사항은 다음과 같음:
+
+\subsection{모형별 기술적 제한사항}
+
+\subsubsection{VAR의 긴 수평선에서의 불안정성}
+
+VAR은 1일 예측을 넘어서는 수평선에서 큰 오차를 보이며, 이는 다단계 예측에 VAR 사용을 제한함. 정규화 기법이나 베이지안 VAR(BVAR) 등의 대안을 고려할 수 있음.
+
+\subsubsection{DFM의 수치적 불안정성}
+
+DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보임. 모델별 성공/실패 현황은 표~\ref{tab:model_success_failure}에 요약되어 있음.
+
+\begin{table}[h]
+\centering
+\caption{모델별 성공/실패 현황}
+\label{tab:model_success_failure}
+\begin{tabular}{lccc}
+\toprule
+모델 & KOEQUIPTE & KOIPALL.G & KOWRCCNSE \\
+\midrule
+DFM & 성공 (32 시리즈) & 실패 (33 시리즈) & 실패 (39 시리즈) \\
+DDFM & 성공 (32 시리즈) & 성공 (33 시리즈) & 성공 (39 시리즈) \\
+ARIMA & 성공 (41 시리즈) & 성공 (40 시리즈) & 성공 (47 시리즈) \\
+VAR & 성공 (41 시리즈) & 성공 (40 시리즈) & 성공 (47 시리즈) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+DFM의 수치적 불안정성 원인은 다음과 같이 분석될 수 있음:
+
+\textbf{시리즈 개수 임계값}: 관찰된 패턴에 따르면, 시리즈 개수가 32개 이하일 때는 안정적이지만, 33개 이상일 때는 불안정함. KOEQUIPTE (32개 시리즈)는 성공했으나, KOIPALL.G (33개 시리즈)와 KOWRCCNSE (39개 시리즈)는 실패함.
+
+\textbf{시리즈/state space 비율}: State space 차원은 15차원(요인 3개 × tent kernel 파라미터 5개)이며, 시리즈 개수와의 비율이 중요함. KOEQUIPTE는 32/15 = 2.13으로 안정적이지만, KOIPALL.G (33/15 = 2.20)와 KOWRCCNSE (39/15 = 2.60)는 불안정함. 혼합주기 데이터 처리를 위해 tent kernel을 적용하는 시계열이 많을수록 수렴이 어려워질 수 있음 \cite{bok2019frbny}.
+
+\textbf{Kalman Filter의 F Matrix 불안정성}: Innovation covariance 행렬 $F = C_t V C_t^T + R_t$의 크기는 $n_{\text{obs}} \times n_{\text{obs}}$이며, $n_{\text{obs}}$가 클수록 역행렬 계산 시 수치적 불안정성이 증가할 수 있음. $n_{\text{obs}} \geq 33$일 때 F matrix inversion이 불안정하며, KOIPALL.G ($n_{\text{obs}}=33$)와 KOWRCCNSE ($n_{\text{obs}}=39$)에서 F matrix inversion 실패로 인한 연쇄 반응이 관찰됨.
+
+\textbf{실패 메커니즘 (8단계 연쇄 반응)}: (1) F matrix inversion 불안정 ($n_{\text{obs}} \geq 33$); (2) Kalman gain (VCF) 손상; (3) Posterior covariance (Vu) 손상; (4) Prior covariance (V) 손상; (5) 다음 시간의 F matrix 손상; (6) Smoothed factors (EZ, EZZ) 손상; (7) sum\_EZZ ill-conditioning; (8) C matrix 업데이트 실패.
+
+\textbf{적용된 개선 사항}: 다음과 같은 수치 안정화 기법을 적용함: (1) F Matrix Regularization 강화 (n\_obs 기반, $n_{\text{obs}} \geq 30$일 때 자동 강화); (2) Pseudo-inverse 사용 (solve 실패 시 fallback, 원본 MATLAB 방식); (3) 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 대칭성 강제 등. 이러한 개선으로 KOIPALL.G의 C matrix NaN 비율이 100\%에서 97.0\%로, KOWRCCNSE는 94.9\%에서 66.7\%로 감소했으나, 여전히 실패함.
+
+\textbf{해결 방안}: (1) 시리즈 개수를 32개 이하로 제한하거나 DDFM 사용; (2) 향후 연구에서 더 강한 사전 regularization (sum\_EZZ), robust Kalman filter, adaptive state space dimension, series selection 등 고려 가능.
+
+\subsection{실험 설계의 제한사항}
+
+\subsubsection{테스트 데이터 부족}
+
+80/20 훈련-테스트 분할 후 테스트 데이터가 부족하여 일부 수평선 평가가 제한됨. 평가 기간 확장이나 롤링 윈도우 평가를 고려할 수 있음.
+
+\subsubsection{통계적 신뢰성 제한}
+
+각 수평선당 단일 테스트 포인트를 사용하여 통계적 신뢰성이 제한됨. 더 긴 평가 기간이나 교차 검증을 고려할 수 있음.
+
+\subsection{Nowcasting 실험의 제한사항}
+
+\subsubsection{Release date 정보의 정확성}
+
+Release date 정보가 부정확하거나 누락된 경우, 마스킹이 정확하게 수행되지 않을 수 있음. 실제 운영 환경에서는 정기적인 업데이트가 필요함.
+
+\subsubsection{ARIMA/VAR 모형의 Release date 마스킹 구현}
+
+ARIMA와 VAR 모형의 경우 release date 기반 마스킹이 완전히 구현되지 않아 근사화된 방법을 사용하므로, DFM과 DDFM 모형과의 공정한 비교에 제한이 있을 수 있음.
+
+\subsection{향후 연구 방향}
+
+모형 개선(robust Kalman filter, adaptive state space dimension), 실험 설계 개선(롤링 윈도우 평가, 교차 검증), Release date 마스킹 개선, 추가 모형 비교 등을 고려할 수 있음.

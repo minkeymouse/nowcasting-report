@@ -1,93 +1,9 @@
 \subsection{결과}
 \label{subsec:results}
 
-\subsubsection{Forecasting}
+\input{contents/3_results_forecasting}
 
-본 절에서는 세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 비교함. 실험은 1일부터 30일까지의 모든 예측 수평선에 대해 수행되었으나, 표에는 가독성을 위해 1일, 7일, 30일 값만 제시함.
+\input{contents/4_results_nowcasting}
 
-표~\ref{tab:forecasting_results}는 모형-수평선 조합별(12개 행: ARIMA-1, ARIMA-7, ARIMA-30, VAR-1, VAR-7, VAR-30, DFM-1, DFM-7, DFM-30, DDFM-1, DDFM-7, DDFM-30)로 각 대상 변수에 대한 표준화된 MAE와 MSE를 제시함. 각 셀은 해당 모형-수평선-대상 조합에 대한 지표값을 나타냄.
-
-\input{tables/tab_forecasting_results}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koipall_g.png}
-\caption{예측 대 실제: 전산업생산지수 (KOIPALL.G). 30개월의 역사적 데이터와 ARIMA, VAR, DFM, DDFM 모형의 30개월 예측을 보여줌.}
-\label{fig:forecast_vs_actual_koipallg}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koequipte.png}
-\caption{예측 대 실제: 설비투자지수 (KOEQUIPTE). 30개월의 역사적 데이터와 ARIMA, VAR, DFM, DDFM 모형의 30개월 예측을 보여줌.}
-\label{fig:forecast_vs_actual_koequipte}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_kowrccnse.png}
-\caption{예측 대 실제: 도소매판매액 (KOWRCCNSE). 30개월의 역사적 데이터와 ARIMA, VAR, DFM, DDFM 모형의 30개월 예측을 보여줌.}
-\label{fig:forecast_vs_actual_kowrccnse}
-\end{figure}
-
-그림~\ref{fig:forecast_vs_actual_koipallg}, 그림~\ref{fig:forecast_vs_actual_koequipte}, 그림~\ref{fig:forecast_vs_actual_kowrccnse}는 각 대상 변수별로 30개월의 예측 및 실제 값을 비교한 플롯임. 각 플롯은 원본 시계열, ARIMA, VAR, DFM, DDFM 예측선을 포함하며(총 5개 선), X축은 월별 타임스탬프, Y축은 대상 변수 값임. X축 총 60개월로 구성되며, 왼쪽 30개월은 원본 시계열만 표시되고, 오른쪽 30개월은 실제값과 4개 모형의 예측값이 함께 표시됨.
-
-\subsubsection{Nowcasting}
-
-Nowcasting은 공식 통계가 발표되기 전에 현재 시점의 거시경제 변수를 추정하는 기법임. 본 연구에서는 모든 모형(ARIMA, VAR, DFM, DDFM)과 모든 대상 변수(3개)에 대해 Nowcasting 백테스트를 수행하여 실제 운영 환경에서의 성능을 평가함.
-
-Nowcasting 실험은 다음과 같이 구성됨: 각 목표 월(2024-01 ~ 2024-12, 12개월)에 대해 여러 시점에서 예측을 수행함. 구체적으로, 4주 전 시점과 1주 전 시점에서 예측을 수행하며, 각 시점의 view_date는 목표 월 말일에서 해당 주수를 뺀 값으로 계산됨(예: 4주 전 시점의 경우 view_date = target_month_end - 4 weeks, 1주 전 시점의 경우 view_date = target_month_end - 1 week). 각 시점에서 시리즈별 발표 시차(release date)를 기준으로 미발표 데이터를 NaN으로 마스킹함. 이는 실제 운영 환경에서 특정 시점에 사용 가능한 데이터만을 사용하여 예측하는 상황을 시뮬레이션함. 각 시점에서 1 horizon forecast를 생성하며, 시점별 예측 정확도를 비교함.
-
-표~\ref{tab:nowcasting_backtest}는 모든 모형(ARIMA, VAR, DFM, DDFM)의 2024년 월별 백테스트 결과를 시점별로 제시함. 훈련 기간은 1985년부터 2019년까지이며, Nowcasting 기간은 2024년 1월부터 2024년 12월까지임. 표의 행은 모형-시점 조합(8개 행: ARIMA-4weeks, ARIMA-1week, VAR-4weeks, VAR-1week, DFM-4weeks, DFM-1week, DDFM-4weeks, DDFM-1week)을 나타내며, 열은 대상 변수-지표 조합(6개 열: KOIPALL.G_sMAE, KOIPALL.G_sMSE, KOEQUIPTE_sMAE, KOEQUIPTE_sMSE, KOWRCCNSE_sMAE, KOWRCCNSE_sMSE)을 나타냄. 총 8개 행 × 7개 열(모형-시점 열 포함)로 구성되며, 각 셀은 해당 모형-시점-대상 조합에 대한 평균 sMSE 또는 sMAE를 나타냄.
-
-\input{tables/tab_nowcasting_backtest}
-
-그림~\ref{fig:nowcasting_comparison_koipallg}, 그림~\ref{fig:nowcasting_comparison_koequipte}, 그림~\ref{fig:nowcasting_comparison_kowrccnse}는 Nowcasting 시점별 비교 플롯임. 각 대상 변수별로 "4주 전 nowcasting"과 "1주 전 nowcasting"을 나란히 비교하는 플롯으로, 총 3쌍(6개 플롯, 대상 변수별 1쌍)으로 구성됨. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선(실제값)과 빨간 점선(모형 평균 예측값)을 비교함. X축은 월별 타임스탬프(2024.01 ~ 2025.01), Y축은 대상 변수 값(\%)임. 이 플롯은 시간이 지날수록(1주 전이 4주 전보다) 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상됨을 보여줌.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_koipall_g.png}
-\caption{Nowcasting 시점별 비교: 전산업생산지수 (KOIPALL.G). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
-\label{fig:nowcasting_comparison_koipallg}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_koequipte.png}
-\caption{Nowcasting 시점별 비교: 설비투자지수 (KOEQUIPTE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
-\label{fig:nowcasting_comparison_koequipte}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_kowrccnse.png}
-\caption{Nowcasting 시점별 비교: 도소매판매액 (KOWRCCNSE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 12개월(2024-01 ~ 2024-12)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
-\label{fig:nowcasting_comparison_kowrccnse}
-\end{figure}
-
-\subsubsection{Performance}
-
-\paragraph{훈련 시간}
-
-각 모형의 훈련 시간은 모형의 복잡도와 데이터 크기에 따라 다름. ARIMA 모형은 가장 빠르게 훈련되며(평균 수 초), VAR 모형도 상대적으로 빠름(평균 수십 초). DFM 모형은 EM 알고리즘을 사용하여 훈련되며, 최대 5000회 반복으로 인해 상대적으로 오래 걸림(평균 수 분). DDFM 모형은 딥러닝 기반이므로 가장 오래 걸리며, 100 에폭 훈련에 평균 수십 분이 소요됨. 훈련 시간은 모형의 실용성을 평가하는 중요한 요소임.
-
-\paragraph{Horizon별 성능 추세}
-
-그림~\ref{fig:horizon_performance_trend}는 모든 예측 수평선(1일부터 30일까지)에 대한 sMSE 값을 플롯으로 제시함. 가로축은 예측 수평선(1-30일), 세로축은 sMSE 값임. 4개 모형(ARIMA, VAR, DFM, DDFM)에 대한 4개 선으로 표시되며, 이 플롯은 평가된 모든 수평선에 걸친 완전한 성능 추세를 보여줌.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{images/horizon_trend.png}
-\caption{Horizon별 성능 추세: 각 모형에 대한 예측 수평선(1일부터 30일까지)에 걸친 표준화된 MSE. 4개 모형(ARIMA, VAR, DFM, DDFM)의 성능 추세를 비교함.}
-\label{fig:horizon_performance_trend}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{images/accuracy_heatmap.png}
-\caption{정확도 히트맵: 모형 및 대상 변수별 표준화된 RMSE. 낮은 값(어두운 색상)은 더 나은 성능을 나타냄.}
-\label{fig:accuracy_heatmap}
-\end{figure}
-
-그림~\ref{fig:horizon_performance_trend}에서 볼 수 있듯이, ARIMA는 모든 수평선에 걸쳐 가장 안정적인 성능을 보이며, 수평선이 증가함에 따라 점진적으로 성능이 저하됨. VAR은 1일 예측에서 매우 우수한 성능을 보이지만, 수평선이 증가함에 따라 수치적 불안정성으로 인해 성능이 급격히 악화됨. DFM과 DDFM은 중간 수평선에서 상대적으로 좋은 성능을 보이지만, 전체적으로 ARIMA보다 낮은 성능을 보임. 그림~\ref{fig:accuracy_heatmap}은 모형 및 대상 변수별 정확도를 히트맵으로 시각화하여, 어떤 모형이 어떤 대상 변수에서 우수한 성능을 보이는지 한눈에 파악할 수 있게 함.
+\input{contents/5_results_performance}
 
