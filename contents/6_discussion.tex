@@ -2,41 +2,79 @@
 
 \subsection{모델 비교}
 
-네 가지 모형(ARIMA, VAR, DFM, DDFM)의 성능을 대상 변수와 예측 수평선에 걸쳐 비교 분석함. Forecasting과 Nowcasting 결과를 종합하여 각 모형의 장단점을 평가함.
+네 가지 모형(ARIMA, VAR, DFM, DDFM)의 성능을 대상 변수와 예측 수평선에 걸쳐 비교:
 
-\textbf{ARIMA:} ARIMA는 세 가지 대상 변수와 평가된 예측 수평선에 걸쳐 일관된 성능을 보임. 산업생산(KOIPALL.G)의 경우, ARIMA는 1개월 예측에서 sRMSE = 0.058을 보이며 28개월 수평선까지 합리적인 성능을 유지함. 소비(KOWRCCNSE)의 경우, ARIMA는 평가된 수평선에 걸쳐 0.65-0.81 사이의 sRMSE 값을 보임. 투자 예측(KOEQUIPTE)은 더 도전적이며, ARIMA는 0.32-1.67의 sRMSE 값을 보여 설비투자의 더 높은 변동성을 반영함. ARIMA의 특징은 단순성, 해석 가능성, 그리고 다양한 수평선에 걸친 안정적인 성능임.
+\textbf{ARIMA:}
+\begin{itemize}
+    \item 일관된 성능, 다양한 수평선에 걸친 안정성
+    \item KOIPALL.G: 1개월 sRMSE = 0.058, 28개월까지 합리적 성능
+    \item KOWRCCNSE: 0.65--0.81 sRMSE
+    \item KOEQUIPTE: 0.32--1.67 sRMSE (설비투자 변동성 반영)
+    \item 특징: 단순성, 해석 가능성, 안정적 성능
+\end{itemize}
 
-\textbf{VAR:} VAR은 1개월 예측에서 매우 낮은 오차를 보임(평가된 대상에 대해 sMAE $<$ 10$^{-4}$, sMSE $<$ 10$^{-8}$). 그러나 더 긴 수평선에 대해 수치적 불안정성을 보임. 7개월 및 28개월 예측의 경우, VAR 오차는 매우 큰 값을 보임(sMSE $>$ 10$^{22}$, sMAE $>$ 10$^{10}$), 이는 다단계 앞 예측에 모형 사용을 제한함. 이 불안정성은 짧은 수평선을 넘어 예측할 때 VAR 모형의 제한사항으로 관찰됨.
+\textbf{VAR:}
+\begin{itemize}
+    \item 1개월 예측: 매우 낮은 오차 (sMAE $<$ 10$^{-4}$, sMSE $<$ 10$^{-8}$)
+    \item 7개월/28개월: 수치적 불안정성 (sMSE $>$ 10$^{22}$, sMAE $>$ 10$^{10}$)
+    \item 제한: 다단계 예측에 사용 제한
+\end{itemize}
 
-\textbf{DFM:} DFM은 평가된 대상과 수평선에 걸쳐 높은 오차를 보이며, 1개월 예측에 대해 4.2에서 9.3 사이의 sRMSE 값과 7개월 예측에 대해 5.3에서 7.1 사이의 값을 보임. 모형은 소비(KOWRCCNSE) 및 생산(KOIPALL.G)에서 어려움을 겪으며, EM 알고리즘 수렴 중 수치적 불안정성 경고를 보임. 투자(KOEQUIPTE)의 경우, DFM 오차가 상대적으로 낮지만 여전히 ARIMA보다 높음.
+\textbf{DFM:}
+\begin{itemize}
+    \item 높은 오차: 1개월 4.2--9.3 sRMSE, 7개월 5.3--7.1 sRMSE
+    \item KOWRCCNSE, KOIPALL.G에서 어려움, EM 알고리즘 수렴 중 수치적 불안정성
+    \item KOEQUIPTE: 상대적으로 낮은 오차이나 ARIMA보다 높음
+\end{itemize}
 
-\textbf{DDFM:} DDFM은 혼합된 성능을 보임. 투자(KOEQUIPTE)의 경우, DDFM은 1개월 예측에서 sRMSE = 0.0103을 보여 다른 모형보다 낮은 오차를 보임. 생산(KOIPALL.G)의 경우, DDFM은 1개월(sRMSE = 0.46) 및 7개월(sRMSE = 0.18) 예측에서 ARIMA보다 낮은 오차를 보임. 그러나 소비(KOWRCCNSE)의 경우, DDFM의 성능은 1개월 예측에 대해 ARIMA와 유사하지만 7개월 예측에 대해서는 더 높은 오차를 보임. 투자 및 생산에 대한 DDFM의 성능은 딥러닝 인코더가 이러한 시계열의 복잡한 패턴을 학습할 수 있는 것으로 해석될 수 있음.
+\textbf{DDFM:}
+\begin{itemize}
+    \item KOEQUIPTE: 1개월 sRMSE = 0.0103 (최고 성능)
+    \item KOIPALL.G: 1개월 sRMSE = 0.46, 7개월 sRMSE = 0.18 (ARIMA보다 우수)
+    \item KOWRCCNSE: 1개월 ARIMA 유사, 7개월 더 높은 오차
+    \item 해석: 딥러닝 인코더가 복잡한 패턴 학습 가능 (투자, 생산)
+\end{itemize}
 
 \subsection{원인 분석}
 
-각 모형의 성능 차이는 다음과 같은 원인으로 분석됨:
-
 \subsubsection{VAR의 수치적 불안정성}
-
-VAR 모형은 1개월 예측에서 낮은 오차를 보이지만, 더 긴 수평선에서 공분산 행렬의 특이성으로 인한 수치적 불안정성을 보임. 재귀적 예측 과정에서 작은 수치 오차가 누적되어 큰 오차로 증폭됨.
+\begin{itemize}
+    \item 1개월 예측: 낮은 오차
+    \item 긴 수평선: 공분산 행렬 특이성으로 인한 수치적 불안정성
+    \item 원인: 재귀적 예측 과정에서 수치 오차 누적 및 증폭
+\end{itemize}
 
 \subsubsection{DFM의 EM 알고리즘 수렴 문제}
-
-DFM의 낮은 성능은 EM 알고리즘 수렴 중 수치적 불안정성 문제와 관련이 있음. MATLAB 참조 구현과 Python 구현 간의 차이점(R 행렬 최소값, 대칭성 강제, 칼만 필터 재귀적 업데이트)이 주요 원인으로 분석됨. 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 공분산 행렬 대칭성 강제 등의 수치 안정화 기법을 적용함 \cite{golub2013matrix, higham2002computing}.
+\begin{itemize}
+    \item 원인: MATLAB/Python 구현 차이 (R 행렬 최소값, 대칭성 강제, 칼만 필터 재귀적 업데이트)
+    \item 적용 기법: 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 공분산 행렬 대칭성 강제 \cite{golub2013matrix, higham2002computing}
+\end{itemize}
 
 \subsubsection{DDFM의 비선형 패턴 포착 능력}
 
-DDFM이 투자 및 생산에서 상대적으로 낮은 오차를 보이는 반면 소비에서는 그렇지 않은 이유는 시계열의 비선형성 정도와 관련이 있을 수 있음:
-
+DDFM 성능 차이의 원인 (시계열 비선형성 정도):
 \begin{itemize}
-    \item \textbf{투자 시계열:} 설비투자 지수는 경기 순환, 정책 변화, 기업 심리 등 복잡한 비선형 요인에 의해 영향을 받을 수 있음. 이러한 복잡한 패턴은 딥러닝 인코더가 학습할 수 있으며, DDFM이 ARIMA보다 낮은 오차를 보이는 것으로 관찰됨.
-    \item \textbf{생산 시계열:} 전산업생산지수는 산업별, 부문별로 다른 동태를 보이며, 이러한 이질성이 비선형 패턴을 생성할 수 있음. DDFM의 비선형 인코더는 이러한 복잡한 관계를 학습할 수 있어 ARIMA보다 낮은 오차를 보이는 것으로 관찰됨.
-    \item \textbf{소비 시계열:} 도소매판매액은 상대적으로 안정적이고 선형적인 패턴을 보임. 소비는 소득, 가격 등 비교적 단순한 요인에 의해 결정될 수 있으므로, 전통적인 ARIMA 모형이 더 적합할 수 있음.
+    \item \textbf{투자 (KOEQUIPTE):} 경기 순환, 정책 변화, 기업 심리 등 복잡한 비선형 요인 $\to$ DDFM 우수
+    \item \textbf{생산 (KOIPALL.G):} 산업별, 부문별 이질성으로 인한 비선형 패턴 $\to$ DDFM 우수
+    \item \textbf{소비 (KOWRCCNSE):} 상대적으로 안정적이고 선형적 패턴 $\to$ ARIMA 적합
 \end{itemize}
 
-이러한 결과는 모형 선택 시 시계열의 특성을 고려할 수 있음을 시사함. 복잡한 비선형 패턴을 가진 시계열에는 DDFM이 적합할 수 있고, 상대적으로 단순한 선형 패턴을 가진 시계열에는 ARIMA가 적합할 수 있음.
+\textbf{시사점:} 모형 선택 시 시계열 특성 고려 필요 (비선형 패턴: DDFM, 선형 패턴: ARIMA)
 
 \subsection{Nowcasting 시점별 분석}
 
-Nowcasting 실험은 모형(ARIMA, VAR, DFM, DDFM)과 대상 변수(3개)에 대해 수행되었으며, 각 목표 월(2024-01 ~ 2024-12)에 대해 4주 전 시점과 1주 전 시점에서 예측을 수행함. 이론적으로, 시간이 지날수록 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상될 수 있음 \cite{banbura2012nowcasting}. DFM과 DDFM 모형은 많은 시계열을 활용하여 요인을 추출하기 때문에, 더 많은 데이터가 제공될 때 성능 향상이 나타날 수 있음. Release date 기반 마스킹은 DFM과 DDFM에서 더 정확하게 반영될 수 있으며, ARIMA와 VAR에서는 근사화된 구현으로 인해 제한이 있을 수 있음.
+Nowcasting 실험 구성:
+\begin{itemize}
+    \item 모형: ARIMA, VAR, DFM, DDFM (4개)
+    \item 대상 변수: 3개
+    \item 목표 월: 2024--01 ~ 2024--12 (12개월)
+    \item 예측 시점: 4주 전, 1주 전
+\end{itemize}
+
+\textbf{예상 성능 향상:} \cite{banbura2012nowcasting}
+\begin{itemize}
+    \item 시간 경과에 따라 더 많은 데이터 사용 가능 $\to$ 예측 정확도 향상
+    \item DFM/DDFM: 많은 시계열 활용, 요인 추출 $\to$ 데이터 증가 시 성능 향상 기대
+    \item Release date 마스킹: DFM/DDFM에서 더 정확, ARIMA/VAR은 근사화 구현으로 제한
+\end{itemize}
 

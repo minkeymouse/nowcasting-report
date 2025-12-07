@@ -30,30 +30,75 @@ VAR & 성공 (41 시리즈) & 성공 (40 시리즈) & 성공 (47 시리즈) \\
 
 \paragraph{문제 발생 원인}
 
-DFM의 수치적 불안정성은 Kalman filter의 forward/backward pass에서 수치적 오차가 누적되어 발생함. Forward pass에서 $V_u = V - VCF @ VC^T$ 계산 시 cancellation error가 발생하고, $V = A @ V_u @ A^T + Q$ 계산에서 오차가 누적되어 NaN/Inf로 발산함. Backward pass에서 손상된 V, Vu가 전파되어 smoothed factors ($EZ$, $EZZ$)가 손상되고, 손상된 $EZZ$가 $sum\_EZZ$ 계산에 포함되면 eigendecomposition이 실패하여 C matrix 업데이트가 실패함. 시리즈 개수가 33개 이상일 때 ($n_{\text{obs}} \geq 33$) 수치적 오차가 더 빠르게 누적됨.
+DFM 수치적 불안정성 발생 과정:
+\begin{itemize}
+    \item \textbf{Forward pass:} $V_u = V - VCF @ VC^T$ 계산 시 cancellation error 발생
+    \item \textbf{오차 누적:} $V = A @ V_u @ A^T + Q$ 계산에서 오차 누적 $\to$ NaN/Inf 발산
+    \item \textbf{Backward pass:} 손상된 V, Vu 전파 $\to$ smoothed factors ($EZ$, $EZZ$) 손상
+    \item \textbf{Eigendecomposition 실패:} 손상된 $EZZ$가 $sum\_EZZ$에 포함 $\to$ C matrix 업데이트 실패
+    \item \textbf{시리즈 개수 영향:} $n_{\text{obs}} \geq 33$일 때 수치적 오차 더 빠르게 누적
+\end{itemize}
 
 \paragraph{해결 방법}
 
-\textbf{EZZ의 NaN/Inf 제거} 방법을 적용하여 문제를 해결함. sum\_EZZ 계산 전에 EZZ의 NaN/Inf를 0으로 대체하여 손상된 시간 단계를 제외함. 이는 robust statistics의 관점에서 타당하며 \cite{huber1981robust}, 손상된 시간 단계를 제외하더라도 나머지 정상적인 시간 단계만으로도 요인 적재 행렬 $C$를 충분히 추정할 수 있음. 추가로 F Matrix Regularization 강화, Pseudo-inverse 사용, 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 대칭성 강제 등의 수치 안정화 기법을 적용함.
+\textbf{EZZ의 NaN/Inf 제거} 적용:
+\begin{itemize}
+    \item sum\_EZZ 계산 전 EZZ의 NaN/Inf를 0으로 대체
+    \item 손상된 시간 단계 제외, 정상 시간 단계만 사용
+    \item 이론적 근거: robust statistics \cite{huber1981robust}
+\end{itemize}
+
+\textbf{추가 수치 안정화 기법:}
+\begin{itemize}
+    \item F Matrix Regularization 강화
+    \item Pseudo-inverse 사용 (solve 실패 시 fallback)
+    \item 사전정규화, R 행렬 최소값 $10^{-4}$ 강제, 대칭성 강제
+\end{itemize}
 
 \paragraph{해결 결과}
 
-해결책 적용 후 모든 타겟에서 DFM 모델이 정상적으로 훈련됨:
-
-\textbf{KOIPALL.G (33 시리즈)}: 이전에는 C matrix 100\% NaN, 4 iterations, log-likelihood -3102.04로 실패했으나, 해결 후 C matrix NaN 없음, 40 iterations, log-likelihood 356.35로 성공함. Log-likelihood가 1531.94만큼 개선됨.
-
-\textbf{KOWRCCNSE (39 시리즈)}: 이전에는 C matrix 94.9\% NaN, 4 iterations, log-likelihood -2671.57로 실패했으나, 해결 후 C matrix NaN 없음, 68 iterations, log-likelihood 817.54로 성공함. Log-likelihood가 6754.92만큼 개선됨.
-
-\textbf{KOEQUIPTE (32 시리즈)}: 이전부터 안정적이었으며, 해결 후에도 정상적으로 훈련됨 (51 iterations, log-likelihood -814.39, 모델 저장 완료).
+모든 타겟에서 DFM 모델 정상 훈련:
+\begin{itemize}
+    \item \textbf{KOIPALL.G (33 시리즈):} C matrix NaN 100\% $\to$ 0\%, iterations 4 $\to$ 40, log-likelihood -3102.04 $\to$ 356.35 (개선: +1531.94)
+    \item \textbf{KOWRCCNSE (39 시리즈):} C matrix NaN 94.9\% $\to$ 0\%, iterations 4 $\to$ 68, log-likelihood -2671.57 $\to$ 817.54 (개선: +6754.92)
+    \item \textbf{KOEQUIPTE (32 시리즈):} 이전부터 안정적, 해결 후 정상 훈련 (51 iterations, log-likelihood -814.39)
+\end{itemize}
 
 \paragraph{해결책의 의미와 한계}
 
-이 해결책은 근본 원인을 직접 해결하는 것이 아니라, 손상된 결과를 제외함으로써 문제를 우회하는 실용적 접근법임. 부동소수점 연산의 근본적인 한계로 인해 완벽한 수치적 정확도는 불가능하므로 \cite{higham2002computing}, 손상된 시간 단계를 제외하고 정상적인 시간 단계만 사용하여 EM algorithm이 정상적으로 수렴할 수 있게 함. 다만, 손상된 시간 단계가 전체 데이터의 상당 부분을 차지하는 경우 유효 표본 크기가 감소하여 추정 정확도가 저하될 수 있음. 근본 원인을 해결하기 위해서는 square-root Kalman filter, UD factorization, 고정밀도 부동소수점 연산 등의 방법을 고려할 수 있으나, 계산 비용이 증가하거나 구현이 복잡함.
+\textbf{의미:}
+\begin{itemize}
+    \item 실용적 접근법: 근본 원인 직접 해결 대신 손상된 결과 제외로 문제 우회
+    \item 이론적 근거: 부동소수점 연산의 근본적 한계 \cite{higham2002computing}
+    \item 효과: 정상 시간 단계만 사용하여 EM algorithm 정상 수렴 가능
+\end{itemize}
+
+\textbf{한계:}
+\begin{itemize}
+    \item 손상된 시간 단계가 상당 부분 차지 시 유효 표본 크기 감소 $\to$ 추정 정확도 저하
+    \item 근본 원인 미해결: 더 극단적 상황에서 문제 재발 가능
+\end{itemize}
+
+\textbf{향후 개선 방향:}
+\begin{itemize}
+    \item Square-root Kalman filter, UD factorization
+    \item 고정밀도 부동소수점 연산
+    \item 제한: 계산 비용 증가 또는 구현 복잡도 증가
+\end{itemize}
 
 \subsection{실험 설계의 제한사항}
 
-훈련 기간(1985-2019)과 예측 기간(2024-2025) 사이의 4년 간격은 COVID-19 시기를 제외하고 데이터 누수를 방지하기 위한 설계이나, 모형이 최신 경제 패턴을 반영하지 못할 수 있음. 80/20 훈련-테스트 분할 후 테스트 데이터 부족으로 인해 각 수평선당 단일 테스트 포인트를 사용하여 통계적 신뢰성이 제한됨. Nowcasting 실험에서는 release date 정보의 정확성과 ARIMA/VAR 모형의 release date 마스킹 구현 제한이 있음.
+\begin{itemize}
+    \item \textbf{훈련-예측 간격:} 4년 간격으로 COVID-19 제외 및 데이터 누수 방지, 그러나 최신 경제 패턴 반영 제한
+    \item \textbf{테스트 데이터 부족:} 80/20 분할 후 각 수평선당 단일 테스트 포인트 $\to$ 통계적 신뢰성 제한
+    \item \textbf{Nowcasting 제한:} Release date 정보 정확성, ARIMA/VAR 마스킹 구현 제한
+\end{itemize}
 
 \subsection{향후 연구 방향}
 
-모형 개선(robust Kalman filter, adaptive state space dimension), 실험 설계 개선(롤링 윈도우 평가, 교차 검증), Release date 마스킹 개선, 추가 모형 비교 등을 고려할 수 있음.
+\begin{itemize}
+    \item \textbf{모형 개선:} Robust Kalman filter, adaptive state space dimension
+    \item \textbf{실험 설계 개선:} 롤링 윈도우 평가, 교차 검증
+    \item \textbf{Release date 마스킹 개선}
+    \item \textbf{추가 모형 비교}
+\end{itemize}
