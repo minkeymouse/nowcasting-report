@@ -577,8 +577,9 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
                             # Fit on training data
                             forecaster.fit(y_train_model)
                         
-                        # Predict for entire test period at once
-                        n_forecast = len(y_test_data)
+                        # Predict for forecast period (2024-01 to 2025-10, 22 months)
+                        # Generate forecasts for 22 months ahead
+                        n_forecast = 22
                         pred = forecaster.predict(fh=list(range(1, n_forecast + 1)))
                         
                         # Extract predictions for target series
@@ -599,12 +600,18 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
                         else:
                             forecast_series = pd.Series(pred.flatten() if hasattr(pred, 'flatten') else pred)
                         
-                        # Align index with test data
-                        if len(forecast_series) == len(y_test_data):
-                            forecast_series.index = y_test_data.index[:len(forecast_series)]
-                        else:
-                            # Create index if needed
-                            forecast_series.index = y_test_data.index[:len(forecast_series)]
+                        # Create index for forecast period (2024-01 to 2025-10)
+                        # Start from first day of forecast period
+                        forecast_index = pd.date_range(
+                            start=forecast_start,
+                            periods=min(len(forecast_series), 22),
+                            freq='MS'  # Month Start
+                        )
+                        if len(forecast_series) > len(forecast_index):
+                            forecast_series = forecast_series.iloc[:len(forecast_index)]
+                        elif len(forecast_series) < len(forecast_index):
+                            forecast_index = forecast_index[:len(forecast_series)]
+                        forecast_series.index = forecast_index
                         
                         # Aggregate to monthly (take last value of each month)
                         forecast_monthly = forecast_series.resample('ME').last()
