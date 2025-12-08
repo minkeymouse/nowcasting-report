@@ -142,25 +142,25 @@ DFM/DDFM 모델의 예측값이 원본 스케일로 변환되는지 확인하기
 
 \textbf{1. 전처리 파이프라인 확인:}
 \begin{itemize}
-    \item DFM/DDFM 훈련 시 `_create_preprocessing_pipeline` 함수 사용
+    \item DFM/DDFM 훈련 시 \texttt{\_create\_preprocessing\_pipeline} 함수 사용
     \item 이 함수는 imputation과 scaling만 수행하며, transformation (log, pch 등)은 포함하지 않음
     \item 따라서 모델은 원본 스케일 데이터로 훈련됨
 \end{itemize}
 
 \textbf{2. 예측값 스케일 확인:}
 \begin{itemize}
-    \item DFM/DDFM 예측값은 `X_forecast = X_forecast_std * Wx + Mx` 공식으로 계산됨
+    \item DFM/DDFM 예측값은 $X_{\text{forecast}} = X_{\text{std}} \times W_x + M_x$ 공식으로 계산됨
     \item 이는 unstandardization만 수행하며, transformation은 되돌리지 않음
     \item 하지만 transformation이 적용되지 않았으므로, 예측값은 원본 스케일임
 \end{itemize}
 
 \textbf{3. 테스트 데이터 스케일 확인:}
 \begin{itemize}
-    \item 테스트 데이터는 `resample_to_monthly`만 적용되어 원본 스케일임
+    \item 테스트 데이터는 \texttt{resample\_to\_monthly}만 적용되어 원본 스케일임
     \item Transformation이 적용되지 않음
 \end{itemize}
 
-\textbf{결론:} 현재 코드 구조에서는 예측값과 실제값이 모두 원본 스케일이므로 스케일 일치함. 다만, 만약 `create_transformer_from_config`를 사용하여 transformation이 적용되는 경우, 예측값은 transformed 스케일이 되고 실제값은 원본 스케일이 되어 스케일 불일치가 발생할 수 있음. 현재 평가 코드는 `DFMForecaster`/`DDFMForecaster`를 사용하며, 이들은 `_create_preprocessing_pipeline`을 사용하므로 문제 없음.
+\textbf{결론:} 현재 코드 구조에서는 예측값과 실제값이 모두 원본 스케일이므로 스케일 일치함. 다만, 만약 \texttt{create\_transformer\_from\_config}를 사용하여 transformation이 적용되는 경우, 예측값은 transformed 스케일이 되고 실제값은 원본 스케일이 되어 스케일 불일치가 발생할 수 있음. 현재 평가 코드는 \texttt{DFMForecaster}/\texttt{DDFMForecaster}를 사용하며, 이들은 \texttt{\_create\_preprocessing\_pipeline}을 사용하므로 문제 없음.
 
 \subsection{향후 연구 방향}
 

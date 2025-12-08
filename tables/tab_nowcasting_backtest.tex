@@ -1,16 +1,17 @@
 \begin{table}[h]
 \centering
-\caption[Nowcasting Backtest Results by Model-Timepoint and Target-Metric]{Nowcasting Backtest Results by Model-Timepoint and Target-Metric\footnote{Train with data from 1985 to 2019, nowcast from Jan 2024 to Oct 2025 (22 months). For each target month, perform nowcasting at multiple time points (4 weeks before, 1 week before month end). By masking unavailable data based on release dates, generate 1 horizon forecast at each time point. Calculate sMSE, sMAE for each month and time point, then average across 22 months.}}
+\caption{Nowcasting Backtest Results by Model-Timepoint}
 \label{tab:nowcasting_backtest}
 \begin{tabular}{lcccccc}
 \toprule
-Model-Timepoint & KOIPALL.G & KOIPALL.G & KOEQUIPTE & KOEQUIPTE & KOWRCCNSE & KOWRCCNSE \\
- & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
+ & \multicolumn{2}{c}{KOIPALL.G} & \multicolumn{2}{c}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+Model-Timepoint & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
 \midrule
-DFM-4weeks & N/A & N/A & N/A & N/A & N/A & N/A \\
-DFM-1week & N/A & N/A & N/A & N/A & N/A & N/A \\
-DDFM-4weeks & N/A & N/A & N/A & N/A & N/A & N/A \\
-DDFM-1week & N/A & N/A & N/A & N/A & N/A & N/A \\
+DFM-4 weeks & N/A & N/A & N/A & N/A & N/A & N/A \\
+DFM-1 week & N/A & N/A & N/A & N/A & N/A & N/A \\
+DDFM-4 weeks & N/A & N/A & N/A & N/A & N/A & N/A \\
+DDFM-1 week & N/A & N/A & N/A & N/A & N/A & N/A \\
 \bottomrule
 \end{tabular}
 \end{table}

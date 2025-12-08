@@ -1,28 +1,16 @@
 \begin{table}[h]
 \centering
-\caption[Forecasting Results by Model-Target (Average across Horizons)]{Forecasting Results by Model-Target (Average across Horizons)\footnote{Experiments evaluate all horizons from 1 to 22 months (2024--01 to 2025--10). This table shows the average metric values across all horizons for each model-target combination. Bold values indicate the best (lowest) metric for each metric type. Full results for all horizons are available in the appendix.}}
+\caption{Forecasting Results by Model-Target (Average across Horizons)}
 \label{tab:forecasting_results}
-\begin{tabular}{l|l|cc}
+\begin{tabular}{lcccccc}
 \toprule
-\multirow{2}{*}{Model} & Target & \multicolumn{2}{c}{Metrics} \\
-\cmidrule(lr){3-4}
- & & sMAE & sMSE \\
+ & \multicolumn{2}{c}{KOIPALL.G} & \multicolumn{2}{c}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
 \midrule
-\multirow{3}{*}{ARIMA} & KOIPALL.G & 0.6867 & 0.6090 \\
- & KOEQUIPTE & 1.1528 & 2.1035 \\
- & KOWRCCNSE & 0.4826 & 0.4717 \\
-\midrule
-\multirow{3}{*}{VAR} & KOIPALL.G & 0.9003 & 1.0596 \\
- & KOEQUIPTE & 1.4126 & 3.0719 \\
- & KOWRCCNSE & 0.4113 & 0.2782 \\
-\midrule
-\multirow{3}{*}{DFM} & KOIPALL.G & 0.6769 & 0.6133 \\
- & KOEQUIPTE & 1.1486 & 2.1259 \\
- & KOWRCCNSE & 0.6441 & 0.6228 \\
-\midrule
-\multirow{3}{*}{DDFM} & KOIPALL.G & 0.6856 & 0.6058 \\
- & KOEQUIPTE & 1.1424 & 2.1120 \\
- & KOWRCCNSE & 0.5052 & 0.5122 \\
+VAR & 0.90 & 1.04 & 1.36 & 2.97 & 0.32 & 0.20 \\
+DFM & 12.02 & 145.01 & 1.14 & 2.12 & 0.57 & 0.59 \\
+DDFM & 0.69 & 0.61 & 1.14 & 2.12 & 0.50 & 0.49 \\
 \bottomrule
 \end{tabular}
 \end{table}
