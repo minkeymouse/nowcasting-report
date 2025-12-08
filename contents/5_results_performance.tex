@@ -1,6 +1,6 @@
 \subsubsection{Performance}
 
-모형별 훈련 시간: ARIMA와 VAR은 빠르게 훈련되며(수 초~수십 초), DFM과 DDFM은 상대적으로 오래 걸림(수 분~수십 분). 예측 시간은 ARIMA/VAR이 빠르고(밀리초 단위), DFM/DDFM은 상대적으로 느림(초 단위).
+모형별 훈련 시간: ARIMA와 VAR은 빠르게 훈련되며(수 초~수십 초), DFM과 DDFM은 상대적으로 오래 걸림(수 분~수십 분). 예측 시간은 ARIMA/VAR이 빠르고(밀리초 단위), DFM/DDFM은 상대적으로 느림(초 단위). 이는 요인 모형의 구조적 복잡성과 Kalman filter의 재귀적 계산 때문임.
 
 그림~\ref{fig:horizon_performance_trend}은 수평선별 성능 추세를 시각화함.
 

@@ -24,6 +24,6 @@
 
 \subsection{선행연구 검토}
 
-동적요인모형(DFM)은 많은 시계열에서 공통 요인을 추출하여 차원을 축소하고 혼합주기 데이터를 처리하는 기법임 \cite{stock2002forecasting}. DFM은 state-space 형태로 표현되며, Kalman filter를 사용하여 추론할 수 있어 혼합주기(mixed frequency) 데이터와 비동기적 데이터 발표를 자연스럽게 처리할 수 있음. 이는 nowcasting에 특히 적합한 특성으로, 실시간 데이터 흐름의 불규칙성(jagged edges)을 효과적으로 다룰 수 있음 \cite{banbura2012nowcasting}.
+동적요인모형(DFM)은 많은 시계열에서 공통 요인을 추출하여 차원을 축소하고 혼합주기 데이터를 처리하는 기법임 \cite{stock2002forecasting}. DFM은 state-space 형태로 표현되며, Kalman filter를 사용하여 추론할 수 있어 혼합주기(mixed frequency) 데이터와 비동기적 데이터 발표를 자연스럽게 처리할 수 있음. 이는 nowcasting에 특히 적합한 특성으로, 실시간 데이터 흐름의 불규칙성(jagged edges)을 효과적으로 다룰 수 있음 \cite{banbura2012nowcasting}. DFM의 구조적 특성으로 인해 release date 기반 데이터 마스킹을 효과적으로 처리할 수 있어, 실제 운영 환경에서 특정 시점에 사용 가능한 데이터만을 사용하여 예측하는 nowcasting 시나리오에 적합함.
 
 심층 동적요인모형(DDFM)은 오토인코더 기반 아키텍처를 사용하여 복잡한 비선형 요인 구조를 학습함 \cite{andreini2020deep}. DDFM은 전통적인 DFM의 선형 가정을 완화하고, 딥러닝을 통해 대규모 데이터셋에서 더 유연한 요인 추출이 가능함. 특히 수백 개의 거시경제 변수를 포함한 혼합주기 데이터에서도 효과적으로 작동함.

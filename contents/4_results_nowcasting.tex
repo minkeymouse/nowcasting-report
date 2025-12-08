@@ -10,30 +10,30 @@ Nowcasting 실험은 다음과 같이 구성됨: 각 목표 월(2024-01 ~ 2025-1
 
 표~\ref{tab:nowcasting_backtest}는 DFM과 DDFM 모형의 2024-2025년 월별 백테스트 결과를 시점별로 제시함. 훈련 기간은 1985년부터 2019년까지이며, Nowcasting 기간은 2024년 1월부터 2025년 10월까지(22개월)임. 표의 행은 모형-시점 조합(4개 행: DFM-4weeks, DFM-1week, DDFM-4weeks, DDFM-1week)을 나타내며, 열은 대상 변수-지표 조합(6개 열: KOIPALL.G\_sMAE, KOIPALL.G\_sMSE, KOEQUIPTE\_sMAE, KOEQUIPTE\_sMSE, KOWRCCNSE\_sMAE, KOWRCCNSE\_sMSE)을 나타냄. 총 4개 행 $\times$ 7개 열(모형-시점 열 포함)로 구성되며, 각 셀은 해당 모형-시점-대상 조합에 대한 평균 sMSE 또는 sMAE를 나타냄. 
 
-결과를 보면, DDFM 모형이 DFM 모형보다 전반적으로 우수한 성능을 보이며, 특히 KOIPALL.G에서 큰 성능 차이를 보임(DFM-4weeks sMSE: 16155.6 vs DDFM-4weeks sMSE: 81.7). 또한 예상대로 1주 전 예측이 4주 전 예측보다 대부분의 경우 더 정확함(DDFM-1week가 DDFM-4weeks보다 낮은 오차). 다만 KOIPALL.G의 경우 DFM 모형에서 1주 전 예측이 4주 전 예측보다 오히려 높은 오차를 보이는데, 이는 모형의 수렴 문제나 데이터 특성으로 인한 것으로 보임.
+결과를 보면, DDFM 모형이 DFM 모형보다 전반적으로 우수한 성능을 보이며, 특히 KOIPALL.G에서 큰 성능 차이를 보임(DFM-4weeks sMSE: 16155.6 vs DDFM-4weeks sMSE: 81.7). 또한 예상대로 1주 전 예측이 4주 전 예측보다 대부분의 경우 더 정확함(DDFM-1week가 DDFM-4weeks보다 낮은 오차). 다만 KOIPALL.G의 경우 DFM 모형에서 1주 전 예측이 4주 전 예측보다 오히려 높은 오차를 보이는데, 이는 모형의 수치적 불안정성으로 인한 것으로 보임. DFM 모형의 경우 모든 22개월에 걸쳐 예측값이 단 2개의 고유값만을 보이는 반복적 예측 패턴이 관찰되었으며, 이는 극단적인 예측값이 클리핑 과정에서 경계값으로 수렴하여 발생한 문제임.
 
 \input{tables/tab_nowcasting_backtest}
 
-그림~\ref{fig:nowcasting_comparison_koipallg}, 그림~\ref{fig:nowcasting_comparison_koequipte}, 그림~\ref{fig:nowcasting_comparison_kowrccnse}는 Nowcasting 시점별 비교 플롯임. 각 대상 변수별로 "4주 전 nowcasting"과 "1주 전 nowcasting"을 나란히 비교하는 플롯으로, 총 3쌍(6개 플롯, 대상 변수별 1쌍)으로 구성됨. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선(실제값)과 빨간 점선(모형 평균 예측값)을 비교함. X축은 월별 타임스탬프(2024.01 ~ 2025.10), Y축은 대상 변수 값(\%)임. 이 플롯은 시간이 지날수록(1주 전이 4주 전보다) 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상될 수 있음을 나타냄.
+그림~\ref{fig:nowcasting_comparison_koipallg}, 그림~\ref{fig:nowcasting_comparison_koequipte}, 그림~\ref{fig:nowcasting_comparison_kowrccnse}는 Nowcasting 시점별 비교 플롯임. 각 대상 변수별로 "4주 전 nowcasting"과 "1주 전 nowcasting"을 나란히 비교하는 플롯으로, 총 3쌍(6개 플롯, 대상 변수별 1쌍)으로 구성됨. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선(실제값), 주황색 점선(DFM 예측값), 빨간색 점선(DDFM 예측값)을 비교함. X축은 월별 타임스탬프(2024.01 ~ 2025.10), Y축은 대상 변수 값(원본 스케일)임. 모든 값은 원본 데이터 스케일로 표시되며, 변환된 값(chg 등)은 역변환을 통해 원본 스케일로 복원됨. 이 플롯은 시간이 지날수록(1주 전이 4주 전보다) 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상될 수 있음을 나타냄.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_koipall_g.png}
-\caption{Nowcasting 시점별 비교: 전산업생산지수 (KOIPALL.G). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
+\caption{Nowcasting 시점별 비교: 전산업생산지수 (KOIPALL.G). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 주황색 점선은 DFM 예측값, 빨간색 점선은 DDFM 예측값을 나타냄.}
 \label{fig:nowcasting_comparison_koipallg}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_koequipte.png}
-\caption{Nowcasting 시점별 비교: 설비투자지수 (KOEQUIPTE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
+\caption{Nowcasting 시점별 비교: 설비투자지수 (KOEQUIPTE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 주황색 점선은 DFM 예측값, 빨간색 점선은 DDFM 예측값을 나타냄.}
 \label{fig:nowcasting_comparison_koequipte}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcasting_comparison_kowrccnse.png}
-\caption{Nowcasting 시점별 비교: 도소매판매액 (KOWRCCNSE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 빨간 점선은 모형 평균 예측값을 나타냄.}
+\caption{Nowcasting 시점별 비교: 도소매판매액 (KOWRCCNSE). 왼쪽: 4주 전 nowcasting, 오른쪽: 1주 전 nowcasting. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선은 실제값, 주황색 점선은 DFM 예측값, 빨간색 점선은 DDFM 예측값을 나타냄.}
 \label{fig:nowcasting_comparison_kowrccnse}
 \end{figure}
 

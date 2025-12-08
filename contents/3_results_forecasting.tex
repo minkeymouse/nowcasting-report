@@ -29,5 +29,15 @@
 
 그림~\ref{fig:forecast_vs_actual_koipallg}, 그림~\ref{fig:forecast_vs_actual_koequipte}, 그림~\ref{fig:forecast_vs_actual_kowrccnse}는 각 대상 변수별로 히스토리 기간(2023-01 to 2023-12)과 예측 기간(2024-01 to 2025-10)의 실제 값 및 예측 값을 비교한 플롯임. 히스토리 기간에는 실제 값만 표시되며, 예측 기간에는 실제 값과 모형 예측값(ARIMA, VAR, DFM, DDFM)이 함께 표시됨. 모든 값은 원본 데이터 스케일로 표시되며, X축은 월별 타임스탬프, Y축은 대상 변수 값임.
 
-표~\ref{tab:forecasting_results}의 결과를 보면, DFM과 DDFM 모형은 세 대상 변수 모두에서 안정적인 성능을 보였으며, 특히 DDFM은 중간 수평선(11개월)에서 우수한 성능을 보임. ARIMA와 VAR은 벤치마크 모형으로 포함되었으며, ARIMA는 세 대상 변수 모두에서 안정적인 성능을 보였고, VAR은 대상 변수에 따라 성능 차이가 큼.
+표~\ref{tab:forecasting_results}의 결과를 보면, 네 가지 모형 모두 세 대상 변수에서 성공적으로 평가되었으며, 각 모형은 수평선과 대상 변수에 따라 다른 성능 특성을 보임. 
+
+\textbf{전체 수평선 평균 성능:} ARIMA가 가장 낮은 평균 sMAE(0.77)와 sMSE(1.05)를 보여 전반적으로 가장 안정적인 성능을 보임. DDFM은 평균 sMAE(0.78)와 sMSE(1.08)로 ARIMA에 근접한 성능을 보이며, DFM(sMAE=0.82, sMSE=1.11)과 VAR(sMAE=0.91, sMSE=1.47)이 그 뒤를 따름.
+
+\textbf{단기 예측(1개월):} DDFM이 가장 낮은 sMAE(0.47)와 sMSE(0.37)를 보여 단기 예측에서 우수한 성능을 보임. ARIMA(sMAE=0.47, sMSE=0.42)도 유사한 성능을 보이며, DFM(sMAE=0.69, sMSE=0.52)과 VAR(sMAE=0.52, sMSE=0.59)이 그 뒤를 따름. 대상 변수별로는 KOEQUIPTE에서 DFM이, KOWRCCNSE에서 ARIMA가, KOIPALL.G에서 VAR이 최고 성능을 보임.
+
+\textbf{중기 예측(11개월):} DDFM이 가장 낮은 sMAE(0.54)와 sMSE(0.38)를 보여 중기 예측에서 우수한 성능을 보임. DFM(sMAE=0.62, sMSE=0.44)과 ARIMA(sMAE=0.58, sMSE=0.40)도 양호한 성능을 보이며, VAR(sMAE=0.66, sMSE=0.79)이 상대적으로 높은 오차를 보임.
+
+\textbf{장기 예측(22개월):} 장기 예측에서는 유효한 결과가 제한적이나, DFM이 가장 낮은 sMAE(1.00)와 sMSE(1.01)를 보여 장기 예측에서 상대적으로 안정적인 성능을 보임. VAR(sMAE=1.49, sMSE=2.62)과 ARIMA(sMAE=1.50, sMSE=2.26)도 유사한 수준의 성능을 보이며, DDFM(sMAE=1.60, sMSE=2.55)이 상대적으로 높은 오차를 보임.
+
+이러한 결과는 각 모형의 구조적 특성을 반영함: ARIMA는 단순성과 안정성으로 전반적으로 일관된 성능을 보이며, DDFM은 비선형 인코더를 통해 중단기 예측에서 우수한 성능을 보이고, DFM은 전통적인 요인 모형으로 장기 예측에서 안정적인 성능을 보임. VAR은 대상 변수에 따라 성능 차이가 크며, 특히 중장기 예측에서 수치적 불안정성의 영향을 받을 수 있음.
 
