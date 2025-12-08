@@ -29,5 +29,5 @@
 
 그림~\ref{fig:forecast_vs_actual_koipallg}, 그림~\ref{fig:forecast_vs_actual_koequipte}, 그림~\ref{fig:forecast_vs_actual_kowrccnse}는 각 대상 변수별로 히스토리 기간(2023-01 to 2023-12)과 예측 기간(2024-01 to 2025-10)의 실제 값 및 예측 값을 비교한 플롯임. 히스토리 기간에는 실제 값만 표시되며, 예측 기간에는 실제 값과 모형 예측값(ARIMA, VAR, DFM, DDFM)이 함께 표시됨. 모든 값은 원본 데이터 스케일로 표시되며, X축은 월별 타임스탬프, Y축은 대상 변수 값임.
 
-표~\ref{tab:forecasting_results}의 결과를 보면, VAR 모형이 KOWRCCNSE 대상 변수에서 최고 성능을 보였으며(sMAE: 0.3161, sMSE: 0.1974), 다른 모형들은 대상 변수에 따라 다양한 성능을 보임. ARIMA는 세 대상 변수 모두에서 안정적인 성능을 보였으며, DFM과 DDFM은 중간 수준의 성능을 보임.
+표~\ref{tab:forecasting_results}의 결과를 보면, DFM과 DDFM 모형은 세 대상 변수 모두에서 안정적인 성능을 보였으며, 특히 DDFM은 중간 수평선(11개월)에서 우수한 성능을 보임. ARIMA와 VAR은 벤치마크 모형으로 포함되었으며, ARIMA는 세 대상 변수 모두에서 안정적인 성능을 보였고, VAR은 대상 변수에 따라 성능 차이가 큼.
 

@@ -646,9 +646,12 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
                         # Convert to numpy array
                         forecast_values = np.array(forecast_values_list)
                         
-                        # Debug: Print forecast values for first few horizons
-                        if model_key.upper() == 'DFM' and target == 'KOIPALL.G':
-                            print(f"Debug {model_key} {target} forecast values (first 5): {forecast_values[:5]}")
+                        # Debug: Print forecast values for all models
+                        print(f"Debug {model_key.upper()} {target} forecast values:")
+                        print(f"  First 5: {forecast_values[:5]}")
+                        print(f"  Last 5: {forecast_values[-5:]}")
+                        print(f"  Unique values: {len(np.unique(forecast_values[~np.isnan(forecast_values)]))}")
+                        print(f"  Min: {np.nanmin(forecast_values):.6f}, Max: {np.nanmax(forecast_values):.6f}, Mean: {np.nanmean(forecast_values):.6f}")
                         
                         # Note: DFM/DDFM predict() already returns values in original scale
                         # (dfm-python's predict() does: X_forecast = X_forecast_std * Wx + Mx)
@@ -797,11 +800,17 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
         model_upper = model.upper()
         model_data = _load_backtest_results(target, OUTPUTS_DIR, model_filter=model)
         
+        # Debug: Log what was loaded
+        total_forecasts = sum(len(month_data.get('forecasts', [])) for tp in ['4weeks', '1weeks'] for month_data in model_data.get(tp, {}).values())
+        print(f"Debug {target} {model_upper}: Loaded {total_forecasts} forecasts from {len(model_data.get('4weeks', {}))} months (4w) and {len(model_data.get('1weeks', {}))} months (1w)")
+        
         for tp in ['4weeks', '1weeks']:
             for month_str, month_data in model_data.get(tp, {}).items():
                 if month_str not in predictions_by_timepoint_model[tp][model_upper]:
                     predictions_by_timepoint_model[tp][model_upper][month_str] = []
-                predictions_by_timepoint_model[tp][model_upper][month_str].extend(month_data.get('forecasts', []))
+                forecasts = month_data.get('forecasts', [])
+                if forecasts:
+                    predictions_by_timepoint_model[tp][model_upper][month_str].extend(forecasts)
                 if month_str not in actual_values:
                     actual_values[month_str] = month_data.get('actual')
     
@@ -959,10 +968,14 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
     
     # Debug: Print first few values to check if masking is working
     print(f"\nDebug {target} - Masking check:")
-    print(f"4 weeks before - DFM first 3: {dfm_predictions_4weeks[:3]}")
-    print(f"1 week before - DFM first 3: {dfm_predictions_1weeks[:3]}")
-    print(f"4 weeks before - DDFM first 3: {ddfm_predictions_4weeks[:3]}")
-    print(f"1 week before - DDFM first 3: {ddfm_predictions_1weeks[:3]}")
+    print(f"4 weeks before - DFM first 5: {dfm_predictions_4weeks[:5]}")
+    print(f"1 week before - DFM first 5: {dfm_predictions_1weeks[:5]}")
+    print(f"4 weeks before - DDFM first 5: {ddfm_predictions_4weeks[:5]}")
+    print(f"1 week before - DDFM first 5: {ddfm_predictions_1weeks[:5]}")
+    print(f"DFM 4w valid count: {sum(1 for x in dfm_predictions_4weeks if not np.isnan(x))}/{len(dfm_predictions_4weeks)}")
+    print(f"DFM 1w valid count: {sum(1 for x in dfm_predictions_1weeks if not np.isnan(x))}/{len(dfm_predictions_1weeks)}")
+    print(f"DDFM 4w valid count: {sum(1 for x in ddfm_predictions_4weeks if not np.isnan(x))}/{len(ddfm_predictions_4weeks)}")
+    print(f"DDFM 1w valid count: {sum(1 for x in ddfm_predictions_1weeks if not np.isnan(x))}/{len(ddfm_predictions_1weeks)}")
     if len(dfm_predictions_4weeks) > 0 and len(dfm_predictions_1weeks) > 0:
         diff_dfm = [abs(a - b) if not (np.isnan(a) or np.isnan(b)) else np.nan 
                     for a, b in zip(dfm_predictions_4weeks, dfm_predictions_1weeks)]
@@ -970,6 +983,17 @@ def plot_nowcasting_comparison(target: str, save_path: Optional[Path] = None):
         if non_nan_diff:
             print(f"DFM 4w vs 1w difference (mean): {np.mean(non_nan_diff):.6f}")
             print(f"DFM 4w vs 1w difference (max): {np.max(non_nan_diff):.6f}")
+        else:
+            print(f"WARNING: DFM 4w and 1w predictions are identical or all NaN!")
+    if len(ddfm_predictions_4weeks) > 0 and len(ddfm_predictions_1weeks) > 0:
+        diff_ddfm = [abs(a - b) if not (np.isnan(a) or np.isnan(b)) else np.nan 
+                     for a, b in zip(ddfm_predictions_4weeks, ddfm_predictions_1weeks)]
+        non_nan_diff = [d for d in diff_ddfm if not np.isnan(d)]
+        if non_nan_diff:
+            print(f"DDFM 4w vs 1w difference (mean): {np.mean(non_nan_diff):.6f}")
+            print(f"DDFM 4w vs 1w difference (max): {np.max(non_nan_diff):.6f}")
+        else:
+            print(f"WARNING: DDFM 4w and 1w predictions are identical or all NaN!")
     
     plt.tight_layout()
     

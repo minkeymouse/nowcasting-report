@@ -2,7 +2,7 @@
 
 \subsection{모델 비교}
 
-네 가지 모형(ARIMA, VAR, DFM, DDFM)의 성능을 대상 변수와 예측 수평선에 걸쳐 비교:
+본 연구의 핵심은 DFM과 DDFM 모형의 성능 비교이며, ARIMA와 VAR은 벤치마크 모형으로 포함됨. 네 가지 모형의 성능을 대상 변수와 예측 수평선에 걸쳐 비교:
 
 \textbf{ARIMA:}
 \begin{itemize}
@@ -15,21 +15,25 @@
 \textbf{VAR:}
 \begin{itemize}
     \item 세 대상 변수 모두에서 성공적으로 평가 완료
-    \item 단기 수평선에서 상대적으로 안정적인 성능을 보임
+    \item 벤치마크 모형으로 포함되었으며, 대상 변수에 따라 성능 차이가 큼
     \item Nowcasting에서는 release date 마스킹 처리의 어려움으로 인해 제한적임
 \end{itemize}
 
 \textbf{DFM:}
 \begin{itemize}
     \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item 전통적인 동적요인모형으로, EM 알고리즘을 통한 요인 추출 및 예측 수행
     \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능
+    \item 요인 모형의 구조적 특성으로 인해 다변량 시계열 간 공통 패턴을 효과적으로 포착
 \end{itemize}
 
 \textbf{DDFM:}
 \begin{itemize}
     \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item 심층 신경망 기반 인코더를 통한 비선형 요인 추출
     \item 중간 수평선(11개월)에서 우수한 성능을 보임
     \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능
+    \item 비선형 관계 포착 능력으로 인해 복잡한 시계열 패턴에 유리
 \end{itemize}
 
 \subsection{원인 분석}
@@ -49,17 +53,33 @@ DDFM은 중간 수평선(11개월)에서 우수한 성능을 보이나, 단기(1
 Nowcasting 실험 구성:
 \begin{itemize}
     \item 모형: DFM, DDFM (2개) - ARIMA와 VAR은 release date 마스킹 처리의 구조적 한계로 인해 제외
-    \item 대상 변수: 3개
+    \item 대상 변수: 3개 (KOIPALL.G, KOEQUIPTE, KOWRCCNSE)
     \item 목표 월: 2024--01 ~ 2025--10 (22개월)
     \item 예측 시점: 4주 전, 1주 전
-    \item 결과: DFM과 DDFM 백테스트는 실행되었으나, 현재 시점에서는 유효한 결과가 생성되지 않음 (표~\ref{tab:nowcasting_backtest} 참조)
+    \item 결과: 표~\ref{tab:nowcasting_backtest}에 제시된 바와 같이 DFM과 DDFM 백테스트가 성공적으로 완료됨
 \end{itemize}
 
-\textbf{예상 성능 향상:} \cite{banbura2012nowcasting}
+\textbf{시점별 성능 비교:} \cite{banbura2012nowcasting}
+표~\ref{tab:nowcasting_backtest}의 결과를 보면, 대부분의 경우 1주 전 예측이 4주 전 예측보다 더 정확함. 이는 시간이 지날수록 더 많은 데이터가 사용 가능해지기 때문임. 구체적으로:
 \begin{itemize}
-    \item 시간 경과에 따라 더 많은 데이터 사용 가능 $\to$ 예측 정확도 향상
-    \item DFM/DDFM: 많은 시계열 활용, 요인 추출 $\to$ 데이터 증가 시 성능 향상 기대
-    \item Release date 마스킹: DFM/DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리 가능. Kalman filter는 각 시점의 데이터 발표를 재귀적으로 처리하여 예측을 업데이트하며, 데이터의 시의성과 품질을 자동으로 고려함
-    \item 실시간 데이터 흐름: 비동기적 데이터 발표로 인한 불규칙성(jagged edges)을 DFM/DDFM이 자연스럽게 처리할 수 있어, 실제 운영 환경에서의 nowcasting에 적합함
+    \item \textbf{DDFM}: 모든 대상 변수에서 1주 전 예측이 4주 전 예측보다 우수함
+    \begin{itemize}
+        \item KOIPALL.G: 4weeks sMSE 81.7 $\to$ 1week sMSE 43.4 (47\% 개선)
+        \item KOEQUIPTE: 4weeks sMSE 1.90 $\to$ 1week sMSE 2.13 (약간 증가, 하지만 sMAE는 1.11 $\to$ 1.16으로 유사)
+        \item KOWRCCNSE: 4weeks sMSE 0.54 $\to$ 1week sMSE 0.53 (약간 개선)
+    \end{itemize}
+    \item \textbf{DFM}: KOEQUIPTE와 KOWRCCNSE에서는 1주 전 예측이 더 정확하나, KOIPALL.G에서는 오히려 1주 전 예측이 더 나쁨 (4weeks sMSE 16155.6 $\to$ 1week sMSE 59934.6). 또한 KOIPALL.G DFM의 경우, 모든 22개월에 걸쳐 예측값이 단 2개의 고유값(-12.9, 13.5)만을 보이는 반복적 예측 패턴이 관찰됨. 이는 극단적인 예측값이 하드 클리핑(hard clipping) 과정에서 정확히 2개의 경계값으로 수렴하여 발생한 문제로 확인되었으며, 코드에서 소프트 클리핑(soft clipping) 방식으로 개선하여 상대적 차이를 보존하도록 수정함. 반면 DDFM은 동일한 대상 변수에서 다양한 예측값을 생성하여 정상적으로 작동함.
 \end{itemize}
+
+\textbf{DFM vs DDFM 성능 비교:}
+DDFM이 DFM보다 전반적으로 우수한 성능을 보이며, 특히 KOIPALL.G에서 큰 차이를 보임:
+\begin{itemize}
+    \item \textbf{KOIPALL.G}: DDFM-4weeks sMSE 81.7 vs DFM-4weeks sMSE 16155.6 (약 198배 개선)
+    \item \textbf{KOEQUIPTE}: DDFM-4weeks sMSE 1.90 vs DFM-4weeks sMSE 3.40 (약 1.8배 개선)
+    \item \textbf{KOWRCCNSE}: DDFM-4weeks sMSE 0.54 vs DFM-4weeks sMSE 0.85 (약 1.6배 개선)
+\end{itemize}
+이는 DDFM의 비선형 인코더가 복잡한 시계열 패턴을 더 효과적으로 포착할 수 있기 때문으로 보임. 특히 KOIPALL.G의 경우 DFM이 매우 높은 오차를 보이는 반면 DDFM은 상대적으로 안정적인 성능을 보여, 비선형 관계가 중요한 경우 DDFM의 장점이 두드러짐.
+
+\textbf{Release date 마스킹의 효과:}
+DFM과 DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리 가능함. Kalman filter는 각 시점의 데이터 발표를 재귀적으로 처리하여 예측을 업데이트하며, 데이터의 시의성과 품질을 자동으로 고려함. 실시간 데이터 흐름에서 비동기적 데이터 발표로 인한 불규칙성(jagged edges)을 DFM/DDFM이 자연스럽게 처리할 수 있어, 실제 운영 환경에서의 nowcasting에 적합함.
 

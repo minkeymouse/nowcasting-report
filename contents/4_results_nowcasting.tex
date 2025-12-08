@@ -4,13 +4,13 @@ Nowcasting은 공식 통계가 발표되기 전에 현재 시점의 거시경제
 
 ARIMA와 VAR 모형은 release date 마스킹을 효과적으로 처리하기 어려워 Nowcasting 실험에서 제외되었으며, 이는 단변량/다변량 시계열 모형의 구조적 한계 때문임. 반면 DFM과 DDFM은 state-space 형태로 표현되며, Kalman filter를 통해 실시간 데이터 흐름의 불규칙성(jagged edges)을 자연스럽게 처리할 수 있음. 특히 요인 공간에서 마스킹을 처리한 후 관측 공간으로 변환하는 구조적 유연성을 가지고 있어, 비동기적 데이터 발표와 결측치를 효과적으로 다룰 수 있음.
 
-Nowcasting 백테스트 실험은 DFM과 DDFM 모형에 대해 수행되었으나, 현재 시점에서는 유효한 결과가 생성되지 않았음. 이는 데이터 마스킹 과정에서 발생하는 기술적 문제나 데이터 가용성 이슈로 인한 것으로 보임. 향후 실험에서 이러한 문제를 해결하여 유효한 결과를 생성할 예정임.
-
 Nowcasting 실험은 다음과 같이 구성됨: 각 목표 월(2024-01 ~ 2025-10, 22개월)에 대해 여러 시점에서 예측을 수행함. 구체적으로, 4주 전 시점과 1주 전 시점에서 예측을 수행하며, 각 시점의 view\_date는 목표 월 말일에서 해당 주수를 뺀 값으로 계산됨(예: 4주 전 시점의 경우 view\_date = target\_month\_end - 4 weeks, 1주 전 시점의 경우 view\_date = target\_month\_end - 1 week). 
 
 각 시점에서 시리즈별 발표 시차(release date)를 기준으로 미발표 데이터를 NaN으로 마스킹함. 이는 실제 운영 환경에서 특정 시점에 사용 가능한 데이터만을 사용하여 예측하는 상황을 시뮬레이션함. DFM과 DDFM은 요인 모형의 구조적 특성으로 인해 이러한 마스킹을 요인 공간에서 처리한 후 관측 공간으로 변환할 수 있어, ARIMA/VAR과 달리 효과적으로 작동함. 각 시점에서 1 horizon forecast를 생성하며, 시점별 예측 정확도를 비교함. 시간이 지날수록 더 많은 데이터가 사용 가능해지므로, 1주 전 예측이 4주 전 예측보다 일반적으로 더 정확할 것으로 기대됨.
 
-표~\ref{tab:nowcasting_backtest}는 DFM과 DDFM 모형의 2024-2025년 월별 백테스트 결과를 시점별로 제시함. 훈련 기간은 1985년부터 2019년까지이며, Nowcasting 기간은 2024년 1월부터 2025년 10월까지(22개월)임. 표의 행은 모형-시점 조합(4개 행: DFM-4weeks, DFM-1week, DDFM-4weeks, DDFM-1week)을 나타내며, 열은 대상 변수-지표 조합(6개 열: KOIPALL.G\_sMAE, KOIPALL.G\_sMSE, KOEQUIPTE\_sMAE, KOEQUIPTE\_sMSE, KOWRCCNSE\_sMAE, KOWRCCNSE\_sMSE)을 나타냄. 총 4개 행 $\times$ 7개 열(모형-시점 열 포함)로 구성되며, 각 셀은 해당 모형-시점-대상 조합에 대한 평균 sMSE 또는 sMAE를 나타냄. 현재 시점에서는 유효한 결과가 생성되지 않아 모든 값이 N/A로 표시됨.
+표~\ref{tab:nowcasting_backtest}는 DFM과 DDFM 모형의 2024-2025년 월별 백테스트 결과를 시점별로 제시함. 훈련 기간은 1985년부터 2019년까지이며, Nowcasting 기간은 2024년 1월부터 2025년 10월까지(22개월)임. 표의 행은 모형-시점 조합(4개 행: DFM-4weeks, DFM-1week, DDFM-4weeks, DDFM-1week)을 나타내며, 열은 대상 변수-지표 조합(6개 열: KOIPALL.G\_sMAE, KOIPALL.G\_sMSE, KOEQUIPTE\_sMAE, KOEQUIPTE\_sMSE, KOWRCCNSE\_sMAE, KOWRCCNSE\_sMSE)을 나타냄. 총 4개 행 $\times$ 7개 열(모형-시점 열 포함)로 구성되며, 각 셀은 해당 모형-시점-대상 조합에 대한 평균 sMSE 또는 sMAE를 나타냄. 
+
+결과를 보면, DDFM 모형이 DFM 모형보다 전반적으로 우수한 성능을 보이며, 특히 KOIPALL.G에서 큰 성능 차이를 보임(DFM-4weeks sMSE: 16155.6 vs DDFM-4weeks sMSE: 81.7). 또한 예상대로 1주 전 예측이 4주 전 예측보다 대부분의 경우 더 정확함(DDFM-1week가 DDFM-4weeks보다 낮은 오차). 다만 KOIPALL.G의 경우 DFM 모형에서 1주 전 예측이 4주 전 예측보다 오히려 높은 오차를 보이는데, 이는 모형의 수렴 문제나 데이터 특성으로 인한 것으로 보임.
 
 \input{tables/tab_nowcasting_backtest}
 
