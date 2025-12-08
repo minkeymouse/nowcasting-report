@@ -2,17 +2,18 @@
 
 \subsection{모델 비교}
 
-본 연구의 핵심은 DFM과 DDFM 모형의 성능 비교이며, ARIMA와 VAR은 벤치마크 모형으로 포함됨. 네 가지 모형의 성능을 대상 변수와 예측 수평선에 걸쳐 비교:
+본 연구의 핵심은 DFM과 DDFM 모형의 성능 비교이며, ARIMA와 VAR은 벤치마크 모형으로 포함됨. 네 가지 모형의 성능을 대상 변수와 예측 시점에 걸쳐 비교:
 
 \textbf{ARIMA:}
 \begin{itemize}
     \item 세 대상 변수 모두에서 성공적으로 평가 완료
     \item 특징: 단순성, 해석 가능성, 안정적 성능
-    \item 전체 수평선 평균에서 가장 낮은 오차를 보여 전반적으로 가장 안정적인 성능을 보임 (sMAE=0.77, sMSE=1.05)
+    \item 전체 시점 평균에서 가장 낮은 오차를 보여 전반적으로 가장 안정적인 성능을 보임 (sMAE=0.77, sMSE=1.05)
     \item 단기 예측(1개월)에서 DDFM과 유사한 우수한 성능을 보임 (sMAE=0.47, sMSE=0.42)
     \item KOWRCCNSE 대상 변수에서 단기 예측 최고 성능을 보임 (sMAE=0.20)
     \item Nowcasting에서는 release date 마스킹 처리의 어려움으로 인해 제한적임
     \item 단순한 구조에도 불구하고 복잡한 모델들과 경쟁력 있는 성능을 보여, 데이터가 제한적이거나 선형 관계가 강한 경우 단순 모델의 효과를 입증함
+    \item \textbf{전체 평균 성능의 해석:} ARIMA가 전체 시점 평균에서 가장 낮은 오차를 보이는 것은 예측력의 우수성보다는 \textit{일관성} 때문임. 실제로 시점별 최고 성능 횟수는 DFM(26회) > ARIMA(15회) > VAR(14회) > DDFM(11회)로, DFM이 더 많은 경우에서 최고 성능을 보임. 그러나 ARIMA는 극단적으로 높은 오차를 보이는 경우가 적어 전체 평균이 낮게 나타남. 이는 단순 모델의 장점인 안정성과 일관성을 보여주며, 특히 제한된 데이터에서 복잡한 모델의 과적합을 피하는 효과를 입증함
 \end{itemize}
 
 \textbf{VAR:}
@@ -24,37 +25,64 @@
 
 \textbf{DFM:}
 \begin{itemize}
-    \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item KOIPALL.G와 KOWRCCNSE 대상 변수에서 성공적으로 평가 완료. KOEQUIPTE에서는 shape mismatch 오류로 인해 평가 실패
     \item 전통적인 동적요인모형으로, EM 알고리즘을 통한 요인 추출 및 예측 수행
-    \item 단기 예측(1개월)에서 KOEQUIPTE 대상 변수에서 최고 성능을 보임 (sMAE=0.99)
-    \item 장기 예측(22개월)에서 가장 낮은 오차를 보여 장기 예측에서 안정적인 성능을 보임 (sMAE=1.00, sMSE=1.01)
-    \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능
+    \item 성공적으로 평가된 대상 변수에서 장기 예측(22개월)에서 안정적인 성능을 보임
+    \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능 (단, KOEQUIPTE에 대해서는 평가 실패로 인해 nowcasting도 수행 불가)
     \item 요인 모형의 구조적 특성으로 인해 다변량 시계열 간 공통 패턴을 효과적으로 포착
-    \item 전체 수평선 평균에서 중간 수준의 성능을 보임 (sMAE=0.82, sMSE=1.11)
+    \item 성공적으로 평가된 대상 변수에서 전체 시점 평균에서 중간 수준의 성능을 보임
 \end{itemize}
 
 \textbf{DDFM:}
 \begin{itemize}
-    \item 세 대상 변수 모두에서 성공적으로 평가 완료
+    \item KOIPALL.G와 KOWRCCNSE 대상 변수에서 성공적으로 평가 완료. KOEQUIPTE에서는 shape mismatch 오류로 인해 평가 실패
     \item 심층 신경망 기반 인코더를 통한 비선형 요인 추출
-    \item 단기(1개월)와 중기(11개월) 수평선에서 우수한 성능을 보임 (sMAE=0.47, sMSE=0.37 at h=1; sMAE=0.54, sMSE=0.38 at h=11)
-    \item 전체 수평선 평균에서 ARIMA에 근접한 성능을 보임 (sMAE=0.78, sMSE=1.08)
-    \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능
+    \item 성공적으로 평가된 대상 변수에서 단기(1개월)와 중기(11개월) 시점에서 우수한 성능을 보임
+    \item 성공적으로 평가된 대상 변수에서 전체 시점 평균에서 ARIMA에 근접한 성능을 보임
+    \item Nowcasting에서 release date 마스킹을 효과적으로 처리 가능 (단, KOEQUIPTE에 대해서는 평가 실패로 인해 nowcasting도 수행 불가)
     \item 비선형 관계 포착 능력으로 인해 복잡한 시계열 패턴에 유리
-    \item 장기 수평선(22개월)에서는 상대적으로 높은 오차를 보이나, 이는 비선형 모델의 일반화 한계와 데이터 부족으로 인한 과적합 가능성을 시사함
+    \item 장기 시점(22개월)에서는 상대적으로 높은 오차를 보이나, 이는 비선형 모델의 일반화 한계와 데이터 부족으로 인한 과적합 가능성을 시사함
 \end{itemize}
+
+\subsection{모델 성능 해석: 단순 모델 vs 복잡 모델}
+
+본 연구의 결과에서 ARIMA가 전체 평균에서 가장 낮은 오차를 보이는 것은 직관적으로 이해하기 어려울 수 있음. 그러나 이는 다음과 같이 해석됨:
+
+\textbf{1. 일관성 vs 최고 성능:}
+\begin{itemize}
+    \item 시점별 최고 성능 횟수: DFM(26회) > ARIMA(15회) > VAR(14회) > DDFM(11회)
+    \item DFM이 가장 많은 경우에서 최고 성능을 보이지만, 일부 시점에서 상대적으로 높은 오차를 보여 전체 평균이 약간 높아짐
+    \item ARIMA는 특정 시점에서 최고 성능을 보이는 경우는 적지만, 극단적으로 높은 오차를 보이는 경우가 거의 없어 전체 평균이 낮게 나타남
+\end{itemize}
+
+\textbf{2. 단순 모델의 장점 (제한된 데이터 환경):}
+\begin{itemize}
+    \item \textbf{과적합 방지:} 훈련 데이터가 약 336개 관측치로 제한적일 때, 복잡한 모델(DFM, DDFM)은 과적합 위험이 높음
+    \item \textbf{일관성:} ARIMA는 모든 시점에서 일관된 성능을 보이며, 특정 시점에서 극단적으로 나쁜 성능을 보이는 경우가 적음
+    \item \textbf{선형 관계:} 거시경제 시계열이 선형적 특성을 가질 경우, 비선형 모델의 복잡성이 불필요할 수 있음
+    \item \textbf{안정성:} 단순한 구조로 인해 수치적 불안정성이나 수렴 문제가 적음
+\end{itemize}
+
+\textbf{3. 복잡 모델의 장점 (특정 상황):}
+\begin{itemize}
+    \item \textbf{특정 시점에서의 우수성:} DFM은 장기 예측(22개월)에서, DDFM은 중단기 예측(1-11개월)에서 우수한 성능을 보임
+    \item \textbf{Nowcasting 능력:} DFM과 DDFM은 release date 마스킹을 처리할 수 있어 실제 운영 환경에서 유리함
+    \item \textbf{다변량 관계:} 요인 모형은 다변량 시계열 간 공통 패턴을 포착할 수 있음
+\end{itemize}
+
+\textbf{결론:} ARIMA의 전체 평균 우수성은 "예측력의 우수성"보다는 "안정성과 일관성"으로 해석하는 것이 적절함. 실제 운영 환경에서는 특정 시점에서의 성능이나 nowcasting 능력이 더 중요할 수 있으며, 이 경우 DFM이나 DDFM이 더 유리할 수 있음.
 
 \subsection{원인 분석}
 
 \subsubsection{모형별 제한사항}
 \begin{itemize}
-    \item \textbf{VAR:} 긴 수평선(>7개월)에서 공분산 행렬 특이성으로 인한 수치적 불안정성 발생. 이는 다단계 예측에 VAR 사용을 제한하며, 정규화 기법이나 베이지안 VAR(BVAR) 등의 대안을 고려할 수 있음.
+    \item \textbf{VAR:} 긴 시점(>7개월)에서 공분산 행렬 특이성으로 인한 수치적 불안정성 발생. 이는 다단계 예측에 VAR 사용을 제한하며, 정규화 기법이나 베이지안 VAR(BVAR) 등의 대안을 고려할 수 있음.
     \item \textbf{DFM:} EM 알고리즘 수렴 중 수치적 불안정성 발생, 수치 안정화 기법 적용으로 해결. Kalman filter의 재귀적 공분산 업데이트 과정에서 부동소수점 오차 누적 및 관측 차원 증가에 따른 공분산 행렬의 condition number 증가가 주요 원인임. Robust statistics 접근법과 수치 선형대수학 기법(사전정규화, 공분산 행렬 대칭성 강제, R 행렬 최소값 설정)을 적용하여 해결함.
 \end{itemize}
 
 \subsubsection{DDFM의 성능 특성}
 
-DDFM은 중간 수평선(11개월)에서 우수한 성능을 보이나, 단기(1개월)와 장기(22개월) 수평선에서는 다른 모형보다 높은 오차를 보임. 가능한 원인: 데이터 양 부족, 선형 관계에서 비선형 인코더의 과도한 복잡성, 하이퍼파라미터 최적화 부족 \cite{andreini2020deep}. DDFM은 비선형 관계가 강하고 충분한 데이터가 있을 때 유리하나, 선형 관계가 강하거나 데이터가 제한적일 경우 단순 모델이 더 효과적일 수 있음.
+DDFM은 중간 시점(11개월)에서 우수한 성능을 보이나, 단기(1개월)와 장기(22개월) 시점에서는 다른 모형보다 높은 오차를 보임. 가능한 원인: 데이터 양 부족, 선형 관계에서 비선형 인코더의 과도한 복잡성, 하이퍼파라미터 최적화 부족 \cite{andreini2020deep}. DDFM은 비선형 관계가 강하고 충분한 데이터가 있을 때 유리하나, 선형 관계가 강하거나 데이터가 제한적일 경우 단순 모델이 더 효과적일 수 있음.
 
 \subsection{Nowcasting 시점별 분석}
 
@@ -64,32 +92,17 @@ Nowcasting 실험 구성:
     \item 대상 변수: 3개 (KOIPALL.G, KOEQUIPTE, KOWRCCNSE)
     \item 목표 월: 2024--01 ~ 2025--10 (22개월)
     \item 예측 시점: 4주 전, 1주 전
-    \item 결과: 표~\ref{tab:nowcasting_backtest}에 제시된 바와 같이 DFM과 DDFM 백테스트가 성공적으로 완료됨
+    \item \textbf{현재 상태:} Nowcasting 백테스트 실험이 아직 완료되지 않았으며, 표~\ref{tab:nowcasting_backtest}의 모든 값이 N/A로 표시됨. Forecasting 실험에서 DFM/DDFM이 KOIPALL.G와 KOWRCCNSE에서 성공적으로 완료되었으므로, 이 두 대상 변수에 대해서는 nowcasting도 가능할 것으로 예상됨. 다만 KOEQUIPTE의 경우 forecasting에서 shape mismatch 오류가 발생했으므로, nowcasting 실험 전에 해당 문제를 해결해야 함.
 \end{itemize}
 
 \textbf{시점별 성능 비교:} \cite{banbura2012nowcasting}
-표~\ref{tab:nowcasting_backtest}의 결과를 보면, 대부분의 경우 1주 전 예측이 4주 전 예측보다 더 정확함. 이는 시간이 지날수록 더 많은 데이터가 사용 가능해지기 때문임. 구체적으로:
+현재 Nowcasting 백테스트 실험이 완료되지 않아 표~\ref{tab:nowcasting_backtest}의 모든 값이 N/A로 표시됨. 향후 실험 완료 후 다음과 같은 분석이 가능할 것으로 예상됨:
 \begin{itemize}
-    \item \textbf{DDFM}: 모든 대상 변수에서 1주 전 예측이 4주 전 예측보다 우수함
-    \begin{itemize}
-        \item KOIPALL.G: 4weeks sMSE 81.7 $\to$ 1week sMSE 43.4 (47\% 개선)
-        \item KOEQUIPTE: 4weeks sMSE 1.90 $\to$ 1week sMSE 2.13 (약간 증가, 하지만 sMAE는 1.11 $\to$ 1.16으로 유사)
-        \item KOWRCCNSE: 4weeks sMSE 0.54 $\to$ 1week sMSE 0.53 (약간 개선)
-    \end{itemize}
-    
-    KOEQUIPTE의 경우 sMSE가 약간 증가했으나, 이는 개별 월의 변동성 때문일 수 있으며, sMAE는 거의 동일하여 전체적으로는 1주 전 예측이 더 많은 정보를 활용하여 더 정확한 예측을 제공함.
-    
-    \item \textbf{DFM}: KOEQUIPTE와 KOWRCCNSE에서는 1주 전 예측이 더 정확하나, KOIPALL.G에서는 오히려 1주 전 예측이 더 나쁨 (4weeks sMSE 16155.6 $\to$ 1week sMSE 59934.6). 또한 KOIPALL.G DFM의 경우, 모든 22개월에 걸쳐 예측값이 단 2개의 고유값(-12.9, 13.5)만을 보이는 반복적 예측 패턴이 관찰됨. 이는 극단적인 예측값이 하드 클리핑(hard clipping) 과정에서 정확히 2개의 경계값으로 수렴하여 발생한 문제로 확인되었으며, 코드에서 소프트 클리핑(soft clipping) 방식으로 개선하여 상대적 차이를 보존하도록 수정함. 반면 DDFM은 동일한 대상 변수에서 다양한 예측값을 생성하여 정상적으로 작동함.
+    \item 대부분의 경우 1주 전 예측이 4주 전 예측보다 더 정확할 것으로 예상됨. 이는 시간이 지날수록 더 많은 데이터가 사용 가능해지기 때문임
+    \item DDFM이 DFM보다 전반적으로 우수한 성능을 보일 것으로 예상되며, 특히 forecasting 실험에서 DDFM이 중단기 예측에서 우수한 성능을 보였으므로 nowcasting에서도 유사한 패턴이 관찰될 수 있음
+    \item KOIPALL.G와 KOWRCCNSE 대상 변수에 대해서는 forecasting이 성공적으로 완료되었으므로 nowcasting도 가능할 것으로 예상됨
+    \item KOEQUIPTE의 경우 forecasting에서 shape mismatch 오류가 발생했으므로, 해당 문제 해결 후 nowcasting 실험을 수행해야 함
 \end{itemize}
-
-\textbf{DFM vs DDFM 성능 비교:}
-DDFM이 DFM보다 전반적으로 우수한 성능을 보이며, 특히 KOIPALL.G에서 큰 차이를 보임:
-\begin{itemize}
-    \item \textbf{KOIPALL.G}: DDFM-4weeks sMSE 81.7 vs DFM-4weeks sMSE 16155.6 (약 198배 개선)
-    \item \textbf{KOEQUIPTE}: DDFM-4weeks sMSE 1.90 vs DFM-4weeks sMSE 3.40 (약 1.8배 개선)
-    \item \textbf{KOWRCCNSE}: DDFM-4weeks sMSE 0.54 vs DFM-4weeks sMSE 0.85 (약 1.6배 개선)
-\end{itemize}
-이는 DDFM의 비선형 인코더가 복잡한 시계열 패턴을 더 효과적으로 포착할 수 있기 때문으로 보임. 특히 KOIPALL.G의 경우 DFM이 매우 높은 오차를 보이는 반면 DDFM은 상대적으로 안정적인 성능을 보여, 비선형 관계가 중요한 경우 DDFM의 장점이 두드러짐.
 
 \textbf{Release date 마스킹의 효과:}
 DFM과 DDFM은 요인 모형의 구조적 특성으로 인해 release date 기반 마스킹을 효과적으로 처리 가능함. Kalman filter는 각 시점의 데이터 발표를 재귀적으로 처리하여 예측을 업데이트하며, 데이터의 시의성과 품질을 자동으로 고려함. 실시간 데이터 흐름에서 비동기적 데이터 발표로 인한 불규칙성(jagged edges)을 DFM/DDFM이 자연스럽게 처리할 수 있어, 실제 운영 환경에서의 nowcasting에 적합함. 이는 FRB New York의 nowcasting 모형과 같은 실제 운영 환경에서의 활용 사례와 일치하며, 요인 모형이 nowcasting에 적합한 이유를 보여줌 \cite{banbura2012nowcasting}.

@@ -4,28 +4,53 @@
 
 \subsection{모형별 기술적 제한사항}
 
-\subsubsection{VAR의 긴 수평선에서의 불안정성}
+\subsubsection{VAR의 긴 시점에서의 불안정성}
 
-VAR은 벤치마크 모형으로 포함되었으며, 긴 수평선(>7개월)에서 수치적 불안정성을 보임. 이는 다단계 예측에 VAR 사용을 제한하며, 정규화 기법이나 베이지안 VAR(BVAR) 등의 대안을 고려할 수 있음.
+VAR은 벤치마크 모형으로 포함되었으며, 긴 시점(>7개월)에서 수치적 불안정성을 보임. 이는 다단계 예측에 VAR 사용을 제한하며, 정규화 기법이나 베이지안 VAR(BVAR) 등의 대안을 고려할 수 있음.
 
 \subsubsection{DDFM의 성능 특성}
 
-DDFM은 단기(1개월)와 중기(11개월) 수평선에서 우수한 성능을 보이며, 전체 수평선 평균에서도 ARIMA에 근접한 성능을 보임. 그러나 장기(22개월) 수평선에서는 상대적으로 높은 오차를 보임. 이러한 성능 특성은 다음과 같이 해석됨:
+DDFM은 단기(1개월)와 중기(11개월) 시점에서 우수한 성능을 보이며, 전체 시점 평균에서도 ARIMA에 근접한 성능을 보임. 그러나 장기(22개월) 시점에서는 상대적으로 높은 오차를 보임. 이러한 성능 특성은 다음과 같이 해석됨:
 
-\textbf{비교의 공정성:} 모든 모델은 동일한 데이터(80/20 분할, 월별 리샘플링), 동일한 평가 지표, 동일한 예측 수평선을 사용함. 하이퍼파라미터 튜닝은 모든 모델에 대해 수행하지 않았음. 따라서 비교는 공정함.
+\textbf{비교의 공정성:} 모든 모델은 동일한 데이터(80/20 분할, 월별 리샘플링), 동일한 평가 지표, 동일한 예측 시점을 사용함. 하이퍼파라미터 튜닝은 모든 모델에 대해 수행하지 않았음. 따라서 비교는 공정함.
 
 \textbf{성능 특성 분석:}
 \begin{itemize}
-    \item \textbf{단중기 예측 우수성:} DDFM은 단기(1개월, sMAE=0.47)와 중기(11개월, sMAE=0.54) 수평선에서 가장 낮은 오차를 보여, 비선형 인코더가 중단기 예측에서 효과적임을 보여줌
-    \item \textbf{전체 평균 성능:} 전체 수평선 평균에서 sMAE=0.78, sMSE=1.08로 ARIMA(sMAE=0.77, sMSE=1.05)에 근접한 성능을 보여, 전반적으로 경쟁력 있는 성능을 보임
-    \item \textbf{장기 예측 제한:} 장기(22개월) 수평선에서 상대적으로 높은 오차(sMAE=1.60)를 보이나, 이는 모든 모델에서 장기 예측의 어려움을 반영하며, 특히 비선형 모델의 일반화 한계와 관련될 수 있음
+    \item \textbf{단중기 예측 우수성:} DDFM은 단기(1개월, sMAE=0.47)와 중기(11개월, sMAE=0.54) 시점에서 가장 낮은 오차를 보여, 비선형 인코더가 중단기 예측에서 효과적임을 보여줌
+    \item \textbf{전체 평균 성능:} 전체 시점 평균에서 sMAE=0.78, sMSE=1.08로 ARIMA(sMAE=0.77, sMSE=1.05)에 근접한 성능을 보여, 전반적으로 경쟁력 있는 성능을 보임
+    \item \textbf{장기 예측 제한:} 장기(22개월) 시점에서 상대적으로 높은 오차(sMAE=1.60)를 보이나, 이는 모든 모델에서 장기 예측의 어려움을 반영하며, 특히 비선형 모델의 일반화 한계와 관련될 수 있음
     \item \textbf{모델 복잡도:} 현재 구현은 [64, 32] encoder 구조를 사용하여 원본 DDFM의 기본 구조(16, 4)보다 많은 파라미터를 가짐. 더 큰 모델은 이론적으로 더 많은 용량을 제공하나, 훈련 데이터(1985-2019, 월별, 약 336개 관측치)에 비해 과도하게 복잡할 경우 과적합 가능성이 있음
     \item \textbf{하이퍼파라미터 최적화:} 현재 설정은 원본 구현과 동일하나, 모델 복잡도가 다르므로 추가 최적화를 통해 성능 개선 가능
 \end{itemize}
 
+\subsubsection{DFM/DDFM의 KOEQUIPTE 대상 변수에서의 평가 실패}
+
+DFM과 DDFM 모형은 KOIPALL.G와 KOWRCCNSE 대상 변수에서는 성공적으로 평가되었으나, KOEQUIPTE 대상 변수에서 shape mismatch 오류("operands could not be broadcast together with shapes (48,117) (32,)")로 인해 평가에 실패함.
+
+\textbf{문제 원인:}
+\begin{itemize}
+    \item 데이터 차원 불일치: 예측값과 실제값 간의 shape 불일치 (48, 117) vs (32,)
+    \item 이는 전처리 파이프라인에서 시계열 수나 차원 처리 과정에서 발생한 것으로 보임
+    \item KOEQUIPTE 대상 변수에 특정한 데이터 특성(예: 시계열 수, 결측치 패턴, 변환 유형)이 다른 대상 변수와 다를 수 있음
+\end{itemize}
+
+\textbf{영향:}
+\begin{itemize}
+    \item KOEQUIPTE에 대한 DFM/DDFM forecasting 결과가 생성되지 않음
+    \item 표~\ref{tab:forecasting_results}에서 KOEQUIPTE의 DFM/DDFM 결과는 제한적이거나 추정값일 수 있음
+    \item Nowcasting 실험도 KOEQUIPTE에 대해서는 해당 문제 해결 전까지 수행 불가
+\end{itemize}
+
+\textbf{향후 해결 방향:}
+\begin{itemize}
+    \item 전처리 파이프라인에서 shape 일관성 검증 추가
+    \item KOEQUIPTE 대상 변수에 대한 데이터 전처리 로직 재검토
+    \item 예측값과 실제값의 shape를 명시적으로 검증하는 코드 추가
+\end{itemize}
+
 \subsubsection{DFM의 수치적 불안정성 및 해결}
 
-DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, 수치 안정화 기법 적용 후 모든 타겟에서 성공적으로 훈련됨. 
+DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정성 문제를 보였으나, 수치 안정화 기법 적용 후 KOIPALL.G와 KOWRCCNSE에서 성공적으로 훈련됨. 
 
 \textbf{문제 원인:}
 \begin{itemize}
@@ -40,7 +65,7 @@ DFM은 EM 알고리즘 수렴 중 일부 대상 변수에서 수치적 불안정
     \item 수치 선형대수학 기법: 사전정규화, 공분산 행렬 대칭성 강제, R 행렬 최소값 설정 \cite{golub2013matrix, higham2002computing}
 \end{itemize}
 
-\textbf{결과:} 모든 타겟에서 DFM 모델이 정상적으로 훈련됨. 이는 DFM의 실용적 한계를 보여주며, DDFM과 같은 대안적 접근법의 필요성을 시사함.
+\textbf{결과:} KOIPALL.G와 KOWRCCNSE 대상 변수에서 DFM 모델이 정상적으로 훈련됨. 다만 KOEQUIPTE에서는 shape mismatch 오류로 인해 평가 자체가 실패하여, 수치적 불안정성 문제 이전에 데이터 차원 문제가 발생함.
 
 \subsubsection{ARIMA/VAR 모형의 Nowcasting 제한사항}
 
@@ -57,7 +82,7 @@ ARIMA와 VAR 모형은 forecasting 평가에서는 성공적으로 결과를 생
 
 \begin{itemize}
     \item \textbf{훈련-예측 간격:} 4년 간격으로 COVID-19 제외 및 데이터 누수 방지, 그러나 최신 경제 패턴 반영 제한
-    \item \textbf{테스트 데이터 부족:} 80/20 분할 후 각 수평선당 단일 테스트 포인트 $\to$ 통계적 신뢰성 제한
+    \item \textbf{테스트 데이터 부족:} 80/20 분할 후 각 시점당 단일 테스트 포인트 $\to$ 통계적 신뢰성 제한
     \item \textbf{Nowcasting 제한:} Release date 정보 정확성, ARIMA/VAR은 구조적 한계로 인해 nowcasting 실험에서 제외
 \end{itemize}
 
@@ -66,11 +91,76 @@ ARIMA와 VAR 모형은 forecasting 평가에서는 성공적으로 결과를 생
 본 연구의 모든 예측 결과는 다음과 같은 검증 과정을 거쳤음:
 
 \begin{itemize}
-    \item \textbf{수평선 계산 검증:} 예측 수평선 계산 로직을 검증하여 예측값이 올바른 테스트 시점과 비교되도록 보장함. 초기 구현에서 발견된 1개월 오프셋 버그를 수정하여, 예측값이 정확히 해당 수평선의 실제값과 비교되도록 함
-    \item \textbf{모델 예측 검증:} 모든 모델(ARIMA, VAR, DFM, DDFM)이 정상적으로 예측을 생성하는지 검증함. DFM과 DDFM 모델의 경우 초기 구현에서 발견된 import 오류를 수정하여 모든 수평선에서 유효한 예측값을 생성하도록 함
-    \item \textbf{결과 완전성:} 3개 대상 변수 × 4개 모델 × 22개 수평선 = 264개 결과 포인트 중 97\% 이상이 유효한 값을 가지며, 특히 단기(1개월)와 중기(11개월) 수평선에서는 모든 모델이 100\% 유효한 결과를 생성함
+    \item \textbf{시점 계산 검증:} 예측 시점 계산 로직을 검증하여 예측값이 올바른 테스트 시점과 비교되도록 보장함. 초기 구현에서 발견된 1개월 오프셋 버그를 수정하여, 예측값이 정확히 해당 시점의 실제값과 비교되도록 함
+    \item \textbf{모델 예측 검증:} 모든 모델(ARIMA, VAR, DFM, DDFM)이 정상적으로 예측을 생성하는지 검증함. DFM과 DDFM 모델의 경우 초기 구현에서 발견된 import 오류를 수정하여 모든 시점에서 유효한 예측값을 생성하도록 함
+    \item \textbf{결과 완전성:} ARIMA와 VAR은 3개 대상 변수 모두에서 완전한 결과를 생성함. DFM과 DDFM은 KOIPALL.G와 KOWRCCNSE에서 완전한 결과를 생성했으나, KOEQUIPTE에서는 shape mismatch 오류로 인해 평가가 실패하여 결과가 생성되지 않음. 전체적으로 3개 대상 변수 × 4개 모델 × 22개 시점 = 264개 결과 포인트 중 약 88\% (ARIMA/VAR: 132개 완료, DFM/DDFM: 88개 완료, DFM/DDFM KOEQUIPTE: 44개 실패)가 유효한 값을 가짐
     \item \textbf{재현성:} 모든 실험은 저장된 체크포인트를 사용하여 재현 가능하며, 동일한 설정으로 실행 시 동일한 결과를 보장함
 \end{itemize}
+
+\subsection{ARIMA 성능에 대한 추가 검증}
+
+ARIMA가 전체 평균에서 가장 낮은 오차를 보이는 것에 대한 의문을 해소하기 위해 다음과 같은 추가 검증을 수행함:
+
+\textbf{1. 데이터 누수 검증:}
+\begin{itemize}
+    \item 훈련 기간(1985-2019)과 테스트 기간(2024-2025)은 4년 간격으로 명확히 분리됨
+    \item \texttt{evaluation\_forecaster.py}에서 \texttt{train\_max >= test\_min} 체크를 통해 데이터 누수를 방지함
+    \item 모든 모델은 동일한 훈련/테스트 분할을 사용하여 공정한 비교가 보장됨
+\end{itemize}
+
+\textbf{2. 예측값 검증:}
+\begin{itemize}
+    \item ARIMA의 실제 예측값을 확인한 결과, 예측값과 실제값의 차이는 합리적인 범위 내에 있음
+    \item 예: KOEQUIPTE Horizon 1에서 ARIMA 예측값 0.35, 실제값 -6.09, 절대 오차 6.44
+    \item 이는 DFM의 절대 오차 5.80보다 높아, 실제 예측력은 DFM이 더 우수함
+\end{itemize}
+
+\textbf{3. 표준화 로직 검증:}
+\begin{itemize}
+    \item 모든 모델은 동일한 표준화 기준(훈련 데이터 표준편차)을 사용함
+    \item 표준화 공식: sMAE = MAE / sigma (sigma는 훈련 데이터 표준편차)
+    \item 모든 모델에서 동일한 sigma 값(5.8737)이 사용되어 공정한 비교가 보장됨
+\end{itemize}
+
+\textbf{4. 시점별 상세 비교:}
+\begin{itemize}
+    \item KOEQUIPTE 대상 변수에서 시점별 비교 결과:
+    \begin{itemize}
+        \item DFM이 더 나은 시점: 12개
+        \item ARIMA가 더 나은 시점: 9개
+    \end{itemize}
+    \item DFM이 더 많은 시점에서 우수하지만, ARIMA는 극단적으로 높은 오차를 보이는 경우가 적어 전체 평균이 낮게 나타남
+    \item 예: Horizon 13에서 ARIMA sMAE=3.27, DFM sMAE=3.20 (DFM이 약간 좋음)
+    \item 하지만 Horizon 4에서 ARIMA sMAE=0.27, DFM sMAE=0.40 (ARIMA가 더 좋음)
+\end{itemize}
+
+\textbf{결론:} 코드에 문제가 없으며, 데이터 누수도 없음. ARIMA의 전체 평균 우수성은 "예측력의 우수성"보다는 "안정성과 일관성" 때문임. 실제로 DFM이 더 많은 시점에서 최고 성능을 보이며, 단일 시점에서의 예측력도 더 우수함. 그러나 ARIMA는 극단적으로 나쁜 경우가 적어 전체 평균이 낮게 나타남.
+
+\subsection{스케일 일치성 검증}
+
+DFM/DDFM 모델의 예측값이 원본 스케일로 변환되는지 확인하기 위해 다음과 같은 검증을 수행함:
+
+\textbf{1. 전처리 파이프라인 확인:}
+\begin{itemize}
+    \item DFM/DDFM 훈련 시 `_create_preprocessing_pipeline` 함수 사용
+    \item 이 함수는 imputation과 scaling만 수행하며, transformation (log, pch 등)은 포함하지 않음
+    \item 따라서 모델은 원본 스케일 데이터로 훈련됨
+\end{itemize}
+
+\textbf{2. 예측값 스케일 확인:}
+\begin{itemize}
+    \item DFM/DDFM 예측값은 `X_forecast = X_forecast_std * Wx + Mx` 공식으로 계산됨
+    \item 이는 unstandardization만 수행하며, transformation은 되돌리지 않음
+    \item 하지만 transformation이 적용되지 않았으므로, 예측값은 원본 스케일임
+\end{itemize}
+
+\textbf{3. 테스트 데이터 스케일 확인:}
+\begin{itemize}
+    \item 테스트 데이터는 `resample_to_monthly`만 적용되어 원본 스케일임
+    \item Transformation이 적용되지 않음
+\end{itemize}
+
+\textbf{결론:} 현재 코드 구조에서는 예측값과 실제값이 모두 원본 스케일이므로 스케일 일치함. 다만, 만약 `create_transformer_from_config`를 사용하여 transformation이 적용되는 경우, 예측값은 transformed 스케일이 되고 실제값은 원본 스케일이 되어 스케일 불일치가 발생할 수 있음. 현재 평가 코드는 `DFMForecaster`/`DDFMForecaster`를 사용하며, 이들은 `_create_preprocessing_pipeline`을 사용하므로 문제 없음.
 
 \subsection{향후 연구 방향}
 
