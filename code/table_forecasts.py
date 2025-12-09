@@ -94,14 +94,14 @@ def generate_forecasting_results_table(
     }).reset_index()
     
     # Pivot for table format
-    models = ['VAR', 'DFM', 'DDFM']  # Skip ARIMA (failed)
+    models = ['ARIMA', 'VAR', 'DFM', 'DDFM']
     targets = ['KOIPALL.G', 'KOEQUIPTE', 'KOWRCCNSE']
     
     latex = r"""\begin{table}[h]
 \centering
 \caption{Forecasting Results by Model-Target (Average across Horizons)}
 \label{tab:forecasting_results}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lcccccccccc}
 \toprule
  & \multicolumn{2}{c}{KOIPALL.G} & \multicolumn{2}{c}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
 \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
@@ -112,7 +112,8 @@ Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
     for model in models:
         row = f"{model}"
         for target in targets:
-            mask = (summary['model'] == model) & (summary['target'] == target)
+            # Case-insensitive matching for model names
+            mask = (summary['model'].str.upper() == model.upper()) & (summary['target'] == target)
             if mask.any():
                 smae = summary.loc[mask, 'sMAE'].values[0]
                 smse = summary.loc[mask, 'sMSE'].values[0]
@@ -163,7 +164,7 @@ def generate_appendix_table(
         }).reset_index()
         title = "Forecasting Results: All Targets (Average)"
     
-    models = ['VAR', 'DFM', 'DDFM']
+    models = ['ARIMA', 'VAR', 'DFM', 'DDFM']
     horizons = list(range(1, 23))
     
     latex = f"""\\begin{{table}}[h]
@@ -194,7 +195,10 @@ def generate_appendix_table(
     for h in horizons:
         row = f"{h}"
         for model in models:
-            mask = (df['model'] == model) & (df['horizon'] == h)
+            # Case-insensitive matching for model names
+            mask = (df['model'].str.upper() == model.upper()) & (df['horizon'] == h)
+            if target:
+                mask = mask & (df['target'] == target)
             if mask.any():
                 smae = df.loc[mask, 'sMAE'].values[0]
                 smse = df.loc[mask, 'sMSE'].values[0]
