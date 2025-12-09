@@ -1,0 +1,37 @@
+\begin{table}[H]
+  \centering
+  \label{tab:vintage_features}
+  \begin{tabular}{lccccc}
+    \toprule
+    Feature & $h0$ & $h1$ & $h2$ & $h3$ & $h4$ \\
+    \midrule
+    \multicolumn{6}{l}{\textbf{(t-1)월 주별 전력거래량}} \\
+    \quad pw\_tm1\_w1 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_tm1\_w2 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_tm1\_w3 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_tm1\_w4 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{(t-1)월 BSI 지수}} \\
+    \quad bsi\_tm1      & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad bsi\_tm1\_yoy & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{t월 주별 전력거래량}} \\
+    \quad pw\_t\_w1 &           & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_t\_w2 &           &            & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_t\_w3 &           &            &            & \checkmark & \checkmark \\
+    \quad pw\_t\_w4 &           &            &            &            & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{t월 주별 전력거래량 전년동월대비}} \\
+    \quad pwyoy\_t\_w1 &        & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pwyoy\_t\_w2 &        &            & \checkmark & \checkmark & \checkmark \\
+    \quad pwyoy\_t\_w3 &        &            &            & \checkmark & \checkmark \\
+    \quad pwyoy\_t\_w4 &        &            &            &            & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{t월 BSI 지수 (동행)}} \\
+    \quad bsi\_t      &         &            &            &            & \checkmark \\
+    \quad bsi\_t\_yoy &         &            &            &            & \checkmark \\
+    \bottomrule
+  \end{tabular}
+\caption{Vintage 정보세트별 사용 설명변수}
+\end{table}
+

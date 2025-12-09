@@ -1,31 +1,69 @@
 \section{서론}
 
-거시경제 변수의 정확한 예측은 정책 의사결정과 기업의 전략적 계획 수립에 중요함.
+\subsection{연구 배경}
 
-본 연구의 목적:
+거시경제 변수의 정확한 예측은 정책 의사결정과 기업의 전략적 계획 수립에 중요함. 특히 \textbf{nowcasting}는 공식 통계가 발표되기 전 현재 시점의 거시경제 변수를 실시간으로 추정하는 것으로, 정책 의사결정자와 시장 참여자에게 시의성 있는 정보를 제공함 \cite{banbura2012nowcasting}. 
+
+Nowcasting는 forecasting과 구분되는 중요한 특징을 가짐:
 \begin{itemize}
-    \item 대상 변수: 생산(KOIPALL.G), 투자(KOEQUIPTE), 소비(KOWRCCNSE)
-    \item 모형: ARIMA, VAR, DFM, DDFM (4개 모형 비교)
-    \item 평가: 22개 예측 시점(1--22개월), 표에는 모든 시점에 대한 평균값 제시
-    \item 훈련 기간: 1985--2019년 (COVID-19 시기 제외)
-    \item 예측 기간: 2024--2025년 (COVID-19 이후 구조 변화 환경 평가)
+    \item \textbf{Forecasting}: 과거 데이터를 기반으로 미래 값을 예측하는 것으로, 예측 시점이 참조 기간 이후임.
+    \item \textbf{Nowcasting}: 현재 또는 최근 과거 기간의 값을 추정하는 것으로, 공식 통계 발표 전에 실시간 데이터 흐름을 활용하여 추정함.
 \end{itemize}
 
-\textbf{주요 실험 결과 요약:} 본 연구는 3개 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대해 4개 모형(ARIMA, VAR, DFM, DDFM)을 비교 평가함. 주요 정량적 결과는 다음과 같음:
-\begin{itemize}
-    \item \textbf{KOIPALL.G:} DDFM이 가장 우수한 성능을 보임(sMAE=0.6865, 21개 시점 평균). DFM 대비 95.4\% 개선(sMAE: DFM=14.9689). VAR도 양호한 성능(sMAE=0.94). DFM은 매우 높은 오차를 보이며, 이는 월별 시계열에 분기별 집계 가정이 부적합하기 때문임.
-    \item \textbf{KOEQUIPTE:} DFM과 DDFM이 거의 동일한 성능을 보임(sMAE: DFM=1.1439, DDFM=1.1441, 평균 차이 0.000187, 21개 시점). 이는 DDFM의 비선형 인코더가 추가 이점을 제공하지 못하며, 인코더가 선형 PCA와 유사한 요인 구조를 학습했음을 시사함. VAR은 상대적으로 높은 오차(sMAE=1.37).
-    \item \textbf{KOWRCCNSE:} VAR이 가장 우수한 성능을 보임(sMAE=0.32). DDFM도 양호한 성능(sMAE=0.4961, DFM 대비 82.2\% 개선, sMAE: DFM=2.7848). DDFM은 변동성이 큰 시계열에서 DFM 대비 현저히 우수한 성능을 보임.
-    \item \textbf{ARIMA:} 세 대상 변수 모두에서 평가되었으나, KOIPALL.G와 KOEQUIPTE에서는 22개월 시점의 결과가 누락되어 21개 시점에 대한 결과만 사용 가능함. KOWRCCNSE에 대해서는 22개 시점에 대한 결과가 있음. 평균 성능은 KOWRCCNSE에서 우수함(sMAE=0.47, 22개 시점 평균).
-\end{itemize}
+Nowcasting의 핵심은 \textbf{vintage 정보세트}의 개념과 밀접히 연관됨. 각 거시경제 지표는 발표 시차(publication lag)가 다르며, 예를 들어 산업생산지수는 참조월의 다음 달 말에 발표되지만, 한국은행의 BSI/ESI/CSI 등 심리지수는 참조월 말에 발표되어 약 3--5주 선행함. 따라서 목표 월에 대해 예측을 수행하는 시점(예: 4주 전, 1주 전)에 따라 사용 가능한 정보세트가 달라지며, 이를 vintage라고 함. DFM과 DDFM은 Kalman filter를 통해 이러한 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있어 nowcasting에 특히 적합함 \cite{banbura2012nowcasting, bok2019frbny}.
 
-\textbf{실험 상태 요약:} ARIMA, VAR, DFM, DDFM 모형 모두 세 대상 변수에서 forecasting 결과가 존재함. ARIMA는 frequency 처리 및 horizon 계산 로직 수정을 통해 평가 문제가 해결되었으며, 총 66개 결과 포인트 중 64개(97\%)가 유효한 결과를 생성함. Nowcasting 백테스트는 CUDA 텐서 변환 오류로 인해 실패했으나 코드 수정이 완료되었으며, 재실행을 통해 검증이 필요함. 모델 훈련은 완료되었으며, 최신 DDFM 개선사항이 구현되어 있음.
+본 연구는 세 가지 주요 실험을 통해 거시경제 변수 예측 및 nowcasting 성능을 평가함:
+\begin{itemize}
+    \item \textbf{예측 실험:} 과거 데이터를 기반으로 미래 값을 예측하는 실험으로, ARIMA, VAR, DFM, DDFM 모형을 비교함. 대상 변수는 생산(KOIPALL.G), 투자(KOEQUIPTE), 소비(KOWRCCNSE)이며, 다단계 예측 성능을 평가함.
+    \item \textbf{Nowcasting 실험:} 공식 통계 발표 전 현재 시점 거시경제 변수를 추정하는 실험으로, DFM, DDFM, MAMBA 모형을 활용함. 각 목표 월에 대해 4주 전, 1주 전 시점에서 예측을 수행하며, 시리즈별 발표 시차를 기준으로 미발표 데이터를 마스킹하여 실제 운영 환경을 시뮬레이션함.
+    \item \textbf{고빈도 데이터 실험:} 고빈도 지표(주별 전력거래량, BSI)의 단일변수 예측에서의 활용 가능성을 탐색하는 실험으로, MIDAS-AR, ARX, XGBoost 모형을 비교함.
+\end{itemize}
+각 실험의 구체적인 설정과 결과는 실험 설계 및 결과 섹션에서 상세히 제시됨.
 
 \subsection{선행연구 검토}
 
-동적요인모형(DFM)은 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 대표적 차원축소 기법으로, 관측식과 상태식을 갖는 state-space 형태를 취함 \cite{stock2002forecasting}. 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약해 수십~수백 개 변수의 동시 예측이 가능하며, Kalman filter를 통해 누락·비동기 데이터(혼합주기, jagged edges)를 자연스럽게 처리할 수 있다는 점에서 나우캐스팅에 핵심적으로 활용됨 \cite{banbura2012nowcasting, bok2019frbny}. 뉴욕 연준 Nowcast 플랫폼 등 실무 시스템 역시 DFM 기반으로 실시간 발표 흐름에 맞춰 주별 업데이트를 수행해 예측치를 개선하는 방식을 채택한다 \cite{bok2019frbny}.
+\textbf{동적요인모형(DFM)}
+\begin{itemize}
+    \item 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 대표적 차원축소 기법으로, 관측식과 상태식을 갖는 state-space 형태를 취함 \cite{stock2002forecasting}.
+    \item 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약해 수십~수백 개 변수의 동시 예측이 가능하며, Kalman filter를 통해 누락·비동기 데이터(혼합주기, jagged edges)를 자연스럽게 처리할 수 있다는 점에서 나우캐스팅에 핵심적으로 활용됨 \cite{banbura2012nowcasting, bok2019frbny}.
+    \item 뉴욕 연준 Nowcast 플랫폼 등 실무 시스템 역시 DFM 기반으로 실시간 발표 흐름에 맞춰 주별 업데이트를 수행해 예측치를 개선하는 방식을 채택함 \cite{bok2019frbny}.
+\end{itemize}
 
-DFM 확장은 고빈도 보조지표를 포함하는 혼합주기 모델, 관측시점별 마스킹을 반영하는 실시간 필터링 기법, 그리고 비선형성을 부분적으로 허용하는 변형 등으로 발전해 왔다 \cite{banbura2012nowcasting, huber2020nowcasting}. 이러한 확장들은 공통 요인 추출의 안정성과 수치적 강건성을 유지하면서도 발표시차와 결측이 많은 실사례에서 예측력을 높이는 데 초점을 둔다.
+\textbf{심층 동적요인모형(DDFM)}
+\begin{itemize}
+    \item 오토인코더 기반 비선형 인코더를 사용해 요인 구조를 학습함으로써 전통적 DFM의 선형 가정을 완화함 \cite{andreini2020deep}.
+    \item 비선형 인코더는 고차원 거시 데이터의 복잡한 상호작용을 더 적은 요인으로 포착하면서도, 요인층 뒤에는 여전히 선형 state-space를 두어 필터링·스무딩 안정성을 유지함.
+    \item 최근 연구들은 고빈도 외생 변수와 결합하거나 비선형 활성화·정규화 기법을 도입해 예측 성능을 개선하고 있으며, 이러한 딥 요인 접근을 DFM과 병행 비교하여 실증적으로 평가함.
+\end{itemize}
 
+\textbf{혼합 데이터 샘플링(MIDAS)}
+\begin{itemize}
+    \item MIDAS(Mixed Data Sampling)는 서로 다른 주기의 데이터를 통합하여 예측하는 모형으로, 고빈도 데이터(주간, 일간)와 저빈도 데이터(월간)를 함께 활용함 \cite{ghysels2004midas}.
+    \item MIDAS 모형은 고빈도 변수를 저빈도 종속변수에 매핑하기 위해 다양한 가중치 함수(exp-Almon, Beta, Almon 등)를 사용하며, 이를 통해 주별·일별 데이터를 월별·분기별 예측에 활용할 수 있음.
+    \item Clements \& Galvão (2008)는 MIDAS-AR 모형의 추정 절차를 제안하여 자기회귀 성분과 고빈도 변수의 효과를 동시에 추정할 수 있도록 함 \cite{clements2008macroeconomic}.
+    \item 고빈도 지표(주별 전력거래량, BSI)의 단일변수 예측에서의 활용 가능성을 탐색하기 위해 MIDAS-AR 모형을 수행함.
+\end{itemize}
 
-심층 동적요인모형(DDFM)은 오토인코더 기반 비선형 인코더를 사용해 요인 구조를 학습함으로써 전통적 DFM의 선형 가정을 완화한다 \cite{andreini2020deep}. 비선형 인코더는 고차원 거시 데이터의 복잡한 상호작용을 더 적은 요인으로 포착하면서도, 요인층 뒤에는 여전히 선형 state-space(예: VAR(1))를 두어 필터링·스무딩 안정성을 유지한다. 결과적으로 DDFM은 (1) 대규모/고빈도 데이터에서도 표현력을 확보하고, (2) Kalman 필터를 통한 실시간 업데이트와 관측 마스킹 처리가 가능하며, (3) 선형 DFM 대비 중·단기 구간에서 비선형 패턴을 더 잘 포착할 잠재력을 갖는다 \cite{andreini2020deep}. 최근 연구들은 고빈도 외생 변수와 결합하거나 비선형 활성화·정규화 기법을 도입해 예측 성능을 개선하고 있으며, 본 연구도 이러한 딥 요인 접근을 DFM과 병행 비교하여 실증적으로 평가한다.
+\subsection{이론적 배경}
+
+\subsubsection{동적요인모형}
+\begin{itemize}
+    \item \textbf{요인모형:} 많은 시계열에서 공통 요인을 추출하여 소수의 요인으로 설명하는 차원축소 기법 \cite{stock2002forecasting}.
+    \item \textbf{동적요인모형(DFM):} 관측식과 상태식을 갖는 state-space 형태로, 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약함 \cite{stock2002forecasting, banbura2012nowcasting}.
+    \item \textbf{칼만필터:} 실시간 데이터 흐름을 재귀적으로 처리하여 각 시점의 예측을 업데이트하며, 비동기적 데이터 발표와 결측치를 자연스럽게 처리함 \cite{banbura2012nowcasting, bok2019frbny}.
+    \item \textbf{EM 알고리즘:} state-space 모형의 파라미터 추정을 위한 최대우도 추정 방법 \cite{bok2019frbny}.
+    \item \textbf{VAE (Variational Autoencoder):} 오토인코더 기반 비선형 인코더를 사용하여 요인 구조를 학습하는 딥러닝 접근법 \cite{andreini2020deep}.
+\end{itemize}
+
+\subsubsection{SSM}
+\begin{itemize}
+    \item \textbf{상태 공간 모델(State Space Model):} 관측 변수와 은닉 상태 변수를 분리하여 모델링하는 프레임워크로, 시계열 데이터의 동적 특성을 포착함.
+    \item \textbf{MAMBA:} 선택적 상태 공간 모델(Selective State Space Model)을 기반으로 선형 시간 복잡도로 장기 의존성을 효과적으로 포착하는 최신 딥러닝 아키텍처 \cite{gu2024mamba}. 비선형 선택 메커니즘을 통해 입력에 따라 상태 전이를 동적으로 조정하여 시계열 데이터의 복잡한 패턴을 학습함.
+\end{itemize}
+
+\subsubsection{혼합주기}
+\begin{itemize}
+    \item \textbf{혼합주기 데이터 처리:} 서로 다른 주기(주간, 월간, 분기)의 데이터를 통합하여 예측하는 방법으로, tent kernel, MIDAS 가중치 함수 등을 활용함 \cite{mariano2003new, ghysels2004midas}.
+    \item \textbf{Mariano \& Murasawa (2003):} 주간/월간/분기 데이터를 state-space 모형에서 통합 처리하는 방법론을 제안함 \cite{mariano2003new}.
+    \item \textbf{MIDAS:} 고빈도 데이터를 저빈도 종속변수에 매핑하기 위한 가중치 함수를 사용하는 혼합 데이터 샘플링 방법 \cite{ghysels2004midas, clements2008macroeconomic}.
+\end{itemize}

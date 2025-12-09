@@ -1,0 +1,25 @@
+\section{결론}
+\label{sec:conclusion}
+
+본 연구는 세 가지 주요 한국 거시경제 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 예측 및 nowcasting을 위해 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)과 MAMBA 모형의 성능을 비교 평가함.
+
+주요 연구 결과는 다음과 같음:
+
+\begin{itemize}
+    \item \textbf{모형별 성능 특성:} 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보이며, 단일 모형이 모든 대상 변수에서 최고 성능을 보이지는 않음.
+    \item \textbf{KOIPALL.G:} DDFM이 가장 우수한 성능을 보임(sMAE=0.6865, 21개 시점 평균). DFM 대비 95.4\% 개선(sMAE: DFM=14.9689). VAR도 양호한 성능(sMAE=0.94).
+    \item \textbf{KOEQUIPTE:} DFM과 DDFM이 거의 동일한 성능을 보임(sMAE: DFM=1.1439, DDFM=1.1441, 평균 차이 0.000187, 21개 시점). 이는 DDFM의 비선형 인코더가 추가 이점을 제공하지 못하며, 인코더가 선형 PCA와 유사한 요인 구조를 학습했음을 시사함.
+    \item \textbf{KOWRCCNSE:} VAR이 가장 우수한 성능을 보임(sMAE=0.32). DDFM도 양호한 성능(sMAE=0.4961, DFM 대비 82.2\% 개선, sMAE: DFM=2.7848).
+\end{itemize}
+
+본 연구의 주요 기여는 다음과 같음:
+
+\begin{itemize}
+    \item 변동성이 큰 시계열(KOIPALL.G, KOWRCCNSE)에서 DDFM이 DFM 대비 우수한 성능을 보임을 실증적으로 확인함.
+    \item 선형 관계가 강한 시계열(KOEQUIPTE)에서는 DDFM과 DFM이 유사한 성능을 보이며, 비선형 인코더의 이점이 제한적임을 확인함.
+    \item DFM과 DDFM은 release date 마스킹을 처리할 수 있어 실제 운영 환경에서의 nowcasting에 적합함을 확인함.
+    \item 대상 변수의 특성에 따라 적절한 모형을 선택하는 것이 중요함을 확인함.
+\end{itemize}
+
+향후 연구 방향으로는 모형 개선(DDFM의 KOEQUIPTE 성능 개선을 위한 인코더 아키텍처 최적화, Robust Kalman filter, adaptive state space dimension), 실험 설계 개선(롤링 윈도우 평가, 교차 검증), Release date 마스킹 개선, 추가 모형 비교 등이 있음.
+

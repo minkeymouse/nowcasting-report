@@ -14,6 +14,7 @@
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{multirow}       % multirow cells in tables
 \usepackage{longtable}     % multi-page tables
+\usepackage{subcaption}    % subfigures and subtables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
@@ -23,10 +24,10 @@
 \usepackage{setspace}       % Line spacing control
 \setstretch{1.6}             % 1.6 line spacing (wider spacing like reference images)
 
-% English section numbering: 1, a, 1, bullet
-\renewcommand{\thesection}{\arabic{section}.}
-\renewcommand{\thesubsection}{\alph{subsection}.}
-\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
+% Standard section numbering: 1, 1.1, 1.1.1
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 
 % Adjust section spacing
 \makeatletter

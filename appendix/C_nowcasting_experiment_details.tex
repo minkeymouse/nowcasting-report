@@ -1,0 +1,105 @@
+\subsection*{C. 나우캐스팅 실험 세부사항}
+
+본 부록에서는 나우캐스팅 실험의 세부사항을 제시함.
+
+\subsubsection*{혼합주기 DFM 모형의 어려움}
+
+주/월 데이터 혼합주기 DFM 모형은 상태변수 개수가 증가하지만, 주간 데이터를 전월대비 증가율로 변환하고 월간 데이터를 주간 상태변수의 4주 평균값으로 처리함으로써 모형 복잡성을 관리함. 주간 데이터와 월간 데이터를 함께 활용하는 혼합 주기 모형을 사용하며, DFM의 기본 frequency를 주간('w')으로 설정함.
+
+따라서 공동요인 5개, 잔차항의 자기회귀, 5개 주간 지표, 30개 월간 지표, 6개 분기 데이터로 구성된 DFM 모형을 가정하면, $20 \times 5 + (5 + 4 \times 30 + 20 \times 6) = 345$개의 상태변수가 필요하여 모형 추정이 어려워짐.
+
+\subsubsection*{Big 데이터 DFM 모형 구성}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+구분 & 변수 & 개수 \\
+\midrule
+거시 & 실질 GDP, 소비, 민간총투자, 건설투자, 설비투자, 정부지출 & 8 \\
+투자 & 설비투자, 기계수주액, 건설기성액 & 7 \\
+산업생산 & 산업생산(총계, 주요 산업, 서비스업), 가동률, 출하/재고지수 & 23 \\
+소비 & 소매판매, 신용카드매출액 & 6 \\
+수출입 & 수출금액, 수입금액, 품목별 수출입 금액 & 7 \\
+노동 & 실업률, 고용자수, 근로시간 & 7 \\
+물가 & 소비자 물가, 생산자 물가, 수출입 물가, 원자재 가격 & 8 \\
+서베이 & 기업경기조사, 소비자동향조사, 기업경기동향조사(한경협) & 35 \\
+금융 & 가계/기업대출 잔액, 금리, 단기금리, 신용스프레드, 주가, 환율 & 9 \\
+\midrule
+합계 & & 110 \\
+\bottomrule
+\end{tabular}
+\caption{Big 데이터 DFM 모형 변수 구성 (110개)}
+\label{tab:big_data_variables}
+\end{table}
+
+
+\subsubsection*{생산 부문 모형 변수 구성}
+
+\input{tables/tab_production_variables}
+
+\subsubsection*{투자 부문 모형 변수 구성}
+
+\input{tables/tab_investment_variables}
+
+\subsubsection*{Nowcasting 시각화 결과}
+
+본 절에서는 생산 모형(전산업생산지수)과 투자 모형(설비투자지수)에 대한 DFM과 MAMBA 모형의 nowcasting 결과를 시각화함. 각 모형별 예측값과 실제값을 비교하여 모형의 성능을 평가함.
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[b]{0.8\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/nowcast/production_nowcast_dfm.png}
+\caption{생산 모형 DFM}
+\label{fig:appendix_production_dfm}
+\end{subfigure}
+
+\vspace{0.3cm}
+
+\begin{subfigure}[b]{0.8\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/nowcast/production_nowcast_mamba.png}
+\caption{생산 모형 MAMBA}
+\label{fig:appendix_production_mamba}
+\end{subfigure}
+
+\caption{생산 모형(전산업생산지수)의 DFM과 MAMBA nowcasting 결과 비교. 각 플롯은 모형별 예측값과 실제값을 시간 순서로 비교한 그래프임.}
+\label{fig:appendix_production_comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[b]{0.8\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/nowcast/investment_nowcast_dfm.png}
+\caption{투자 모형 DFM}
+\label{fig:appendix_investment_dfm}
+\end{subfigure}
+
+\vspace{0.3cm}
+
+\begin{subfigure}[b]{0.8\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/nowcast/investment_nowcast_mamba.png}
+\caption{투자 모형 MAMBA}
+\label{fig:appendix_investment_mamba}
+\end{subfigure}
+
+\caption{투자 모형(설비투자지수)의 DFM과 MAMBA nowcasting 결과 비교. 각 플롯은 모형별 예측값과 실제값을 시간 순서로 비교한 그래프임.}
+\label{fig:appendix_investment_comparison}
+\end{figure}
+
+\textbf{생산 모형(전산업생산지수) 결과}
+\begin{itemize}
+    \item \textbf{DFM 모형:} 그림~\ref{fig:appendix_production_dfm}에서 DFM 모형의 nowcasting 결과를 확인할 수 있음. 모형은 전반적으로 실제값을 잘 추적하며, 발표 시점에 가까워질수록 예측 정확도가 향상됨.
+    \item \textbf{MAMBA 모형:} 그림~\ref{fig:appendix_production_mamba}에서 MAMBA 모형의 nowcasting 결과를 확인할 수 있음. MAMBA 모형은 DFM과 유사한 성능을 보이며, 월별 전망값 변동이 DFM 모형보다 작게 나타남.
+\end{itemize}
+
+\textbf{투자 모형(설비투자지수) 결과}
+\begin{itemize}
+    \item \textbf{DFM 모형:} 그림~\ref{fig:appendix_investment_dfm}에서 DFM 모형의 nowcasting 결과를 확인할 수 있음. 투자 지수는 생산 지수에 비해 변동성이 크며, 모형의 예측이 일부 구간에서 실제값과 차이를 보임.
+    \item \textbf{MAMBA 모형:} 그림~\ref{fig:appendix_investment_mamba}에서 MAMBA 모형의 nowcasting 결과를 확인할 수 있음. MAMBA 모형의 성과가 DFM 대비 소폭 부진하였으나, 전반적으로 유사한 패턴을 보임.
+\end{itemize}
+

@@ -37,11 +37,11 @@ def generate_dataset_params_table(
         output_path = TABLES_DIR / "tab_dataset_params.tex"
     
     # Define dataset parameters (from experiment configs)
-    # n_series: total series count, n_weekly_agg: weekly variables aggregated to monthly
+    # n_series: total series count, n_weekly_series: weekly frequency series count
     params = {
-        'KOIPALL.G (생산)': {'n_series': 45, 'n_weekly_agg': 7, 'train_period': '1985-2019', 'forecast_period': '2024-2025'},
-        'KOEQUIPTE (투자)': {'n_series': 41, 'n_weekly_agg': 9, 'train_period': '1985-2019', 'forecast_period': '2024-2025'},
-        'KOWRCCNSE (소비)': {'n_series': 47, 'n_weekly_agg': 8, 'train_period': '1985-2019', 'forecast_period': '2024-2025'},
+        'KOIPALL.G (생산)': {'n_series': 45, 'n_weekly_series': 7, 'train_period': '1985-2019', 'forecast_period': '2024-2025'},
+        'KOEQUIPTE (투자)': {'n_series': 41, 'n_weekly_series': 9, 'train_period': '1985-2019', 'forecast_period': '2024-2025'},
+        'KOWRCCNSE (소비)': {'n_series': 47, 'n_weekly_series': 8, 'train_period': '1985-2019', 'forecast_period': '2024-2025'},
     }
     
     latex = r"""\begin{table}[h]
@@ -50,17 +50,17 @@ def generate_dataset_params_table(
 \label{tab:dataset_params}
 \begin{tabular}{lcccc}
 \toprule
-Target Variable & Series Count & Weekly Agg. & Training Period & Forecast Period \\
+Target Variable & Series Count & Weekly Series & Training Period & Forecast Period \\
 \midrule
 """
     
     for target, p in params.items():
-        latex += f"{target} & {p['n_series']} & {p['n_weekly_agg']} & {p['train_period']} & {p['forecast_period']} \\\\\n"
+        latex += f"{target} & {p['n_series']} & {p['n_weekly_series']} & {p['train_period']} & {p['forecast_period']} \\\\\n"
     
     latex += r"""\bottomrule
 \end{tabular}
 \vspace{0.3em}
-\small\textit{Note: Weekly Agg. = 월말 평균으로 집계된 주간 변수 수 (\_agg 접미사)}
+\small\textit{Note: Weekly Series = 주간 frequency를 가진 시리즈 수 (tent kernel로 처리됨)}
 \end{table}
 """
     

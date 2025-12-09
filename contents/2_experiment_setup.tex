@@ -1,0 +1,144 @@
+\section{실험 설계}
+\label{sec:experiment_setup}
+
+\subsection{데이터}
+
+\textbf{예측 실험 데이터}
+\begin{itemize}
+    \item \textbf{대상 변수:} 생산(전산업생산지수: KOIPALL.G), 투자(설비투자지수: KOEQUIPTE), 소비(도소매판매액: KOWRCCNSE) 3개 변수
+    \item \textbf{생산 부문 모형:} 총 41개 변수로 구성됨. 고용, 산업생산, 서베이(기업경기, 소비자 동향) 등 주요 월간 지수와 주간 데이터를 포함함. 기업경기동향 조사는 해당월 중 발표되어 속보성이 높으며, 주가지수 등 금융변수, 뉴스심리지수, 미국 경제정책불확실성 지수를 포함함. 상세 변수 구성은 부록의 표~\ref{tab:production_variables}를 참조함.
+    \item \textbf{투자 부문 모형:} 총 41개 변수로 구성됨. 고용, 설비투자, 건설 등 주요 지표와 속보성 높은 서베이(기업경기, 소비자 동향) 등 주요 월간 지수와 주간 데이터 9개를 포함함. 고빈도 데이터는 주가지수 등 금융변수, 뉴스심리지수, 미국 경제정책불확실성 지수 및 투자관련 섹터 주가지수를 포함함. 상세 변수 구성은 부록의 표~\ref{tab:investment_variables}를 참조함.
+    \item \textbf{모형:} ARIMA, VAR, DFM, DDFM 4개 모형을 비교함
+\end{itemize}
+
+\textbf{Nowcasting 실험 데이터}
+\begin{itemize}
+    \item \textbf{대상 변수:} 생산(전산업생산지수: KOIPALL.G), 투자(설비투자지수: KOEQUIPTE) 2개 변수
+    \item \textbf{데이터 구성:} 생산 및 투자 부문 모형의 변수 구성을 활용하며, 주간 및 월간 데이터를 혼합하여 사용함. 혼합 주기 처리 방법은 동적요인모형 섹션(2.2.1)을 참조함.
+    \item \textbf{모형:} DFM, DDFM, MAMBA 모형을 활용함
+    \item \textbf{평가 시점:} 각 목표 월에 대해 4주 전, 1주 전 시점에서 예측을 수행하며, 시리즈별 발표 시차(publication lag)를 기준으로 미발표 데이터를 마스킹함
+\end{itemize}
+
+\textbf{고빈도 데이터 실험 데이터}
+\begin{itemize}
+    \item \textbf{종속변수:} 월별 전산업생산지수(계절조정)의 전월대비 성장률 및 전년동월비
+    \item \textbf{설명변수:} 주별 전력거래량(로그--STL 계절조정 후 주간 성장률), 월별 BSI(수준 및 전년동월비)
+    \item \textbf{표본 분할:} Train(2002--2020년), Validation(2021--2022년), Test(2023--2024년)
+    \item \textbf{Vintage:} h0(전월 말), h1--h4(당월 1--4주)
+    \item \textbf{모형:} MIDAS-AR(1), AR(1) 벤치마크, 선형 ARX, XGBoost 기반 비선형 모형을 비교함
+\end{itemize}
+
+\textbf{데이터 전처리}
+\begin{itemize}
+    \item \textbf{변환:} 시계열별 변환 유형('lin', 'log', 'chg' 등) 적용
+    \item \textbf{결측치 처리:} forward-fill $\to$ backward-fill $\to$ naive forecaster 순차 적용
+    \item \textbf{표준화:}
+    \begin{itemize}
+        \item ARIMA/VAR: 원본 스케일 유지
+        \item DFM/DDFM: StandardScaler 적용 (평균 0, 표준편차 1)
+    \end{itemize}
+\end{itemize}
+
+\textbf{추가 데이터셋(실험 미활용)}
+\begin{itemize}
+    \item 산업생산지수 nowcasting을 위한 고빈도 공공데이터 조사를 수행하였으며, 실험에 직접 활용하지 않은 추가 데이터 소스들을 정리함. 상세 내용은 부록 A를 참조함.
+    \item 주요 후보: 한국전력거래소 전력수급현황 API, 한국은행 뉴스심리지수, NLIC 주별 해상운임지수, 한국은행 BSI/ESI/CSI/CBSI, 항만 물동량 통계 등
+\end{itemize}
+
+\subsection{예측 모형}
+
+\subsubsection{동적요인모형}
+\begin{itemize}
+    \item 동적요인모형(DFM)은 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 대표적 차원축소 기법으로, 관측식과 상태식을 갖는 state-space 형태를 취함 \cite{stock2002forecasting}. 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약해 수십~수백 개 변수의 동시 예측이 가능하며, Kalman filter를 통해 누락·비동기 데이터(혼합주기, jagged edges)를 자연스럽게 처리할 수 있다는 점에서 나우캐스팅에 핵심적으로 활용됨 \cite{banbura2012nowcasting, bok2019frbny}.
+    \item DFM의 기본 구조는 다음과 같음:
+    \begin{align}
+    y_t &= \lambda_i' f_t + e_t \\
+    f_t &= A_1 f_{t-1} + A_2 f_{t-2} + A_3 f_{t-3} + A_4 f_{t-4} + u_t
+    \end{align}
+    여기서 $y_t$는 관측 데이터, $f_t$는 은닉 요인(latent factors) 벡터임.
+    \item DFM은 state-space 형태로 표현되며, measurement equation과 transition equation으로 구성됨. EM 알고리즘으로 파라미터 추정, 칼만 필터와 스무더로 요인 추정 \cite{bok2019frbny}. 칼만 필터는 실시간 데이터 흐름을 재귀적으로 처리하여 각 시점의 예측을 업데이트하며, 데이터의 품질과 시의성을 기반으로 가중치를 부여함. 이는 nowcasting에 특히 유용한 특성으로, 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있음 \cite{banbura2012nowcasting}.
+    \item DFM 모형에서 요인 식별을 위한 factor loading 제약 가정이 nowcasting 성과를 저해하는 요소로 추정됨에 따라, 요인식별 가정 없이 DFM 모형을 추정하고 nowcasting 성과를 측정함. 요인 개수는 Ahn \& Horenstein (2013)의 Eigenvalue ratio 테스트 등을 참고하여 설정함 \cite{ahn2013eigenvalue}.
+    \item \textbf{주/월 혼합 주기 처리:} 주간 데이터와 월간 데이터를 함께 활용하는 혼합 주기 모형을 사용함. DFM의 기본 frequency를 주간('w')으로 설정하고, dfm-python의 mixed\_freq=True 옵션을 통해 tent kernel이 자동으로 적용됨. 혼합주기 변환은 Mariano \& Murasawa (2003) 방법을 따름 \cite{mariano2003new}.
+    \begin{itemize}
+        \item 월간 지수의 전월대비 상승률은 주간지수의 전월비 상승률 4개의 평균값으로 표현됨:
+        \begin{align}
+        y_t^m &= \frac{1}{4} y_t + \frac{1}{4} y_{t-1} + \frac{1}{4} y_{t-2} + \frac{1}{4} y_{t-3} = \frac{1}{4}(I + L + L^2 + L^3)y_t \\
+        \Delta y_t^m &= y_t^m - y_{t-4}^m = \frac{1}{4}(I + L + L^2 + L^3)(y_t - L^4 y_t) \\
+        &= \frac{1}{4} \Delta^4 y_t + \frac{1}{4} \Delta^4 y_{t-1} + \frac{1}{4} \Delta^4 y_{t-2} + \frac{1}{4} \Delta^4 y_{t-3}
+        \end{align}
+        여기서 $y_t^m$는 월간 수준값, $\Delta y_t^m$는 월간 전월대비 상승률, $y_t$는 주간 수준값, $\Delta^4 y_t$는 주간 전월비 상승률, $L$은 시차 연산자임.
+        \item 혼합주기 모형에서 분기 성장률은 Mariano \& Murasawa (2003)에 따라 시차(lag) 4개 월간 성장률의 가중합으로 표현됨 \cite{mariano2003new}:
+        \begin{align}
+        y_t^q &= \frac{1}{3} y_t + \frac{1}{3} y_{t-1} + \frac{1}{3} y_{t-2} = \frac{1}{3}(I + L + L^2)y_t \\
+        \Delta y_t^q &= y_t^q - y_{t-3}^q = \frac{1}{3}(I + L + L^2)(y_t - L^3 y_t) \\
+        &= \frac{1}{3}(I + L + L^2)(\Delta y_t + \Delta y_{t-1} + \Delta y_{t-2}) \\
+        &= \frac{1}{3} \Delta y_t + \frac{2}{3} \Delta y_{t-1} + \frac{3}{3} \Delta y_{t-2} + \frac{2}{3} \Delta y_{t-3} + \frac{1}{3} \Delta y_{t-4}
+        \end{align}
+        여기서 $y_t^q$는 분기 수준값, $\Delta y_t^q$는 분기 성장률, $y_t$는 월간 수준값, $\Delta y_t$는 월간 성장률, $L$은 시차 연산자임.
+        \item 분기지수의 전분기 대비 성장률은 주간지수 상승률 20개 시차의 가중 평균값으로 표현됨:
+        \begin{align}
+        \Delta y_t^q &= \frac{1}{3}(I + L + L^2)(\Delta y_t^m + \Delta y_{t-1}^m + \Delta y_{t-2}^m) \\
+        &= \frac{1}{3} \Delta y_t^m + \frac{2}{3} \Delta y_{t-1}^m + \frac{3}{3} \Delta y_{t-2}^m + \frac{2}{3} \Delta y_{t-3}^m + \frac{1}{3} \Delta y_{t-4}^m \\
+        &= \frac{1}{12}(\Delta^4 y_t + \Delta^4 y_{t-1} + \Delta^4 y_{t-2} + \Delta^4 y_{t-3}) + \frac{1}{12}(\Delta^4 y_{t-4} + \cdots) \\
+        &\quad + \frac{3}{12}(\Delta^4 y_{t-8} + \cdots) + \frac{2}{12}(\Delta^4 y_{t-12} + \cdots) + \frac{1}{12}(\Delta^4 y_{t-16} + \cdots + \Delta^4 y_{t-19})
+        \end{align}
+        따라서 공동요인 5개, 잔차항의 자기회귀, 5개 주간 지표, 30개 월간 지표, 6개 분기 데이터로 구성된 DFM 모형을 가정하면, $20 \times 5 + (5 + 4 \times 30 + 20 \times 6) = 345$개의 상태변수가 필요하여 모형 추정이 어려워짐. 주간과 월간 데이터만을 활용하여 모형 복잡성을 관리함.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{DDFM}
+\begin{itemize}
+    \item 심층 동적요인모형(DDFM)은 오토인코더 기반 비선형 인코더를 사용해 요인 구조를 학습함으로써 전통적 DFM의 선형 가정을 완화한다 \cite{andreini2020deep}. 비선형 인코더는 고차원 거시 데이터의 복잡한 상호작용을 더 적은 요인으로 포착하면서도, 요인층 뒤에는 여전히 선형 state-space(예: VAR(1))를 두어 필터링·스무딩 안정성을 유지한다.
+    \item DDFM은 인코더를 통해 관측 변수에서 잠재 요인을 추출하고, 디코더를 통해 요인에서 관측 변수로 재구성함. 이 과정에서 선형 DFM의 제약을 완화하여 더 복잡한 요인 구조를 학습할 수 있음. 대규모 데이터셋에서도 효과적으로 작동하며, 전통적인 DFM의 계산적 한계를 극복함.
+    \item DDFM의 성능 개선을 위해 대상 변수별 인코더 아키텍처 최적화, 활성화 함수 선택(tanh), Huber 손실 함수, 가중치 감쇠, 그래디언트 클리핑, 향상된 가중치 초기화, 증가된 사전 훈련, 배치 크기 최적화 등을 적용함.
+\end{itemize}
+
+\subsubsection{MIDAS}
+\begin{itemize}
+    \item MIDAS(Mixed Data Sampling)는 서로 다른 주기의 데이터를 통합하여 예측하는 모형으로, 고빈도 데이터(주간, 일간)와 저빈도 데이터(월간)를 함께 활용함 \cite{ghysels2004midas, clements2008macroeconomic}.
+    \item MIDAS-AR 모형을 수행하여 고빈도 지표의 단일변수 예측에서의 활용 가능성을 탐색함. MIDAS-AR 모형은 exp-Almon 가중치를 사용하여 고빈도 변수를 저빈도 종속변수에 매핑함. 이를 통해 주별 전력거래량과 같은 고빈도 지표를 월별 산업생산지수 예측에 활용할 수 있음.
+    \item MIDAS-AR(1) 모형의 기본 구조는 다음과 같음:
+    \begin{align}
+    y_t &= \lambda y_{t-1} + \beta_0 + \beta_1 Z_t(K,\theta) + \varepsilon_t
+    \end{align}
+    여기서 $y_t$는 월별 종속변수(전산업생산지수 성장률), $\lambda$는 AR(1) 계수, $Z_t(K,\theta)$는 고빈도 성장률의 가중 합임.
+    \item exp-Almon 가중치는 다음과 같이 정의됨:
+    \begin{align}
+    Z_t(K,\theta) &= \sum_{k=1}^K w_k(\theta) x_{t,k} \\
+    w_k(\theta_1,\theta_2) &= \frac{\exp(\theta_1 k + \theta_2 k^2)}{\sum_{j=1}^K \exp(\theta_1 j + \theta_2 j^2)}, \quad k=1,\dots,K
+    \end{align}
+    여기서 $x_{t,k}$는 고빈도 설명변수(주별 전력거래량 성장률 등)의 래그 변수이며, $K$는 사용하는 고빈도 래그 개수임. $\theta_2 < 0$ 제약을 통해 오래된 래그의 가중치가 감소하도록 유도함.
+    \item Clements \& Galvão (2008)의 추정 절차를 따름:
+    \begin{enumerate}
+        \item 1단계: Standard MIDAS (AR 없음)로 $(\beta_0,\beta_1,\theta)$ 추정하여 초기값 획득
+        \item 2단계: 잔차의 AR(1) 계수 $\lambda^{(0)}$ 추정
+        \item 3단계: $\lambda^{(0)}$ 고정하여 MIDAS-AR 재추정
+        \item 4단계: Full MIDAS-AR 공동 추정으로 $(\lambda,\beta_0,\beta_1,\theta)$ 최종 추정
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{MAMBA}
+\begin{itemize}
+    \item MAMBA는 시계열 모델링을 위한 최신 딥러닝 아키텍처로, 선택적 상태 공간 모델(Selective State Space Model)을 기반으로 선형 시간 복잡도로 장기 의존성을 효과적으로 포착함 \cite{gu2024mamba}. DFM과 동일한 데이터를 이용하여 MAMBA 모형으로 nowcasting을 수행함. MAMBA는 상태 공간 모델의 구조적 특성을 유지하면서도 비선형 선택 메커니즘을 통해 입력에 따라 상태 전이를 동적으로 조정하여, 시계열 데이터의 복잡한 패턴을 학습할 수 있음.
+\end{itemize}
+
+\subsection{실험 구성}
+
+\subsubsection{예측 실험}
+\begin{itemize}
+    \item 과거 데이터로 미래 값 예측. 각 모형 훈련 후 1--22개월에 대해 예측 생성.
+    \item \textbf{전통적 선형 모델:} ARIMA와 VAR 모형을 포함함. ARIMA와 VAR은 재귀적(recursive) 방식으로 다단계 예측을 수행함. 1-step ahead 예측값을 다음 단계의 입력으로 사용하여 순차적으로 예측을 생성하므로, 예측 오차가 누적되어 장기 예측에서 불안정성이 증가함.
+    \item \textbf{동적요인 모형:} DFM과 DDFM 모형을 포함함. DFM과 DDFM은 state-space 구조를 활용하여 잠재 요인 상태를 업데이트한 후 직접 다단계 예측을 생성함 \cite{bok2019frbny}. 칼만 필터가 데이터를 재귀적으로 처리하여 예측을 업데이트하되, 각 예측 시점에서 요인의 품질과 시의성에 기반한 가중치를 부여하므로 오차 누적이 완화됨 \cite{banbura2012nowcasting}.
+\end{itemize}
+
+\subsubsection{Nowcasting 실험}
+\begin{itemize}
+    \item 공식 통계 발표 전 현재 시점 거시경제 변수 추정 \cite{banbura2012nowcasting}. 각 목표 월에 대해 4주 전, 1주 전 시점에서 예측을 수행하며, 시리즈별 발표 시차(publication lag)를 기준으로 미발표 데이터를 마스킹함.
+    \item DFM, DDFM, MAMBA는 Kalman filter 또는 state-space 구조를 통해 이러한 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있어 nowcasting에 특히 적합함.
+\end{itemize}
+
+\subsubsection{고빈도 변수 실험}
+\begin{itemize}
+    \item 주요 모형(DFM, DDFM)은 다변량 고차원 데이터를 활용하는 반면, 고빈도 지표(전력거래량, BSI)의 단일변수 예측에서의 활용 가능성을 탐색하기 위해 실험을 수행함. 이 실험은 전산업생산지수(KOIPALL.G) 단일변수에 대해 MIDAS-AR(1), AR(1) 벤치마크, 선형 ARX, 그리고 XGBoost 기반 비선형 모형을 비교함. 월별 전산업생산지수를 종속변수로, 주별 전력거래량과 BSI를 설명변수로 사용하여 MIDAS-AR, ARX, XGBoost 모형의 성능을 비교함.
+\end{itemize}
+
