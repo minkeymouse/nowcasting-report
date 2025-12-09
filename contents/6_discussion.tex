@@ -149,7 +149,7 @@ KOEQUIPTE에서는 DFM과 DDFM이 모든 시점에서 거의 동일한 성능을
 
 이러한 개선 사항들의 효과를 검증하기 위해서는 추가 실험 재실행이 필요하며, 특히 KOEQUIPTE에서의 성능 개선 여부를 확인해야 함. 현재 \texttt{checkpoint/} 디렉토리에는 12개의 모델 파일이 존재하므로, 모델 훈련 없이 바로 예측 실험을 재실행하여 최신 코드 개선사항이 반영된 결과를 생성할 수 있음. 성공 기준은 sMAE가 1.14에서 1.03 이하로 개선되는 것(10\% 이상 개선)이며, 이는 비선형 인코더가 KOEQUIPTE에 대해 추가적인 이점을 제공할 수 있음을 시사함. 구체적인 연구 계획과 실행 단계는 ISSUES.md에 상세히 문서화되어 있으며, Phase 0(상관관계 구조 분석)부터 Phase 3(고급 기법)까지의 단계별 접근 방식을 제시함.
 
-\textbf{DDFM 선형성 자동 감지 기능:} DDFM이 선형 관계만 학습하는지 자동으로 감지하는 기능을 구현함. \texttt{src/evaluation/evaluation_aggregation.py}에 구현된 \texttt{detect\_ddfm\_linearity()} 함수는 결과 집계 시 자동으로 실행되어 DDFM과 DFM의 성능 메트릭을 비교함. 이 함수는 각 대상 변수와 시점에 대해 선형성 점수(0-1, 높을수록 선형)를 계산하며, 선형성 점수가 0.95 이상인 경우 DDFM이 선형 관계만 학습하고 있음을 경고함. 또한 선형성 감지 결과는 \texttt{outputs/experiments/ddfm\_linearity\_analysis.json}에 저장되며, 각 대상 변수에 대한 개선 권장사항(더 깊은 인코더, tanh 활성화 함수, 가중치 감쇠 등)을 제공함. 이 기능은 DDFM의 성능 문제를 조기에 발견하고 개선 방향을 제시하는 데 도움을 줌. 현재 KOEQUIPTE에 대한 선형성 점수는 0.99 이상으로 관찰되며, 이는 인코더가 선형 PCA와 유사한 해에 수렴했음을 강하게 시사함.
+\textbf{DDFM 선형성 자동 감지 기능:} DDFM이 선형 관계만 학습하는지 자동으로 감지하는 기능을 구현함. \texttt{src/evaluation/evaluation\_aggregation.py}에 구현된 \texttt{detect\_ddfm\_linearity()} 함수는 결과 집계 시 자동으로 실행되어 DDFM과 DFM의 성능 메트릭을 비교함. 이 함수는 각 대상 변수와 시점에 대해 선형성 점수(0-1, 높을수록 선형)를 계산하며, 선형성 점수가 0.95 이상인 경우 DDFM이 선형 관계만 학습하고 있음을 경고함. 또한 선형성 감지 결과는 \texttt{outputs/experiments/ddfm\_linearity\_analysis.json}에 저장되며, 각 대상 변수에 대한 개선 권장사항(더 깊은 인코더, tanh 활성화 함수, 가중치 감쇠 등)을 제공함. 이 기능은 DDFM의 성능 문제를 조기에 발견하고 개선 방향을 제시하는 데 도움을 줌. 현재 KOEQUIPTE에 대한 선형성 점수는 0.99 이상으로 관찰되며, 이는 인코더가 선형 PCA와 유사한 해에 수렴했음을 강하게 시사함.
 
 \textbf{상관관계 구조 분석 활용:} 모델 훈련 전에 수행 가능한 상관관계 구조 분석을 통해 DDFM 성능 개선 전략을 수립할 수 있음. \texttt{analyze\_correlation\_structure()} 함수를 사용하여 대상 변수와 모든 입력 시계열 간의 상관관계 패턴을 분석함. 주요 분석 지표는 다음과 같음:
 \begin{itemize}
@@ -160,7 +160,7 @@ KOEQUIPTE에서는 DFM과 DDFM이 모든 시점에서 거의 동일한 성능을
 \end{itemize}
 이러한 분석을 통해 모델 훈련 전에 활성화 함수 선택, 인코더 아키텍처 결정, 그리고 개선 전략을 수립할 수 있으며, 실험 비용을 절감하면서도 효율적인 개선 방향을 제시할 수 있음.
 
-\textbf{DDFM 예측 품질 분석 기능:} DDFM의 예측 품질을 상세히 분석하는 기능을 구현함. \texttt{src/evaluation/evaluation_aggregation.py}에 구현된 \texttt{analyze\_ddfm\_prediction\_quality()} 함수는 결과 집계 시 자동으로 실행되어 DDFM의 시점별 성능 패턴, 불안정한 시점 식별, 예측 안정성 메트릭, 그리고 DFM 기준선과의 비교를 수행함. 이 함수는 시점 가중 메트릭, 훈련 정렬 메트릭, 상대 오차 안정성 메트릭, 그리고 개선 지속성 메트릭을 통합하여 더 정확한 성능 평가를 제공함. 이 함수는 각 대상 변수에 대해 다음과 같은 향상된 진단 메트릭을 계산함:
+\textbf{DDFM 예측 품질 분석 기능:} DDFM의 예측 품질을 상세히 분석하는 기능을 구현함. \texttt{src/evaluation/evaluation\_aggregation.py}에 구현된 \texttt{analyze\_ddfm\_prediction\_quality()} 함수는 결과 집계 시 자동으로 실행되어 DDFM의 시점별 성능 패턴, 불안정한 시점 식별, 예측 안정성 메트릭, 그리고 DFM 기준선과의 비교를 수행함. 이 함수는 시점 가중 메트릭, 훈련 정렬 메트릭, 상대 오차 안정성 메트릭, 그리고 개선 지속성 메트릭을 통합하여 더 정확한 성능 평가를 제공함. 이 함수는 각 대상 변수에 대해 다음과 같은 향상된 진단 메트릭을 계산함:
 \begin{itemize}
     \item \textbf{오차 분산 및 불안정한 시점 식별:} 각 시점별 오차의 분산을 계산하고, 평균 + 1.5 × 표준편차를 초과하는 불안정한 시점을 식별함.
     \item \textbf{예측 안정성 메트릭 (계수 of variation, CV):} 시점 간 예측 안정성을 측정하는 CV 메트릭을 계산함. 낮은 CV 값은 더 안정적인 예측을 의미함.
@@ -183,7 +183,7 @@ KOEQUIPTE에서는 DFM과 DDFM이 모든 시점에서 거의 동일한 성능을
 \end{itemize}
 또한 각 대상 변수에 대한 구체적인 개선 권장사항을 생성하며, 예를 들어 오차 분산이 높은 경우 정규화나 앙상블 방법을 권장하고, 특정 시점에서 불안정성이 관찰되는 경우 시점별 튜닝을 권장함. 이 기능은 DDFM의 성능 특성을 체계적으로 분석하고 개선 방향을 제시하는 데 도움을 줌.
 
-\textbf{향상된 오차 분포 메트릭:} DDFM의 예측 오차 분포를 더 자세히 분석하기 위해 \texttt{src/evaluation/evaluation_metrics.py}의 \texttt{calculate\_standardized\_metrics()} 함수에 오차 분포 분석 메트릭을 추가함. 이러한 메트릭들은 각 시점별로 계산되며, DDFM의 예측 특성을 더 깊이 이해하는 데 도움을 줌:
+\textbf{향상된 오차 분포 메트릭:} DDFM의 예측 오차 분포를 더 자세히 분석하기 위해 \texttt{src/evaluation/evaluation\_metrics.py}의 \texttt{calculate\_standardized\_metrics()} 함수에 오차 분포 분석 메트릭을 추가함. 이러한 메트릭들은 각 시점별로 계산되며, DDFM의 예측 특성을 더 깊이 이해하는 데 도움을 줌:
 \begin{itemize}
     \item \textbf{오차 왜도 (error\_skewness):} 오차 분포의 비대칭성을 측정함. 양수는 오른쪽 꼬리가 긴 분포(가끔 큰 과대 예측)를 의미하고, 음수는 왼쪽 꼬리가 긴 분포(가끔 큰 과소 예측)를 의미함. 이를 통해 체계적인 과대/과소 예측 패턴을 식별할 수 있음.
     \item \textbf{오차 첨도 (error\_kurtosis):} 오차 분포의 꼬리 두께를 측정함. 양수는 무거운 꼬리(가끔 극단적인 예측 오차)를 의미하고, 음수는 가벼운 꼬리(안정적인 예측)를 의미함. 이를 통해 이상치에 취약한 예측을 식별할 수 있음.
@@ -193,7 +193,7 @@ KOEQUIPTE에서는 DFM과 DDFM이 모든 시점에서 거의 동일한 성능을
 \end{itemize}
 이러한 메트릭들을 종합적으로 분석하면 DDFM의 예측 오차 원인을 더 정확히 파악할 수 있으며, 편향과 분산 중 어느 쪽을 개선해야 하는지 결정할 수 있음. 예를 들어, 높은 오차 편향 제곱과 낮은 오차 분산은 모델 구조 개선이 필요함을 시사하고, 낮은 오차 편향 제곱과 높은 오차 분산은 정규화나 앙상블 방법이 도움이 될 수 있음을 시사함.
 
-\textbf{시점 간 오차 상관관계 분석:} DDFM의 오차 패턴이 시점 간에 어떻게 상관관계를 가지는지 분석하는 기능을 구현함. \texttt{src/evaluation/evaluation_aggregation.py}에 구현된 \texttt{analyze\_horizon\_error\_correlation()} 함수는 서로 다른 예측 시점 간의 오차 유사성을 계산하여 체계적 문제(예: 선형 붕괴)와 시점별 문제를 구분함:
+\textbf{시점 간 오차 상관관계 분석:} DDFM의 오차 패턴이 시점 간에 어떻게 상관관계를 가지는지 분석하는 기능을 구현함. \texttt{src/evaluation/evaluation\_aggregation.py}에 구현된 \texttt{analyze\_horizon\_error\_correlation()} 함수는 서로 다른 예측 시점 간의 오차 유사성을 계산하여 체계적 문제(예: 선형 붕괴)와 시점별 문제를 구분함:
 \begin{itemize}
     \item \textbf{유사성 행렬:} 각 시점 쌍 간의 오차 유사성을 계산하여 시점 간 오차 패턴의 유사성을 정량화함.
     \item \textbf{평균 유사성:} 모든 시점 쌍의 평균 유사성을 계산하여 전반적인 오차 패턴의 일관성을 측정함.
@@ -282,23 +282,23 @@ KOEQUIPTE에서의 DDFM 성능 개선을 위한 기법들이 구현되었으며,
 
 \textbf{즉시 실행 가능한 개선 전략:} Phase 0 상관관계 구조 분석을 통해 모델 훈련 전에 개선 전략을 수립할 수 있으며, 이를 통해 실험 효율성을 높일 수 있음. 이 분석은 모델 훈련 없이도 수행 가능하며, 세 대상 변수에 대해 약 15분 내에 완료 가능함. 분석 결과는 tanh 활성화 함수 및 더 깊은 인코더 전략의 타당성을 검증하는 데 활용되며, 실험 비용을 절감하면서도 효율적인 개선 방향을 제시함.
 
-\textbf{현재 실험 결과 기반 DDFM 메트릭 개선 계획:} 현재 실험 결과(`outputs/experiments/aggregated_results.csv`)를 분석한 결과, KOEQUIPTE에서 DDFM과 DFM이 21개 시점 모두에서 거의 동일한 성능을 보임(평균 sMAE 차이 0.00085, 최대 차이 0.00212). 이는 DDFM 인코더가 선형 PCA와 유사한 요인 구조만 학습하고 있음을 강하게 시사함. 개선을 위한 구체적인 실행 계획은 다음과 같음:
+\textbf{현재 실험 결과 기반 DDFM 메트릭 개선 계획:} 현재 실험 결과(\texttt{outputs/experiments/aggregated\_results.csv})를 분석한 결과, KOEQUIPTE에서 DDFM과 DFM이 21개 시점 모두에서 거의 동일한 성능을 보임(평균 sMAE 차이 0.00085, 최대 차이 0.00212). 이는 DDFM 인코더가 선형 PCA와 유사한 요인 구조만 학습하고 있음을 강하게 시사함. 개선을 위한 구체적인 실행 계획은 다음과 같음:
 
 \textbf{즉시 실행 가능한 분석 (훈련 불필요):}
 \begin{enumerate}
-    \item \textbf{기준선 메트릭 분석 (우선순위 1, ~5분):} 현재 `aggregated_results.csv`를 사용하여 기준선 메트릭을 계산함. `detect_ddfm_linearity()`와 `analyze_ddfm_prediction_quality()` 함수를 실행하여 기준선 선형성 점수(예상: ~0.99), 개선 비율(예상: ~0\%), 붕괴 위험 점수(예상: ~0.95+)를 계산하고 저장함. 이 기준선은 개선 후 결과와 비교하여 정량적 개선 여부를 평가하는 데 사용됨.
-    \item \textbf{Phase 0: 상관관계 구조 분석 (우선순위 2, ~15분):} `analyze_correlation_structure()` 함수를 사용하여 세 대상 변수에 대해 상관관계 구조 분석을 실행함. 주요 의사결정 기준: KOEQUIPTE의 음의 상관관계 비율(`negative_fraction`)이 0.3 이상이고 다른 대상 변수가 0.2 미만이면, tanh 활성화 함수 전략이 타당함을 확인. 평균 상관관계(`mean_correlation`)가 0.1 미만이고 다른 대상 변수가 0.2 이상이면, 더 깊은 인코더 전략이 타당함을 확인. 분석 결과는 `outputs/analysis/correlation_analysis_{target}.json`에 저장되며, 개선 전략 수립에 활용됨.
+    \item \textbf{기준선 메트릭 분석 (우선순위 1, ~5분):} 현재 \texttt{aggregated\_results.csv}를 사용하여 기준선 메트릭을 계산함. \texttt{detect\_ddfm\_linearity()}와 \texttt{analyze\_ddfm\_prediction\_quality()} 함수를 실행하여 기준선 선형성 점수(예상: ~0.99), 개선 비율(예상: ~0\%), 붕괴 위험 점수(예상: ~0.95+)를 계산하고 저장함. 이 기준선은 개선 후 결과와 비교하여 정량적 개선 여부를 평가하는 데 사용됨.
+    \item \textbf{Phase 0: 상관관계 구조 분석 (우선순위 2, ~15분):} \texttt{analyze\_correlation\_structure()} 함수를 사용하여 세 대상 변수에 대해 상관관계 구조 분석을 실행함. 주요 의사결정 기준: KOEQUIPTE의 음의 상관관계 비율(\texttt{negative\_fraction})이 0.3 이상이고 다른 대상 변수가 0.2 미만이면, tanh 활성화 함수 전략이 타당함을 확인. 평균 상관관계(\texttt{mean\_correlation})가 0.1 미만이고 다른 대상 변수가 0.2 이상이면, 더 깊은 인코더 전략이 타당함을 확인. 분석 결과는 \texttt{outputs/analysis/correlation\_analysis\_\{target\}.json}에 저장되며, 개선 전략 수립에 활용됨.
 \end{enumerate}
 
 \textbf{실험 재실행 (모델 훈련 필요):}
 \begin{enumerate}
-    \item \textbf{Phase 1: 예측 실험 재실행:} 현재 \texttt{checkpoint/} 디렉토리에는 12개의 모델 파일이 존재하므로, 모델 훈련 없이 바로 예측 실험을 실행하여 최신 코드 개선사항이 반영된 결과를 생성함. 결과 집계 시 자동으로 실행되는 `detect_ddfm_linearity()`와 `analyze_ddfm_prediction_quality()` 함수를 통해 개선 여부를 정량적으로 평가함. 성공 기준: sMAE 개선 ≥ 10\% (목표: sMAE < 1.03 from baseline 1.14), DDFM이 DFM보다 최소 5\% 이상 우수, 선형성 점수 < 0.95, 붕괴 위험 < 0.5.
+    \item \textbf{Phase 1: 예측 실험 재실행:} 현재 \texttt{checkpoint/} 디렉토리에는 12개의 모델 파일이 존재하므로, 모델 훈련 없이 바로 예측 실험을 실행하여 최신 코드 개선사항이 반영된 결과를 생성함. 결과 집계 시 자동으로 실행되는 \texttt{detect\_ddfm\_linearity()}와 \texttt{analyze\_ddfm\_prediction\_quality()} 함수를 통해 개선 여부를 정량적으로 평가함. 성공 기준: sMAE 개선 ≥ 10\% (목표: sMAE < 1.03 from baseline 1.14), DDFM이 DFM보다 최소 5\% 이상 우수, 선형성 점수 < 0.95, 붕괴 위험 < 0.5.
     \item \textbf{의사결정 단계:} 계산된 메트릭들을 기반으로 다음 단계를 결정함:
     \begin{itemize}
-        \item ✅ \textbf{성공 (SUCCESS)}: 개선 ≥ 10\% AND DDFM > 5\% better AND 선형성 < 0.95 AND 붕괴 위험 < 0.5 → Phase 1.2(활성화 함수별 비교 실험)로 진행
-        \item ⚠️ \textbf{부분 성공 (PARTIAL)}: 개선 5-10\% OR 선형성 0.95-0.98 → 조사 후 Phase 1.2로 신중하게 진행
-        \item ❌ \textbf{조사 필요 (NEEDS INVESTIGATION)}: 개선 < 10\% OR 선형성 ≥ 0.95 OR 붕괴 위험 ≥ 0.5 → 로그 확인, 설정 검증, Phase 2(고급 개선)로 진행
-        \item ❌ \textbf{실패 (FAILURE)}: 개선 없음 또는 성능 저하 → 로그 확인, 원인 조사, Phase 2로 진행
+        \item \textbf{성공 (SUCCESS):} 개선 ≥ 10\% AND DDFM > 5\% better AND 선형성 < 0.95 AND 붕괴 위험 < 0.5 → Phase 1.2(활성화 함수별 비교 실험)로 진행
+        \item \textbf{부분 성공 (PARTIAL):} 개선 5-10\% OR 선형성 0.95-0.98 → 조사 후 Phase 1.2로 신중하게 진행
+        \item \textbf{조사 필요 (NEEDS INVESTIGATION):} 개선 < 10\% OR 선형성 ≥ 0.95 OR 붕괴 위험 ≥ 0.5 → 로그 확인, 설정 검증, Phase 2(고급 개선)로 진행
+        \item \textbf{실패 (FAILURE):} 개선 없음 또는 성능 저하 → 로그 확인, 원인 조사, Phase 2로 진행
     \end{itemize}
 \end{enumerate}
 
@@ -385,7 +385,7 @@ DDFM은 KOIPALL.G와 KOWRCCNSE에서 우수한 성능을 보이며(sMAE 각각 0
 
 이러한 개선 사항의 효과를 검증하기 위해서는 추가 실험 재실행이 필요하며, 특히 KOEQUIPTE에서의 성능 개선 여부를 확인해야 함. 
 
-\textbf{사전 분석 (Phase 0):} 모델 훈련 전에 수행 가능한 상관관계 구조 분석을 통해 KOEQUIPTE의 선형적 특성을 이해할 수 있음. \texttt{src/evaluation/evaluation_aggregation.py}에 구현된 \texttt{analyze\_correlation\_structure()} 함수를 사용하여 KOEQUIPTE와 다른 대상 변수(KOIPALL.G, KOWRCCNSE) 간의 상관관계 패턴을 비교 분석할 수 있음. 이 분석은 모델 훈련 없이도 수행 가능하며, 현재 구현되어 있으나 아직 실행되지 않았음. 주요 분석 지표는 다음과 같음:
+\textbf{사전 분석 (Phase 0):} 모델 훈련 전에 수행 가능한 상관관계 구조 분석을 통해 KOEQUIPTE의 선형적 특성을 이해할 수 있음. \texttt{src/evaluation/evaluation\_aggregation.py}에 구현된 \texttt{analyze\_correlation\_structure()} 함수를 사용하여 KOEQUIPTE와 다른 대상 변수(KOIPALL.G, KOWRCCNSE) 간의 상관관계 패턴을 비교 분석할 수 있음. 이 분석은 모델 훈련 없이도 수행 가능하며, 현재 구현되어 있으나 아직 실행되지 않았음. 주요 분석 지표는 다음과 같음:
 \begin{itemize}
     \item \textbf{음의 상관관계 비율:} KOEQUIPTE가 다른 시계열들과 음의 상관관계를 보이는 정도. 만약 KOEQUIPTE가 KOIPALL.G나 KOWRCCNSE보다 높은 음의 상관관계 비율을 보인다면, tanh 활성화 함수가 도움이 될 것으로 예상됨. 이는 ReLU가 음의 값을 0으로 만들어 음의 상관관계를 포착하기 어렵기 때문임.
     \item \textbf{강한 음의 상관관계 개수:} 절댓값이 0.3 이상인 음의 상관관계의 개수. 이러한 강한 음의 상관관계는 ReLU 활성화 함수로는 포착하기 어려우나, tanh 활성화 함수로는 학습 가능함. tanh는 대칭적인 출력 범위(-1, 1)를 가지므로 음의 요인 부하를 학습할 수 있음.
