@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  8 DEC 2025 01:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  9 DEC 2025 13:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -363,9 +363,28 @@ Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
 \multirow@dima=\skip63
 \bigstrutjot=\dimen170
 )
+(/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2023-11-01 v4.19 Multi-page Table package (DPC)
+\LTleft=\skip64
+\LTright=\skip65
+\LTpre=\skip66
+\LTpost=\skip67
+\LTchunksize=\count286
+\LTcapwidth=\dimen171
+\LT@head=\box53
+\LT@firsthead=\box54
+\LT@foot=\box55
+\LT@lastfoot=\box56
+\LT@gbox=\box57
+\LT@cols=\count287
+\LT@rows=\count288
+\c@LT@tables=\count289
+\c@LT@chunks=\count290
+\LT@p@ftn=\toks24
+)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\@emptytoks=\toks24
+\@emptytoks=\toks25
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
@@ -374,33 +393,33 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 )
 (/usr/share/texlive/texmf-dist/tex/latex/units/nicefrac.sty
 Package: nicefrac 1998/08/04 v0.9b Nice fractions
-\L@UnitsRaiseDisplaystyle=\skip64
-\L@UnitsRaiseTextstyle=\skip65
-\L@UnitsRaiseScriptstyle=\skip66
+\L@UnitsRaiseDisplaystyle=\skip68
+\L@UnitsRaiseTextstyle=\skip69
+\L@UnitsRaiseScriptstyle=\skip70
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
 Package: microtype 2023/03/13 v3.1a Micro-typographical refinements (RS)
-\MT@toks=\toks25
-\MT@tempbox=\box53
-\MT@count=\count286
+\MT@toks=\toks26
+\MT@tempbox=\box58
+\MT@count=\count291
 LaTeX Info: Redefining \noprotrusionifhmode on input line 1059.
 LaTeX Info: Redefining \leftprotrusion on input line 1060.
-\MT@prot@toks=\toks26
+\MT@prot@toks=\toks27
 LaTeX Info: Redefining \rightprotrusion on input line 1078.
 LaTeX Info: Redefining \textls on input line 1368.
-\MT@outer@kern=\dimen171
+\MT@outer@kern=\dimen172
 LaTeX Info: Redefining \textmicrotypecontext on input line 1988.
-\MT@listname@count=\count287
+\MT@listname@count=\count292
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def
 File: microtype-pdftex.def 2023/03/13 v3.1a Definitions specific to pdftex (RS)
 
 LaTeX Info: Redefining \lsstyle on input line 902.
 LaTeX Info: Redefining \lslig on input line 902.
-\MT@outer@space=\skip67
+\MT@outer@space=\skip71
 )
 Package microtype Info: Loading configuration file microtype.cfg.
 
@@ -414,20 +433,20 @@ Package: expl3 2024-01-22 L3 programming layer (loader)
 
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count288
-\l__pdf_internal_box=\box54
+\l__color_backend_stack_int=\count293
+\l__pdf_internal_box=\box59
 ))
 Package: l3keys2e 2023-10-10 LaTeX2e option processing using LaTeX3 keys
 )
 Package: lipsum 2021-09-20 v2.7 150 paragraphs of Lorem Ipsum dummy text
-\g__lipsum_par_int=\count289
-\l__lipsum_a_int=\count290
-\l__lipsum_b_int=\count291
+\g__lipsum_par_int=\count294
+\l__lipsum_a_int=\count295
+\l__lipsum_b_int=\count296
 
 (/usr/share/texlive/texmf-dist/tex/latex/lipsum/lipsum.ltd.tex))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2023/05/13 v2.17o AMS math features
-\@mathmargin=\skip68
+\@mathmargin=\skip72
 
 For additional information on amsmath, use the `?' option.
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -435,72 +454,72 @@ Package: amstext 2021/08/26 v2.01 AMS text
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks27
-\ex@=\dimen172
+\@emptytoks=\toks28
+\ex@=\dimen173
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen173
+\pmbraise@=\dimen174
 )
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count292
+\inf@bad=\count297
 LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count293
-\leftroot@=\count294
+\uproot@=\count298
+\leftroot@=\count299
 LaTeX Info: Redefining \overline on input line 399.
 LaTeX Info: Redefining \colon on input line 410.
-\classnum@=\count295
-\DOTSCASE@=\count296
+\classnum@=\count300
+\DOTSCASE@=\count301
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
 LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box55
-\strutbox@=\box56
+\Mathstrutbox@=\box60
+\strutbox@=\box61
 LaTeX Info: Redefining \big on input line 722.
 LaTeX Info: Redefining \Big on input line 723.
 LaTeX Info: Redefining \bigg on input line 724.
 LaTeX Info: Redefining \Bigg on input line 725.
-\big@size=\dimen174
+\big@size=\dimen175
 LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count297
+\macc@depth=\count302
 LaTeX Info: Redefining \bmod on input line 905.
 LaTeX Info: Redefining \pmod on input line 910.
 LaTeX Info: Redefining \smash on input line 940.
 LaTeX Info: Redefining \relbar on input line 970.
 LaTeX Info: Redefining \Relbar on input line 971.
-\c@MaxMatrixCols=\count298
+\c@MaxMatrixCols=\count303
 \dotsspace@=\muskip17
-\c@parentequation=\count299
-\dspbrk@lvl=\count300
-\tag@help=\toks28
-\row@=\count301
-\column@=\count302
-\maxfields@=\count303
-\andhelp@=\toks29
-\eqnshift@=\dimen175
-\alignsep@=\dimen176
-\tagshift@=\dimen177
-\tagwidth@=\dimen178
-\totwidth@=\dimen179
-\lineht@=\dimen180
-\@envbody=\toks30
-\multlinegap=\skip69
-\multlinetaggap=\skip70
-\mathdisplay@stack=\toks31
+\c@parentequation=\count304
+\dspbrk@lvl=\count305
+\tag@help=\toks29
+\row@=\count306
+\column@=\count307
+\maxfields@=\count308
+\andhelp@=\toks30
+\eqnshift@=\dimen176
+\alignsep@=\dimen177
+\tagshift@=\dimen178
+\tagwidth@=\dimen179
+\totwidth@=\dimen180
+\lineht@=\dimen181
+\@envbody=\toks31
+\multlinegap=\skip73
+\multlinetaggap=\skip74
+\mathdisplay@stack=\toks32
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty
 Package: enumitem 2019/06/20 v3.9 Customized lists
-\labelindent=\skip71
-\enit@outerparindent=\dimen181
-\enit@toks=\toks32
-\enit@inbox=\box57
-\enit@count@id=\count304
-\enitdp@description=\count305
+\labelindent=\skip75
+\enit@outerparindent=\dimen182
+\enit@toks=\toks33
+\enit@inbox=\box62
+\enit@count@id=\count309
+\enitdp@description=\count310
 )
 (/usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty
 Package: setspace 2022/12/04 v6.7b set line spacing
@@ -602,17 +621,17 @@ LaTeX Font Info:    ... okay on input line 5.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count306
-\scratchdimen=\dimen182
-\scratchbox=\box58
-\nofMPsegments=\count307
-\nofMParguments=\count308
-\everyMPshowfont=\toks33
-\MPscratchCnt=\count309
-\MPscratchDim=\dimen183
-\MPnumerator=\count310
-\makeMPintoPDFobject=\count311
-\everyMPtoPDFconversion=\toks34
+\scratchcounter=\count311
+\scratchdimen=\dimen183
+\scratchbox=\box63
+\nofMPsegments=\count312
+\nofMParguments=\count313
+\everyMPshowfont=\toks34
+\MPscratchCnt=\count314
+\MPscratchDim=\dimen184
+\MPnumerator=\count315
+\makeMPintoPDFobject=\count316
+\everyMPtoPDFconversion=\toks35
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -665,37 +684,12 @@ LaTeX Font Info:    Font shape `LUC/nanummj/b/n' in size <10> not available
 6.
 
 (./contents/1_introduction.tex
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 7
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-
-LaTeX Warning: Citation `bok2017macroeconomic' on page 1 undefined on input lin
-e 10.
-
-LaTeX Font Info:    Font shape `LUC/nanummj/b/n' in size <12> not available
-(Font)              Font shape `LUC/nanummj/bx/n' tried instead on input line 2
-5.
-
-LaTeX Warning: Citation `stock2002forecasting' on page 1 undefined on input lin
-e 27.
-
-
-LaTeX Warning: Citation `andreini2020deep' on page 1 undefined on input line 27
-.
-
-
-LaTeX Warning: Citation `kim2024deep' on page 1 undefined on input line 27.
-
-
-LaTeX Warning: Citation `mariano2003new' on page 1 undefined on input line 27.
-
-)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -708,13 +702,47 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 dist/fonts/enc/dvips/base/8r.enc}
 
 
-] (./contents/2_methodology.tex
-(./tables/tab_dataset_params.tex
+]
+LaTeX Font Info:    Font shape `LUC/nanummj/b/n' in size <12> not available
+(Font)              Font shape `LUC/nanummj/bx/n' tried instead on input line 2
+4.
+
+
+LaTeX Warning: Citation `stock2002forecasting' on page 2 undefined on input lin
+e 26.
+
+
+LaTeX Warning: Citation `banbura2012nowcasting' on page 2 undefined on input li
+ne 26.
+
+
+LaTeX Warning: Citation `bok2019frbny' on page 2 undefined on input line 26.
+
+
+LaTeX Warning: Citation `bok2019frbny' on page 2 undefined on input line 26.
+
+
+LaTeX Warning: Citation `banbura2012nowcasting' on page 2 undefined on input li
+ne 28.
+
+
+LaTeX Warning: Citation `huber2020nowcasting' on page 2 undefined on input line
+ 28.
+
+
+LaTeX Warning: Citation `andreini2020deep' on page 2 undefined on input line 31
+.
+
+
+LaTeX Warning: Citation `andreini2020deep' on page 2 undefined on input line 31
+.
+
+) (./contents/2_methodology.tex (./tables/tab_dataset_params.tex
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 5.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -722,14 +750,32 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-))
+)
+LaTeX Font Info:    Font shape `LUC/nanummj/m/it' in size <9> not available
+(Font)              Font shape `LUC/nanummj/m/sl' tried instead on input line 1
+5.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+)
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
+0.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -741,11 +787,22 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 [2]
 
 LaTeX Warning: Citation `stock2002forecasting' on page 3 undefined on input lin
-e 77.
+e 45.
 
 
-Underfull \vbox (badness 4940) has occurred while \output is active []
+LaTeX Warning: Citation `banbura2012nowcasting' on page 3 undefined on input li
+ne 45.
 
+
+LaTeX Warning: Citation `bok2019frbny' on page 3 undefined on input line 45.
+
+
+LaTeX Warning: Citation `banbura2012nowcasting' on page 3 undefined on input li
+ne 45.
+
+
+LaTeX Warning: Citation `andreini2020deep' on page 3 undefined on input line 47
+.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -757,17 +814,22 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 [3]
 
-LaTeX Warning: Citation `mariano2003new' on page 4 undefined on input line 86.
-
-
-LaTeX Warning: Citation `andreini2020deep' on page 4 undefined on input line 89
-.
+LaTeX Warning: Citation `bok2019frbny' on page 4 undefined on input line 68.
 
 
 LaTeX Warning: Citation `banbura2012nowcasting' on page 4 undefined on input li
-ne 103.
+ne 68.
+
+
+LaTeX Warning: Citation `banbura2012nowcasting' on page 4 undefined on input li
+ne 70.
 
 ) (./contents/3_results.tex (./contents/3_results_forecasting.tex
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 1.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -780,36 +842,36 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [4] (./tables/tab_forecasting_results.tex)
-<images/forecast_vs_actual_koipall_g.png, id=217, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_koipall_g.png, id=267, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_koipall_g.png Graphic file (type png)
 <use images/forecast_vs_actual_koipall_g.png>
 Package pdftex.def Info: images/forecast_vs_actual_koipall_g.png  used on input
- line 11.
+ line 20.
 (pdftex.def)             Requested size: 422.77661pt x 179.45468pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/forecast_vs_actual_koequipte.png, id=219, 1004.553pt x 426.393pt>
+<images/forecast_vs_actual_koequipte.png, id=269, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_koequipte.png Graphic file (type png)
 <use images/forecast_vs_actual_koequipte.png>
 Package pdftex.def Info: images/forecast_vs_actual_koequipte.png  used on input
- line 18.
+ line 27.
 (pdftex.def)             Requested size: 422.77661pt x 179.45468pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/forecast_vs_actual_kowrccnse.png, id=220, 1004.3121pt x 426.393pt>
+<images/forecast_vs_actual_kowrccnse.png, id=270, 1004.553pt x 426.393pt>
 File: images/forecast_vs_actual_kowrccnse.png Graphic file (type png)
 <use images/forecast_vs_actual_kowrccnse.png>
 Package pdftex.def Info: images/forecast_vs_actual_kowrccnse.png  used on input
- line 25.
-(pdftex.def)             Requested size: 422.77661pt x 179.49373pt.
+ line 34.
+(pdftex.def)             Requested size: 422.77661pt x 179.45468pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-) (./contents/4_results_nowcasting.tex
-Underfull \vbox (badness 1939) has occurred while \output is active []
+
+Underfull \vbox (badness 2538) has occurred while \output is active []
 
 
 
@@ -821,99 +883,6 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [5]
-Underfull \vbox (badness 2005) has occurred while \output is active []
-
-
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[6 <./images/forecast_vs_actual_koipall_g.png> <./images/forecast_vs_actual_koe
-quipte.png>] (./tables/tab_nowcasting_backtest.tex
-Overfull \hbox (23.20285pt too wide) in paragraph at lines 5--20
- [][] 
- []
-
-)
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[7 <./images/forecast_vs_actual_kowrccnse.png>]
-<images/nowcasting_comparison_koipall_g.png, id=258, 1004.553pt x 354.123pt>
-File: images/nowcasting_comparison_koipall_g.png Graphic file (type png)
-<use images/nowcasting_comparison_koipall_g.png>
-Package pdftex.def Info: images/nowcasting_comparison_koipall_g.png  used on in
-put line 15.
-(pdftex.def)             Requested size: 422.77661pt x 149.03864pt.
-<images/nowcasting_comparison_koequipte.png, id=259, 1004.553pt x 354.123pt>
-File: images/nowcasting_comparison_koequipte.png Graphic file (type png)
-<use images/nowcasting_comparison_koequipte.png>
-Package pdftex.def Info: images/nowcasting_comparison_koequipte.png  used on in
-put line 22.
-(pdftex.def)             Requested size: 422.77661pt x 149.03864pt.
-<images/nowcasting_comparison_kowrccnse.png, id=260, 1004.553pt x 354.123pt>
-File: images/nowcasting_comparison_kowrccnse.png Graphic file (type png)
-<use images/nowcasting_comparison_kowrccnse.png>
-Package pdftex.def Info: images/nowcasting_comparison_kowrccnse.png  used on in
-put line 29.
-(pdftex.def)             Requested size: 422.77661pt x 149.03864pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-) (./contents/5_results_performance.tex
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[8 <./images/nowcasting_comparison_koipall_g.png> <./images/nowcasting_comparis
-on_koequipte.png>]
-<images/horizon_trend.png, id=270, 860.013pt x 426.393pt>
-File: images/horizon_trend.png Graphic file (type png)
-<use images/horizon_trend.png>
-Package pdftex.def Info: images/horizon_trend.png  used on input line 23.
-(pdftex.def)             Requested size: 375.80542pt x 186.32526pt.
-<images/accuracy_heatmap.png, id=271, 678.8562pt x 570.6921pt>
-File: images/accuracy_heatmap.png Graphic file (type png)
-<use images/accuracy_heatmap.png>
-Package pdftex.def Info: images/accuracy_heatmap.png  used on input line 30.
-(pdftex.def)             Requested size: 375.80542pt x 315.92801pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[9 <./images/nowcasting_comparison_kowrccnse.png> <./images/horizon_trend.png>]
-)) (./contents/6_discussion.tex
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[10 <./images/accuracy_heatmap.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -925,22 +894,10 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[11]
+[6 <./images/forecast_vs_actual_koipall_g.png> <./images/forecast_vs_actual_koe
+quipte.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Warning: Citation `golub2013matrix' on page 12 undefined on input line 50
-.
-
-
-LaTeX Warning: Citation `higham2002computing' on page 12 undefined on input lin
-e 50.
-
-
-LaTeX Warning: Citation `andreini2020deep' on page 12 undefined on input line 6
-2.
-
-
-LaTeX Warning: Citation `banbura2012nowcasting' on page 12 undefined on input l
-ine 81.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -950,18 +907,124 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[12]) (./contents/7_issues.tex
+[7 <./images/forecast_vs_actual_kowrccnse.png>])
+(./contents/4_results_nowcasting.tex
 
-LaTeX Warning: Citation `andreini2020deep' on page 13 undefined on input line 1
-3.
+LaTeX Warning: Citation `banbura2012nowcasting' on page 8 undefined on input li
+ne 3.
+
+(./tables/tab_nowcasting_backtest.tex)
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[8]
+<images/nowcasting_comparison_koipall_g.png, id=307, 798.3426pt x 292.6935pt>
+File: images/nowcasting_comparison_koipall_g.png Graphic file (type png)
+<use images/nowcasting_comparison_koipall_g.png>
+Package pdftex.def Info: images/nowcasting_comparison_koipall_g.png  used on in
+put line 13.
+(pdftex.def)             Requested size: 422.77661pt x 155.00623pt.
+<images/nowcasting_comparison_koequipte.png, id=308, 798.3426pt x 292.6935pt>
+File: images/nowcasting_comparison_koequipte.png Graphic file (type png)
+<use images/nowcasting_comparison_koequipte.png>
+Package pdftex.def Info: images/nowcasting_comparison_koequipte.png  used on in
+put line 20.
+(pdftex.def)             Requested size: 422.77661pt x 155.00623pt.
+<images/nowcasting_comparison_kowrccnse.png, id=309, 798.3426pt x 292.6935pt>
+File: images/nowcasting_comparison_kowrccnse.png Graphic file (type png)
+<use images/nowcasting_comparison_kowrccnse.png>
+Package pdftex.def Info: images/nowcasting_comparison_kowrccnse.png  used on in
+put line 27.
+(pdftex.def)             Requested size: 422.77661pt x 155.00623pt.
 
 
-LaTeX Warning: Citation `golub2013matrix' on page 13 undefined on input line 31
-.
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (./contents/5_results_performance.tex
+<images/accuracy_heatmap.png, id=311, 671.3883pt x 426.393pt>
+File: images/accuracy_heatmap.png Graphic file (type png)
+<use images/accuracy_heatmap.png>
+Package pdftex.def Info: images/accuracy_heatmap.png  used on input line 9.
+(pdftex.def)             Requested size: 375.80542pt x 238.67435pt.
 
 
-LaTeX Warning: Citation `higham2002computing' on page 13 undefined on input lin
-e 31.
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/horizon_trend.png, id=313, 860.013pt x 426.393pt>
+File: images/horizon_trend.png Graphic file (type png)
+<use images/horizon_trend.png>
+Package pdftex.def Info: images/horizon_trend.png  used on input line 18.
+(pdftex.def)             Requested size: 375.80542pt x 186.32526pt.
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[9 <./images/nowcasting_comparison_koipall_g.png> <./images/nowcasting_comparis
+on_koequipte.png>]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+)) (./contents/6_discussion.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[10 <./images/nowcasting_comparison_kowrccnse.png> <./images/accuracy_heatmap.p
+ng>]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[11 <./images/horizon_trend.png>]
+Underfull \vbox (badness 5050) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[12]
+Underfull \hbox (badness 2644) in paragraph at lines 76--77
+[]\T1/ptm/m/n/10 (+20) KOIPALL.G\LUC/nanummj/m/n/10/c5 Ð\LUC/nanummj/m/n/10/c1 
+^^\\LUC/nanummj/m/n/10/b2 ” \T1/ptm/m/n/10 (+20) DDFM\LUC/nanummj/m/n/10/c7 t \
+LUC/nanummj/m/n/10/b2 è\LUC/nanummj/m/n/10/ae 0\T1/ptm/m/n/10 (+20) (1-6\LUC/na
+nummj/m/n/10/ac ^^\\LUC/nanummj/m/n/10/c6 Ô\T1/ptm/m/n/10 (+20) )\LUC/nanummj/m
+/n/10/c5 Ð\LUC/nanummj/m/n/10/c1 ^^\ \LUC/nanummj/m/n/10/b9 ä\LUC/nanummj/m/n/1
+0/c6 ° °\LUC/nanummj/m/n/10/c2 ^^X\LUC/nanummj/m/n/10/d5 \ \LUC/nanummj/m/n/10/
+c1 1\LUC/nanummj/m/n/10/b2 ¥\LUC/nanummj/m/n/10/c7 D \LUC/nanummj/m/n/10/bc ô\L
+UC/nanummj/m/n/10/c7 t\LUC/nanummj/m/n/10/ba p\T1/ptm/m/n/10 (+20) , \LUC/nanum
+mj/m/n/10/ad l\LUC/nanummj/m/n/10/cc ´\LUC/nanummj/m/n/10/c8 ^^A\LUC/nanummj/m/
+n/10/c7 <\LUC/nanummj/m/n/10/b8 \ \T1/ptm/m/n/10 (+20) hori-zon 1\LUC/nanummj/m
+/n/10/c5 Ð\LUC/nanummj/m/n/10/c1 ^^\
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -972,17 +1035,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [13]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Warning: Citation `higham2002computing' on page 14 undefined on input lin
-e 53.
-
-
-LaTeX Warning: Citation `andreini2020deep' on page 14 undefined on input line 5
-7.
-
-
-LaTeX Warning: Citation `huber1981robust' on page 14 undefined on input line 66
-.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -993,25 +1047,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [14]
-
-LaTeX Warning: Citation `golub2013matrix' on page 15 undefined on input line 72
-.
-
-
-LaTeX Warning: Citation `higham2002computing' on page 15 undefined on input lin
-e 74.
-
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
-02.
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
-File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
-Underfull \vbox (badness 1354) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
@@ -1022,7 +1058,92 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[15])
+[15]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[16]
+
+LaTeX Warning: Citation `andreini2020deep' on page 17 undefined on input line 1
+47.
+
+
+LaTeX Warning: Citation `banbura2012nowcasting' on page 17 undefined on input l
+ine 151.
+
+) (./contents/7_issues.tex
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[17]
+Underfull \vbox (badness 4479) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[18]
+
+LaTeX Warning: Citation `golub2013matrix' on page 19 undefined on input line 59
+.
+
+
+LaTeX Warning: Citation `higham2002computing' on page 19 undefined on input lin
+e 59.
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[19]) (./contents/8_appendix.tex
+(./tables/tab_appendix_forecasting_koipall_g.tex
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (./tables/tab_appendix_forecasting_koequipte.tex
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (./tables/tab_appendix_forecasting_kowrccnse.tex
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (./tables/tab_appendix_forecasting_all.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[20]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+))
 No file main.bbl.
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1032,7 +1153,25 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[16] (./main.aux)
+[21]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[22]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[23] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1050,113 +1189,117 @@ Package rerunfilecheck Warning: File `main.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: C7E6CAB03B9B28F16E20EEDA3A064E8D;3686
-(rerunfilecheck)             After:  492131ED023A82CAB84CF611EC0CFA92;3879.
+(rerunfilecheck)             Before: 78E2260BF5124E205D1093168370C0E5;5903
+(rerunfilecheck)             After:  95BA2BF15A838B460ACE373EFC6B9245;5765.
  ) 
 Here is how much of TeX's memory you used:
- 15337 strings out of 475662
- 252310 string characters out of 5784442
- 1960975 words of memory out of 5000000
- 36905 multiletter control sequences out of 15000+600000
- 635801 words of font info for 281 fonts, out of 8000000 for 9000
+ 15574 strings out of 475662
+ 257166 string characters out of 5784442
+ 1967975 words of memory out of 5000000
+ 37076 multiletter control sequences out of 15000+600000
+ 641630 words of font info for 316 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 84i,12n,96p,1001b,650s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,96p,1095b,653s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
-, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
-, replaced by a fixed one
+pdfTeX warning (dest): name{subsection.5.6} has been referenced but does not ex
+ist, replaced by a fixed one
 
  </home/minkeymouse/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000
-.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/nanumtype1/nanummjbac.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/nanumtype1/nanummjbad.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/nanumtype1/nanummjbae.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/nanumtype1/nanummjbb0.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/nanumtype1/nanummjbb1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/nanumtype1/nanummjbb2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/na
-numtype1/nanummjbb3.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanum
-type1/nanummjbb4.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtyp
-e1/nanummjbb7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/
-nanummjbb8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nan
-ummjbb9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanumm
-jbba.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbb
-b.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbbc.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbbd.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbbe.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc0.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc1.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc2.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc5.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc6.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc7.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/nanumtype1/nanummjbc8.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/nanumtype1/nanummjbc9.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/nanumtype1/nanummjbcc.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/nanumtype1/nanummjbcd.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/nanumtype1/nanummjbce.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/nanumtype1/nanummjbd0.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/nanumtype1/nanummjbd1.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/public/nanumtype1/nanummjbd2.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/nanumtype1/nanummjbd3.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
-c/nanumtype1/nanummjbd4.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/n
-anumtype1/nanummjbd5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanu
-mtype1/nanummjbd6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumty
-pe1/nanummjmac.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1
-/nanummjmad.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/na
-nummjmae.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanum
-mjmb0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjm
-b1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb2.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb3.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb4.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb5.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb6.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb7.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb8.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb9.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/nanumtype1/nanummjmba.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/nanumtype1/nanummjmbb.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/nanumtype1/nanummjmbc.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/nanumtype1/nanummjmbd.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/nanumtype1/nanummjmbe.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/nanumtype1/nanummjmc0.pfb></usr/share/texlive/texmf-dist/font
-s/type1/public/nanumtype1/nanummjmc1.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/nanumtype1/nanummjmc2.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/nanumtype1/nanummjmc3.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/nanumtype1/nanummjmc5.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/nanumtype1/nanummjmc6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-nanumtype1/nanummjmc7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nan
-umtype1/nanummjmc8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumt
-ype1/nanummjmc9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype
-1/nanummjmca.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/n
-anummjmcc.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanu
-mmjmcd.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummj
-mce.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmcf
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd0.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd1.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd2.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd3.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd4.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd5.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd6.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd7.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/urw/times/utmr8a.pfb>
-Output written on main.pdf (16 pages, 5807778 bytes).
+.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbac.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbad.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbae.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbb0.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbb1.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbb2.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/nanumtype1/nanummjbb3.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/nanumtype1/nanummjbb4.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/nanumtype1/nanummjbb5.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/nanumtype1/nanummjbb7.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/nanumtype1/nanummjbb8.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/nanumtype1/nanummjbb9.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/nanumtype1/nanummjbba.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/nanumtype1/nanummjbbb.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/nanumtype1/nanummjbbc.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/nanumtype1/nanummjbbd.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/nanumtype1/nanummjbbe.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+nanumtype1/nanummjbc0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nan
+umtype1/nanummjbc1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumt
+ype1/nanummjbc2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype
+1/nanummjbc5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/n
+anummjbc6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanu
+mmjbc7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummj
+bc8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbc9
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbcc.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbcd.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbce.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbcf.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbd0.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbd1.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbd2.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/nanumtype1/nanummjbd3.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/nanumtype1/nanummjbd4.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/nanumtype1/nanummjbd5.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/nanumtype1/nanummjbd6.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/nanumtype1/nanummjmac.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/nanumtype1/nanummjmac.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/nanumtype1/nanummjmad.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/nanumtype1/nanummjmad.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/nanumtype1/nanummjmae.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/nanumtype1/nanummjmb0.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/nanumtype1/nanummjmb1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/nanumtype1/nanummjmb2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/na
+numtype1/nanummjmb3.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanum
+type1/nanummjmb4.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtyp
+e1/nanummjmb4.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/
+nanummjmb5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nan
+ummjmb6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanumm
+jmb7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb
+8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb8.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb9.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmb9.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmba.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmbb.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmbb.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmbc.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/nanumtype1/nanummjmbc.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/nanumtype1/nanummjmbd.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/nanumtype1/nanummjmbe.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/nanumtype1/nanummjmc0.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/nanumtype1/nanummjmc0.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/nanumtype1/nanummjmc1.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/nanumtype1/nanummjmc2.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/nanumtype1/nanummjmc2.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/nanumtype1/nanummjmc3.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/nanumtype1/nanummjmc5.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/nanumtype1/nanummjmc6.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/nanumtype1/nanummjmc6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/n
+anumtype1/nanummjmc7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanu
+mtype1/nanummjmc7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumty
+pe1/nanummjmc8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1
+/nanummjmc8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/na
+nummjmc9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanum
+mjmc9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjm
+ca.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmcc.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmcd.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmce.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmcf.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd0.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd1.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd2.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd3.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd3.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/nanumtype1/nanummjmd4.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/nanumtype1/nanummjmd5.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/nanumtype1/nanummjmd6.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/nanumtype1/nanummjmd7.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
+times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.p
+fb>
+Output written on main.pdf (23 pages, 5366441 bytes).
 PDF statistics:
- 704 PDF objects out of 1000 (max. 8388607)
- 474 compressed objects within 5 object streams
- 68 named destinations out of 1000 (max. 500000)
- 46345 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 807 PDF objects out of 1000 (max. 8388607)
+ 569 compressed objects within 6 object streams
+ 77 named destinations out of 1000 (max. 500000)
+ 44377 words of extra memory for PDF output out of 51595 (max. 10000000)
 

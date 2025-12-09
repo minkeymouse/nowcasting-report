@@ -98,69 +98,13 @@ DFM과 DDFM 모형의 nowcasting 백테스트 실험이 모든 시점(2024-01 ~ 
 
 \subsection{결과 검증 및 재현성}
 
-본 연구의 모든 예측 결과는 다음과 같은 검증 과정을 거쳤음:
-
-\begin{itemize}
-    \item \textbf{시점 계산 검증:} 예측 시점 계산 로직을 검증하여 예측값이 올바른 테스트 시점과 비교되도록 보장함. 초기 구현에서 발견된 1개월 오프셋 버그를 수정하여, 예측값이 정확히 해당 시점의 실제값과 비교되도록 함
-    \item \textbf{모델 예측 검증:} VAR, DFM, DDFM 모델이 정상적으로 예측을 생성하는지 검증함. DFM과 DDFM 모델의 경우 초기 구현에서 발견된 import 오류를 수정하여 모든 시점에서 유효한 예측값을 생성하도록 함. ARIMA는 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 검증 대상에서 제외됨
-    \item \textbf{결과 완전성:} VAR은 3개 대상 변수 모두에서 완전한 결과를 생성함(66개 결과 포인트). DFM과 DDFM은 KOIPALL.G와 KOWRCCNSE에서 완전한 결과를 생성했으나, KOEQUIPTE에서는 22개월 시점이 누락되어 21개 시점에 대한 결과만 생성됨. ARIMA는 세 대상 변수 모두에서 유효한 결과(n\_valid=0)가 없어 평가에 실패함. 전체적으로 3개 대상 변수 × 4개 모델 × 22개 시점 = 264개 결과 포인트 중 약 73\% (VAR: 66개 완료, DFM: 64개 완료, DDFM: 64개 완료, ARIMA: 0개 완료, 총 194개)가 유효한 값을 가짐
-    \item \textbf{재현성:} 모든 실험은 저장된 체크포인트를 사용하여 재현 가능하며, 동일한 설정으로 실행 시 동일한 결과를 보장함
-\end{itemize}
+본 연구의 모든 예측 결과는 시점 계산 검증, 모델 예측 검증, 결과 완전성 검증, 재현성 검증을 거쳤음. VAR은 3개 대상 변수 모두에서 완전한 결과를 생성했으며, DFM과 DDFM은 대부분의 시점에서 유효한 결과를 생성함. ARIMA는 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 평가에 실패함. 전체적으로 약 73\%의 결과 포인트가 유효한 값을 가짐.
 
 \subsection{ARIMA 모형 평가 실패 원인 분석}
 
-ARIMA 모형은 세 대상 변수 모두에서 유효한 결과(n\_valid=0)를 생성하지 못하여 평가에 실패함. 이는 다음과 같은 원인들이 있을 수 있음:
+ARIMA 모형은 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 평가에 실패함. 가능한 원인으로는 모형 훈련 실패, 데이터 전처리 문제, 예측 생성 오류, 모형 적합성 문제 등이 있음. ARIMA는 forecasting 결과 비교에 포함할 수 없으며, 향후 연구에서 문제를 해결하여 벤치마크 모형으로 포함해야 함.
 
-\textbf{가능한 원인:}
-\begin{itemize}
-    \item \textbf{모형 훈련 실패:} ARIMA 모형의 파라미터 추정 과정에서 수렴 실패 또는 수치적 불안정성
-    \item \textbf{데이터 전처리 문제:} 결측치 처리, 변환, 또는 인덱스 정렬 과정에서의 오류
-    \item \textbf{예측 생성 오류:} 예측값 생성 과정에서 shape mismatch, 인덱스 불일치, 또는 변환 오류
-    \item \textbf{모형 적합성 문제:} ARIMA(1,1,1) 모형이 세 대상 변수 모두에 부적합할 가능성
-\end{itemize}
-
-\textbf{향후 조사 방향:}
-\begin{itemize}
-    \item ARIMA 훈련 로그를 확인하여 훈련 과정에서의 오류 파악
-    \item ARIMA 모형 인스턴스화 및 적합 과정 검증
-    \item 예측값 생성 코드에서 shape 및 인덱스 정렬 확인
-    \item 데이터 호환성 검증 (결측치 처리, 변환 적용 여부)
-    \item 자동 차수 선택(auto\_arima) 또는 다른 ARIMA 파라미터 조합 시도
-\end{itemize}
-
-\textbf{현재 상태:} ARIMA는 forecasting 결과 비교에 포함할 수 없으며, 향후 연구에서 문제를 해결하여 벤치마크 모형으로 포함해야 함.
-
-\subsection{스케일 일치성 검증}
-
-DFM/DDFM 모델의 예측값이 원본 스케일로 변환되는지 확인하기 위해 다음과 같은 검증을 수행함:
-
-\textbf{1. 전처리 파이프라인 확인:}
-\begin{itemize}
-    \item DFM/DDFM 훈련 시 \texttt{\_create\_preprocessing\_pipeline} 함수 사용
-    \item 이 함수는 imputation과 scaling만 수행하며, transformation (log, pch 등)은 포함하지 않음
-    \item 따라서 모델은 원본 스케일 데이터로 훈련됨
-\end{itemize}
-
-\textbf{2. 예측값 스케일 확인:}
-\begin{itemize}
-    \item DFM/DDFM 예측값은 $X_{\text{forecast}} = X_{\text{std}} \times W_x + M_x$ 공식으로 계산됨
-    \item 이는 unstandardization만 수행하며, transformation은 되돌리지 않음
-    \item 하지만 transformation이 적용되지 않았으므로, 예측값은 원본 스케일임
-\end{itemize}
-
-\textbf{3. 테스트 데이터 스케일 확인:}
-\begin{itemize}
-    \item 테스트 데이터는 \texttt{resample\_to\_monthly}만 적용되어 원본 스케일임
-    \item Transformation이 적용되지 않음
-\end{itemize}
-
-\textbf{결론:} 현재 코드 구조에서는 예측값과 실제값이 모두 원본 스케일이므로 스케일 일치함. 다만, 만약 \texttt{create\_transformer\_from\_config}를 사용하여 transformation이 적용되는 경우, 예측값은 transformed 스케일이 되고 실제값은 원본 스케일이 되어 스케일 불일치가 발생할 수 있음. 현재 평가 코드는 \texttt{DFMForecaster}/\texttt{DDFMForecaster}를 사용하며, 이들은 \texttt{\_create\_preprocessing\_pipeline}을 사용하므로 문제 없음.
 
 \subsection{향후 연구 방향}
 
-\begin{itemize}
-    \item \textbf{모형 개선:} Robust Kalman filter, adaptive state space dimension
-    \item \textbf{실험 설계 개선:} 롤링 윈도우 평가, 교차 검증
-    \item \textbf{Release date 마스킹 개선}
-    \item \textbf{추가 모형 비교}
-\end{itemize}
+향후 연구 방향으로는 모형 개선(Robust Kalman filter, adaptive state space dimension), 실험 설계 개선(롤링 윈도우 평가, 교차 검증), Release date 마스킹 개선, 추가 모형 비교 등이 있음.
