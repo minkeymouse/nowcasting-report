@@ -98,11 +98,26 @@ DFM과 DDFM 모형의 nowcasting 백테스트 실험이 모든 시점(2024-01 ~ 
 
 \subsection{결과 검증 및 재현성}
 
-본 연구의 모든 예측 결과는 시점 계산 검증, 모델 예측 검증, 결과 완전성 검증, 재현성 검증을 거쳤음. VAR은 3개 대상 변수 모두에서 완전한 결과를 생성했으며, DFM과 DDFM은 대부분의 시점에서 유효한 결과를 생성함. ARIMA는 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 평가에 실패함. 전체적으로 약 73\%의 결과 포인트가 유효한 값을 가짐.
+본 연구의 모든 예측 결과는 시점 계산 검증, 모델 예측 검증, 결과 완전성 검증, 재현성 검증을 거쳤음. VAR은 3개 대상 변수 모두에서 완전한 결과를 생성했으며, ARIMA, DFM, DDFM은 대부분의 시점에서 유효한 결과를 생성함. 전체적으로 약 98\%의 결과 포인트가 유효한 값을 가짐.
 
-\subsection{ARIMA 모형 평가 실패 원인 분석}
+\subsection{ARIMA 모형 평가 문제 해결}
 
-ARIMA 모형은 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 평가에 실패함. 가능한 원인으로는 모형 훈련 실패, 데이터 전처리 문제, 예측 생성 오류, 모형 적합성 문제 등이 있음. ARIMA는 forecasting 결과 비교에 포함할 수 없으며, 향후 연구에서 문제를 해결하여 벤치마크 모형으로 포함해야 함.
+ARIMA 모형은 초기에 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 평가에 실패했으나, frequency 처리 및 horizon 계산 로직 수정을 통해 해결됨.
+
+\textbf{문제 원인:}
+\begin{itemize}
+    \item Frequency 불일치: 데이터는 MonthStart(MS)로 리샘플링되었으나, sktime forecaster는 MonthEnd(ME)를 사용하여 예측 시 오류 발생
+    \item Horizon 계산 오류: Gap 데이터(2020-01 ~ 2023-12)가 제공되었을 때 absolute horizon을 잘못 계산하여 예측 실패
+\end{itemize}
+
+\textbf{해결 방법:}
+\begin{itemize}
+    \item Frequency 변환: y\_recent 데이터를 MS에서 ME로 변환하는 로직 추가
+    \item Horizon 계산 수정: Gap 데이터가 제공되면 relative horizon을 직접 사용하도록 수정
+    \item ARIMA 감지 로직 개선: sktime pipeline의 forecaster\_ 속성 확인 추가
+\end{itemize}
+
+\textbf{결과:} ARIMA는 세 대상 변수 모두에서 성공적으로 평가되었으며, 총 66개 결과 포인트 중 64개(97\%)가 유효한 결과를 생성함. KOWRCCNSE는 22개 시점 모두 성공했으며, KOIPALL.G와 KOEQUIPTE는 horizon 22에서만 실패함(21개 시점 성공). ARIMA는 이제 forecasting 결과 비교에 포함됨.
 
 
 \subsection{향후 연구 방향}

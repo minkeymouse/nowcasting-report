@@ -6,11 +6,12 @@
 
 \textbf{ARIMA:}
 \begin{itemize}
-    \item 세 대상 변수 모두에서 평가 실패 (n\_valid=0, 모든 시점에서 유효한 결과 없음)
-    \item 예측 생성 과정에서 문제가 발생하여 결과를 생성하지 못함
-    \item 원인 조사 필요: 모형 훈련 실패, 데이터 전처리 오류, 예측 생성 오류 등 가능
-    \item 현재 결과에서는 ARIMA를 비교에 포함할 수 없음
-    \item 향후 연구에서 ARIMA 모형의 문제를 해결하여 벤치마크 모형으로 포함해야 함
+    \item 세 대상 변수 모두에서 평가 완료 (KOIPALL.G와 KOEQUIPTE는 21개 시점, KOWRCCNSE는 22개 시점)
+    \item 초기에는 frequency 불일치 및 horizon 계산 오류로 인해 평가에 실패했으나, 수정을 통해 해결됨
+    \item KOWRCCNSE에서 우수한 성능을 보임 (sMAE=0.47, 22개 시점 평균)
+    \item KOIPALL.G와 KOEQUIPTE에서는 중간 수준의 성능을 보임 (KOIPALL.G: sMAE=0.70, 21개 시점; KOEQUIPTE: sMAE=1.13, 21개 시점)
+    \item 벤치마크 모형으로 포함되었으며, 단변량 시계열 예측에 적합함
+    \item Nowcasting에서는 release date 마스킹 처리의 구조적 한계로 인해 제한적임
 \end{itemize}
 
 \textbf{VAR:}
@@ -51,7 +52,7 @@
     \item VAR은 KOWRCCNSE에서 우수한 성능을 보이며(sMAE=0.32), 다른 대상 변수에서는 중간 수준의 성능을 보임
     \item DFM은 KOIPALL.G에서 극단적으로 높은 오차를 보이며, KOEQUIPTE와 KOWRCCNSE에서는 중간 수준의 성능을 보임
     \item DDFM은 KOIPALL.G와 KOWRCCNSE에서 우수한 성능을 보이며, KOEQUIPTE에서는 DFM과 동일한 성능을 보임
-    \item ARIMA는 세 대상 변수 모두에서 유효한 결과를 생성하지 못하여 비교에 포함할 수 없음
+    \item ARIMA는 세 대상 변수 모두에서 평가되었으며, KOWRCCNSE에서 우수한 성능을 보임
     \item 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보이며, 단일 모형이 모든 대상 변수에서 최고 성능을 보이지는 않음
 \end{itemize}
 

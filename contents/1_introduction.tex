@@ -16,10 +16,10 @@
     \item \textbf{KOIPALL.G:} DDFM이 가장 우수한 성능을 보임(sMAE=0.6865, 21개 시점 평균). DFM 대비 95.4\% 개선(sMAE: DFM=14.9689). VAR도 양호한 성능(sMAE=0.94). DFM은 매우 높은 오차를 보이며, 이는 월별 시계열에 분기별 집계 가정이 부적합하기 때문임.
     \item \textbf{KOEQUIPTE:} DFM과 DDFM이 거의 동일한 성능을 보임(sMAE: DFM=1.1439, DDFM=1.1441, 평균 차이 0.000187, 21개 시점). 이는 DDFM의 비선형 인코더가 추가 이점을 제공하지 못하며, 인코더가 선형 PCA와 유사한 요인 구조를 학습했음을 시사함. VAR은 상대적으로 높은 오차(sMAE=1.37).
     \item \textbf{KOWRCCNSE:} VAR이 가장 우수한 성능을 보임(sMAE=0.32). DDFM도 양호한 성능(sMAE=0.4961, DFM 대비 82.2\% 개선, sMAE: DFM=2.7848). DDFM은 변동성이 큰 시계열에서 DFM 대비 현저히 우수한 성능을 보임.
-    \item \textbf{ARIMA:} 세 대상 변수 모두에서 유효한 결과를 생성하지 못함(n\_valid=0, 총 66개 시점 실패). 예측 생성 과정에서 문제가 발생하여 결과를 생성하지 못함.
+    \item \textbf{ARIMA:} 세 대상 변수 모두에서 평가되었으나, KOIPALL.G와 KOEQUIPTE에서는 22개월 시점의 결과가 누락되어 21개 시점에 대한 결과만 사용 가능함. KOWRCCNSE에 대해서는 22개 시점에 대한 결과가 있음. 평균 성능은 KOWRCCNSE에서 우수함(sMAE=0.47, 22개 시점 평균).
 \end{itemize}
 
-\textbf{실험 상태 요약:} VAR, DFM, DDFM 모형에 대해서는 세 대상 변수 모두에서 forecasting 결과가 존재함. ARIMA 모형은 세 대상 변수 모두에서 유효한 결과를 생성하지 못함. Nowcasting 백테스트는 CUDA 텐서 변환 오류로 인해 실패했으나 코드 수정이 완료되었으며, 재실행을 통해 검증이 필요함. 모델 훈련은 완료되었으며, 최신 DDFM 개선사항이 구현되어 있음.
+\textbf{실험 상태 요약:} ARIMA, VAR, DFM, DDFM 모형 모두 세 대상 변수에서 forecasting 결과가 존재함. ARIMA는 frequency 처리 및 horizon 계산 로직 수정을 통해 평가 문제가 해결되었으며, 총 66개 결과 포인트 중 64개(97\%)가 유효한 결과를 생성함. Nowcasting 백테스트는 CUDA 텐서 변환 오류로 인해 실패했으나 코드 수정이 완료되었으며, 재실행을 통해 검증이 필요함. 모델 훈련은 완료되었으며, 최신 DDFM 개선사항이 구현되어 있음.
 
 \subsection{선행연구 검토}
 

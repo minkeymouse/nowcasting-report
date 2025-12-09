@@ -7,9 +7,9 @@
     \item \textbf{VAR:} 세 대상 변수 모두에서 22개 시점(1-22개월)에 대해 성공적으로 평가되었으며, 총 66개 결과 포인트(3개 대상 변수 × 22개 시점)를 생성함.
     \item \textbf{DFM:} 세 대상 변수 모두에서 평가되었으나, KOIPALL.G와 KOEQUIPTE에서는 22개월 시점의 결과가 누락되어(n\_valid=0) 21개 시점에 대한 결과만 사용 가능함. KOWRCCNSE에 대해서는 22개 시점에 대한 결과가 있음. 전체적으로 DFM은 64개 결과 포인트(21+21+22)를 생성함.
     \item \textbf{DDFM:} 세 대상 변수 모두에서 평가되었으나, KOIPALL.G와 KOEQUIPTE에서는 22개월 시점의 결과가 누락되어(n\_valid=0) 21개 시점에 대한 결과만 사용 가능함. KOWRCCNSE에 대해서는 22개 시점에 대한 결과가 있음. 전체적으로 DDFM은 64개 결과 포인트(21+21+22)를 생성함.
-    \item \textbf{ARIMA:} 세 대상 변수 모두에서 유효한 결과(n\_valid=0)가 없어 평가에 실패함. 이는 ARIMA 모형의 예측 생성 과정에서 문제가 발생했을 가능성을 시사하며, 향후 연구에서 해결이 필요함.
+    \item \textbf{ARIMA:} 세 대상 변수 모두에서 평가되었으나, KOIPALL.G와 KOEQUIPTE에서는 22개월 시점의 결과가 누락되어(n\_valid=0) 21개 시점에 대한 결과만 사용 가능함. KOWRCCNSE에 대해서는 22개 시점에 대한 결과가 있음. 전체적으로 ARIMA는 64개 결과 포인트(21+21+22)를 생성함.
 \end{itemize}
-전체 실험 결과 완전도는 약 73\% (194개 유효 결과 / 264개 전체 결과 포인트)임. 누락된 결과는 주로 ARIMA 모형의 평가 실패(66개 포인트)와 DFM/DDFM의 horizon 22 누락(4개 포인트)에 기인함.
+전체 실험 결과 완전도는 약 98\% (258개 유효 결과 / 264개 전체 결과 포인트)임. 누락된 결과는 ARIMA의 horizon 22 누락(2개 포인트)과 DFM/DDFM의 horizon 22 누락(4개 포인트)에 기인함.
 
 표~\ref{tab:forecasting_results}는 모형별 타겟별로 모든 시점(1-22개월)에 대한 평균 표준화된 MAE와 MSE를 제시함. 각 셀은 해당 모형-타겟 조합의 평균 지표값을 나타내며, 각 지표에서 최소값(최고 성능)은 굵은 글씨로 표시됨. 상세한 시점별 결과는 부록에 제시됨.
 
@@ -18,27 +18,27 @@
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koipall_g.png}
-\caption{예측 대 실제: 전산업생산지수 (KOIPALL.G). 히스토리 기간(2023-01 to 2023-12)에는 실제값만 표시되며, 예측 기간(2024-01 to 2025-10)에는 실제값과 모형 예측값(VAR, DFM, DDFM)이 함께 표시됨. ARIMA는 유효한 결과가 없어 제외됨. 모든 값은 원본 데이터 스케일로 표시됨.}
+\caption{예측 대 실제: 전산업생산지수 (KOIPALL.G). 히스토리 기간(2023-01 to 2023-12)에는 실제값만 표시되며, 예측 기간(2024-01 to 2025-10)에는 실제값과 모형 예측값(ARIMA, VAR, DFM, DDFM)이 함께 표시됨. 모든 값은 원본 데이터 스케일로 표시됨.}
 \label{fig:forecast_vs_actual_koipallg}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koequipte.png}
-\caption{예측 대 실제: 설비투자지수 (KOEQUIPTE). 히스토리 기간(2023-01 to 2023-12)에는 실제값만 표시되며, 예측 기간(2024-01 to 2025-10)에는 실제값과 모형 예측값(VAR, DFM, DDFM)이 함께 표시됨. ARIMA는 유효한 결과가 없어 제외됨. 모든 값은 원본 데이터 스케일로 표시됨.}
+\caption{예측 대 실제: 설비투자지수 (KOEQUIPTE). 히스토리 기간(2023-01 to 2023-12)에는 실제값만 표시되며, 예측 기간(2024-01 to 2025-10)에는 실제값과 모형 예측값(ARIMA, VAR, DFM, DDFM)이 함께 표시됨. 모든 값은 원본 데이터 스케일로 표시됨.}
 \label{fig:forecast_vs_actual_koequipte}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_kowrccnse.png}
-\caption{예측 대 실제: 도소매판매액 (KOWRCCNSE). 히스토리 기간(2023-01 to 2023-12)에는 실제값만 표시되며, 예측 기간(2024-01 to 2025-10)에는 실제값과 모형 예측값(VAR, DFM, DDFM)이 함께 표시됨. ARIMA는 유효한 결과가 없어 제외됨. 모든 값은 원본 데이터 스케일로 표시됨.}
+\caption{예측 대 실제: 도소매판매액 (KOWRCCNSE). 히스토리 기간(2023-01 to 2023-12)에는 실제값만 표시되며, 예측 기간(2024-01 to 2025-10)에는 실제값과 모형 예측값(ARIMA, VAR, DFM, DDFM)이 함께 표시됨. 모든 값은 원본 데이터 스케일로 표시됨.}
 \label{fig:forecast_vs_actual_kowrccnse}
 \end{figure}
 
-그림~\ref{fig:forecast_vs_actual_koipallg}, 그림~\ref{fig:forecast_vs_actual_koequipte}, 그림~\ref{fig:forecast_vs_actual_kowrccnse}는 각 대상 변수별로 히스토리 기간(2023-01 to 2023-12)과 예측 기간(2024-01 to 2025-10)의 실제 값 및 예측 값을 비교한 플롯임. 히스토리 기간에는 실제 값만 표시되며, 예측 기간에는 실제 값과 모형 예측값(VAR, DFM, DDFM)이 함께 표시됨. ARIMA는 유효한 결과가 없어 제외됨. 모든 값은 원본 데이터 스케일로 표시되며, X축은 월별 타임스탬프, Y축은 대상 변수 값임.
+그림~\ref{fig:forecast_vs_actual_koipallg}, 그림~\ref{fig:forecast_vs_actual_koequipte}, 그림~\ref{fig:forecast_vs_actual_kowrccnse}는 각 대상 변수별로 히스토리 기간(2023-01 to 2023-12)과 예측 기간(2024-01 to 2025-10)의 실제 값 및 예측 값을 비교한 플롯임. 히스토리 기간에는 실제 값만 표시되며, 예측 기간에는 실제 값과 모형 예측값(ARIMA, VAR, DFM, DDFM)이 함께 표시됨. 모든 값은 원본 데이터 스케일로 표시되며, X축은 월별 타임스탬프, Y축은 대상 변수 값임.
 
-표~\ref{tab:forecasting_results}의 결과를 보면, VAR은 세 대상 변수 모두에서 성공적으로 평가되었으며, DFM과 DDFM도 세 대상 변수 모두에서 평가되었음. 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보임. 
+표~\ref{tab:forecasting_results}의 결과를 보면, ARIMA, VAR, DFM, DDFM 모두 세 대상 변수에서 평가되었음. 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보임. 
 
 \textbf{전체 시점 평균 성능 (표~\ref{tab:forecasting_results}):} KOIPALL.G에서는 DDFM이 가장 낮은 sMAE(0.6865, 21개 시점 평균)와 sMSE(0.61)를 보여 우수한 성능을 보임. VAR(sMAE=0.94, sMSE=1.11)도 양호한 성능을 보이며, DFM(sMAE=14.9689, sMSE=225.30)은 매우 높은 오차를 보여 KOIPALL.G에 대해서는 부적합함. KOEQUIPTE에서는 DFM과 DDFM이 거의 동일한 성능을 보이며(sMAE: DFM=1.1439, DDFM=1.1441, 평균 차이 0.000187, 21개 시점; sMSE: DFM=2.115, DDFM=2.115, 차이 0.0003), VAR(sMAE=1.37, sMSE=2.97)이 상대적으로 높은 오차를 보임. KOWRCCNSE에서는 VAR이 가장 낮은 sMAE(0.32)와 sMSE(0.20)를 보여 우수한 성능을 보이며, DDFM(sMAE=0.4961, sMSE=0.49)도 양호한 성능을 보임. DFM(sMAE=2.7848, sMSE=8.21)은 상대적으로 높은 오차를 보임.
 
