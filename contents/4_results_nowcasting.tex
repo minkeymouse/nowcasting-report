@@ -4,11 +4,58 @@ Nowcasting은 공식 통계가 발표되기 전에 현재 시점의 거시경제
 
 Nowcasting의 핵심 과제는 실시간 데이터 흐름(data flow)의 불규칙성을 처리하는 것임. 경제 지표들은 서로 다른 발표 일정과 빈도를 가지며, 특정 시점에서 일부 지표는 이미 발표되었고 다른 지표는 아직 발표되지 않은 상태(jagged edges)가 발생함 \cite{bok2019frbny}. DFM과 DDFM은 state-space 구조와 칼만 필터를 통해 이러한 불규칙성을 자연스럽게 처리할 수 있음. 칼만 필터는 새로운 데이터가 도착할 때마다 예측을 재귀적으로 업데이트하며, 각 데이터의 품질과 시의성에 기반한 가중치를 부여함 \cite{banbura2012nowcasting}.
 
-본 연구에서는 각 목표 월에 대해 4주 전과 1주 전 시점에서 nowcasting을 수행함. 각 시점에서 시리즈별 발표 시차를 기준으로 미발표 데이터를 마스킹하여 실제 운영 환경을 시뮬레이션함. 시간이 지날수록 더 많은 데이터가 사용 가능해지므로, 1주 전 예측이 4주 전 예측보다 일반적으로 더 정확할 것으로 기대됨.
+본 연구에서는 각 목표 월에 대해 4주 전과 1주 전 시점에서 nowcasting을 수행함. 각 시점에서 시리즈별 발표 시차를 기준으로 미발표 데이터를 마스킹하여 실제 운영 환경을 시뮬레이션함. 시간이 지날수록 더 많은 데이터가 사용 가능해지므로, 1주 전 예측이 4주 전 예측보다 일반적으로 더 정확할 것으로 기대됨. ARIMA와 VAR 모형은 release date 마스킹 처리의 구조적 한계로 인해 nowcasting 실험에서 제외되었으며, DFM과 DDFM 모형만 평가 대상에 포함됨.
 
 \input{tables/tab_nowcasting_backtest}
 
+\textbf{실험 상태 요약:} Nowcasting 백테스트 실험에서 DFM과 DDFM 모형 모두 CUDA 텐서 변환 오류로 인해 모든 시점(2024-01 ~ 2025-10, 22개월)에서 실패함. 실험 구성은 다음과 같음:
+\begin{itemize}
+    \item \textbf{모형:} DFM, DDFM (2개 모형) - ARIMA와 VAR은 release date 마스킹 처리의 구조적 한계로 제외
+    \item \textbf{대상 변수:} KOIPALL.G, KOEQUIPTE, KOWRCCNSE (3개)
+    \item \textbf{목표 월:} 2024-01 ~ 2025-10 (22개월)
+    \item \textbf{예측 시점:} 4주 전, 1주 전 (2개 시점)
+    \item \textbf{총 예상 결과 포인트:} 2개 모형 × 3개 대상 변수 × 2개 시점 × 22개월 = 264개 포인트
+\end{itemize}
+
+총 6개 백테스트 JSON 파일(3개 대상 변수 × 2개 모형)이 생성되었으며, 각 파일은 22개월에 대한 결과를 포함함. 구체적으로 다음 파일들이 생성됨:
+\begin{itemize}
+    \item \texttt{KOEQUIPTE\_dfm\_backtest.json}, \texttt{KOEQUIPTE\_ddfm\_backtest.json}
+    \item \texttt{KOIPALL.G\_dfm\_backtest.json}, \texttt{KOIPALL.G\_ddfm\_backtest.json}
+    \item \texttt{KOWRCCNSE\_dfm\_backtest.json}, \texttt{KOWRCCNSE\_ddfm\_backtest.json}
+\end{itemize}
+모든 132개 월별 예측 포인트(6개 파일 × 22개월)가 "status": "failed" 상태이며, 모든 항목에서 동일한 오류 메시지가 반복됨: "can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first." 이는 예측값이 CUDA 디바이스에 있는 텐서인데 이를 numpy 배열로 변환할 때 CPU로 먼저 이동하지 않아 발생한 것으로 확인되었음. 
+
+현재 JSON 파일들은 오류 발생 시점에 생성된 것으로, 평면 구조(flat \texttt{results} 배열)만 포함하며 시점별 구조(\texttt{results\_by\_timepoint})가 없음. 각 JSON 파일의 \texttt{weeks\_before} 필드는 빈 배열(\texttt{[]})로 표시되며, 이는 코드 수정 전에 생성된 파일임을 나타냄. 수정된 코드로 재실행하면 \texttt{results\_by\_timepoint} 구조를 포함한 새로운 JSON 파일이 생성될 것으로 예상됨. 
+
+\textbf{오류 원인 및 해결:} 오류 원인은 예측값이 CUDA 디바이스에 있는 텐서인데 이를 numpy 배열로 변환할 때 CPU로 먼저 이동하지 않아 발생한 것으로 확인되었음. 이 문제는 다음 파일들에서 텐서 변환 코드를 \texttt{.cpu().numpy()} 패턴으로 수정하여 해결되었음:
+\begin{itemize}
+    \item \texttt{src/models/models\_utils.py}: \texttt{\_convert\_predictions\_to\_dataframe} 및 \texttt{\_validate\_predictions} 함수
+    \item \texttt{src/evaluation/evaluation\_forecaster.py}: 예측값 추출 로직
+    \item \texttt{src/evaluation/evaluation\_metrics.py}: 메트릭 계산 로직
+\end{itemize}
+
+\textbf{현재 결과 상태:} 표~\ref{tab:nowcasting_backtest}의 모든 값이 현재 N/A로 표시되며, 이는 모든 백테스트 실험이 실패했기 때문임. 코드 수정은 완료되었으나, 수정사항의 효과를 검증하기 위해서는 백테스트를 재실행해야 함.
+
+\textbf{재실행 전제조건 및 권장사항:} 현재 \texttt{checkpoint/} 디렉토리에는 12개의 모델 파일(3개 대상 변수 × 4개 모형)이 존재하며, 모델 훈련이 완료된 상태임. 따라서 모델 훈련 없이 바로 nowcasting 백테스트를 재실행할 수 있음. 현재 코드에는 최신 DDFM 개선사항(더 깊은 인코더, tanh 활성화 함수, 가중치 감쇠, 증가된 사전 훈련, 배치 크기 최적화 등)이 구현되어 있으며, 훈련된 모델에 이러한 개선사항이 반영되었을 것으로 예상됨. CUDA 텐서 변환 오류는 코드에서 수정되었으며(\texttt{.cpu().numpy()} 패턴 적용), \texttt{nowcast()} 함수가 시점별 구조(\texttt{results\_by\_timepoint})를 생성하도록 수정되었음. 수정된 코드로 재실행하면 정상적으로 작동할 것으로 예상되며, \texttt{results\_by\_timepoint} 구조를 포함한 새로운 JSON 파일이 생성될 것으로 예상됨. 기존 forecasting 실험 결과(\texttt{outputs/experiments/aggregated\_results.csv}, 총 264개 결과 포인트)는 현재 훈련된 모델과 동일한 세션에서 생성되었을 가능성이 있으나, 최신 코드 개선사항의 효과를 검증하기 위해서는 forecasting 실험 재실행을 고려할 수 있음.
+
+\textbf{다음 단계:} CUDA 텐서 변환 오류가 코드에서 수정되었으며, 모델 파일이 존재하므로, 다음 단계는 다음과 같음:
+\begin{enumerate}
+    \item 백테스트 재실행: \texttt{bash agent\_execute.sh backtest}를 실행하여 수정된 코드로 nowcasting 백테스트를 재실행함. 모델 파일이 이미 존재하므로 훈련 없이 바로 실행 가능함.
+    \item 결과 검증: 백테스트 JSON 파일에서 \texttt{status: "completed"} 결과가 생성되었는지 확인함.
+    \item 표/플롯 재생성: 성공적인 백테스트 결과를 바탕으로 표와 플롯을 재생성함.
+    \item (선택사항) Forecasting 실험 재실행: 최신 코드 개선사항의 효과를 검증하려면 \texttt{bash agent\_execute.sh forecast}를 실행하여 forecasting 실험을 재실행할 수 있음.
+\end{enumerate}
+
 그림~\ref{fig:nowcasting_comparison_koipallg}, 그림~\ref{fig:nowcasting_comparison_koequipte}, 그림~\ref{fig:nowcasting_comparison_kowrccnse}는 Nowcasting 시점별 비교 플롯임. 각 대상 변수별로 "4주 전 nowcasting"과 "1주 전 nowcasting"을 나란히 비교하는 플롯으로, 총 3쌍(6개 플롯, 대상 변수별 1쌍)으로 구성됨. 각 플롯은 22개월(2024-01 ~ 2025-10)의 예측값과 실제값을 시간 순서로 연결한 선 그래프임. 파란선(실제값), 주황색 점선(DFM 예측값), 빨간색 점선(DDFM 예측값)을 비교함. X축은 월별 타임스탬프(2024.01 ~ 2025.10), Y축은 대상 변수 값(원본 스케일)임. 모든 값은 원본 데이터 스케일로 표시되며, 변환된 값(chg 등)은 역변환을 통해 원본 스케일로 복원됨. 이 플롯은 시간이 지날수록(1주 전이 4주 전보다) 더 많은 데이터를 사용할 수 있어 예측 정확도가 향상될 수 있음을 나타냄.
+
+\textbf{플롯 생성 상태:} Nowcasting 백테스트 실험이 CUDA 텐서 변환 오류로 인해 실패하여, 현재 플롯은 placeholder 이미지로 표시됨. 코드 수정이 완료되었으므로, 모델 훈련 후 백테스트를 재실행하면 유효한 데이터로 플롯을 생성할 수 있음. 
+
+Forecasting 실험 결과를 바탕으로 예상되는 패턴은 다음과 같음:
+\begin{itemize}
+    \item \textbf{시점별 정확도 향상:} 1주 전 예측이 4주 전 예측보다 일반적으로 더 정확할 것으로 예상됨. 이는 시간이 지날수록 더 많은 데이터가 사용 가능해지기 때문임.
+    \item \textbf{모형별 성능 패턴:} DDFM이 DFM보다 전반적으로 우수한 성능을 보일 것으로 예상됨. 특히 KOIPALL.G(sMAE: 0.69 vs 14.97)와 KOWRCCNSE(sMAE: 0.50 vs 2.78)에서 forecasting 실험에서 현저히 우수한 성능을 보였으므로, nowcasting에서도 유사한 패턴이 관찰될 수 있음.
+    \item \textbf{KOEQUIPTE 특성:} KOEQUIPTE에서는 forecasting에서 DFM과 DDFM이 동일한 성능(sMAE=1.14)을 보였으므로, nowcasting에서도 유사한 패턴이 관찰될 가능성이 있음.
+\end{itemize}
 
 \begin{figure}[h]
 \centering

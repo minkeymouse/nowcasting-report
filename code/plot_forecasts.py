@@ -232,6 +232,112 @@ def extract_metrics_from_results(all_results: Dict[str, List[Dict]]) -> pd.DataF
     return pd.DataFrame(rows)
 
 
+def plot_accuracy_heatmap(save_path: Optional[Path] = None):
+    """Create accuracy heatmap showing standardized RMSE for 4 models × 3 targets."""
+    # Try loading from aggregated_results.csv first
+    aggregated_file = OUTPUTS_DIR / "experiments" / "aggregated_results.csv"
+    heatmap_data = None
+    
+    if aggregated_file.exists():
+        try:
+            df_agg = pd.read_csv(aggregated_file)
+            # Calculate average sRMSE per model-target combination
+            df_agg_valid = df_agg[
+                (df_agg['sRMSE'].notna()) & 
+                (df_agg['n_valid'] > 0) &
+                (df_agg['sRMSE'] < 1e10)  # Filter extreme values
+            ].copy()
+            
+            if len(df_agg_valid) > 0:
+                heatmap_data = df_agg_valid.groupby(['model', 'target'])['sRMSE'].mean().reset_index()
+        except Exception as e:
+            print(f"Warning: Failed to load aggregated_results.csv: {e}")
+    
+    # Fallback to comparison results
+    if heatmap_data is None or len(heatmap_data) == 0:
+        all_results = _load_comparison_results(OUTPUTS_DIR)
+        df = extract_metrics_from_results(all_results)
+        
+        if df.empty or 'value' not in df.columns:
+            if save_path is None:
+                save_path = IMAGES_DIR / "accuracy_heatmap.png"
+            _create_placeholder_plot('Placeholder: No data available', figsize=(8, 6), save_path=save_path)
+            return
+        
+        df_valid = df[(df['metric'] == 'sRMSE') & (df['value'].notna())].copy()
+        if len(df_valid) == 0:
+            if save_path is None:
+                save_path = IMAGES_DIR / "accuracy_heatmap.png"
+            _create_placeholder_plot('Placeholder: No sRMSE data available', figsize=(8, 6), save_path=save_path)
+            return
+        
+        heatmap_data = df_valid.groupby(['model', 'target'])['value'].mean().reset_index()
+    
+    if heatmap_data is None or len(heatmap_data) == 0:
+        if save_path is None:
+            save_path = IMAGES_DIR / "accuracy_heatmap.png"
+        _create_placeholder_plot('Placeholder: No data available', figsize=(8, 6), save_path=save_path)
+        return
+    
+    # Create pivot table
+    models = ['ARIMA', 'VAR', 'DFM', 'DDFM']
+    targets = ['KOIPALL.G', 'KOEQUIPTE', 'KOWRCCNSE']
+    
+    pivot_data = heatmap_data.pivot(index='model', columns='target', values='sRMSE' if 'sRMSE' in heatmap_data.columns else 'value')
+    
+    # Ensure all models and targets are present
+    for model in models:
+        if model not in pivot_data.index:
+            pivot_data.loc[model] = np.nan
+    for target in targets:
+        if target not in pivot_data.columns:
+            pivot_data[target] = np.nan
+    
+    # Reorder rows and columns
+    pivot_data = pivot_data.reindex(models)
+    pivot_data = pivot_data[targets]
+    
+    # Create heatmap
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Use a colormap where lower values are better (darker = better)
+    cmap = sns.cm.rocket_r  # Reversed rocket colormap (dark = low, light = high)
+    
+    # Mask NaN values
+    mask = pivot_data.isna()
+    
+    # Create heatmap
+    sns.heatmap(
+        pivot_data,
+        annot=True,
+        fmt='.2f',
+        cmap=cmap,
+        mask=mask,
+        cbar_kws={'label': 'Standardized RMSE'},
+        linewidths=0.5,
+        linecolor='gray',
+        ax=ax,
+        vmin=0,  # Set minimum to 0 for better visualization
+        vmax=None  # Auto-scale maximum
+    )
+    
+    ax.set_xlabel('Target Series', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Model', fontsize=12, fontweight='bold')
+    ax.set_title('Accuracy Heatmap: Standardized RMSE by Model and Target', fontsize=13, fontweight='bold', pad=15)
+    
+    # Rotate labels
+    plt.setp(ax.get_xticklabels(), rotation=0, ha='center')
+    plt.setp(ax.get_yticklabels(), rotation=0, ha='right')
+    
+    plt.tight_layout()
+    if save_path is None:
+        save_path = IMAGES_DIR / "accuracy_heatmap.png"
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_path, bbox_inches='tight', dpi=300)
+    plt.close()
+    print(f"Generated: {save_path.name}")
+
+
 def plot_horizon_trend(save_path: Optional[Path] = None):
     """Create horizon trend plot showing sMSE values for all horizons (1-22 months)."""
     all_results = _load_comparison_results(OUTPUTS_DIR)
@@ -432,7 +538,11 @@ def generate_forecast_plots():
         print(f"   - forecast_vs_actual_{target.lower().replace('.', '_')}.png")
         plot_forecast_vs_actual(target)
     
-    print("\n2. Horizon Performance Trend")
+    print("\n2. Accuracy Heatmap")
+    print("   - accuracy_heatmap.png")
+    plot_accuracy_heatmap()
+    
+    print("\n3. Horizon Performance Trend")
     print("   - horizon_trend.png")
     plot_horizon_trend()
     

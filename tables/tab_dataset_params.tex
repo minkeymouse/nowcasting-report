@@ -2,13 +2,15 @@
 \centering
 \caption{Dataset and Model Parameters}
 \label{tab:dataset_params}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Target Variable & Series Count & Training Period & Forecast Period \\
+Target Variable & Series Count & Weekly Agg. & Training Period & Forecast Period \\
 \midrule
-KOIPALL.G & 43 & 1985-2019 & 2024-2025 \\
-KOEQUIPTE & 43 & 1985-2019 & 2024-2025 \\
-KOWRCCNSE & 43 & 1985-2019 & 2024-2025 \\
+KOIPALL.G (생산) & 45 & 7 & 1985-2019 & 2024-2025 \\
+KOEQUIPTE (투자) & 41 & 9 & 1985-2019 & 2024-2025 \\
+KOWRCCNSE (소비) & 47 & 8 & 1985-2019 & 2024-2025 \\
 \bottomrule
 \end{tabular}
+\vspace{0.3em}
+\small\textit{Note: Weekly Agg. = 월말 평균으로 집계된 주간 변수 수 (\_agg 접미사)}
 \end{table}

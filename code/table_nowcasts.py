@@ -80,26 +80,50 @@ DDFM-1week & N/A & N/A & N/A & N/A & N/A & N/A \\
                 with open(backtest_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                 
+                # Try new structure first (results_by_timepoint)
                 results_by_tp = data.get('results_by_timepoint', {})
-                for tp in timepoints:
-                    if tp not in results_by_tp:
-                        continue
-                    
-                    tp_data = results_by_tp[tp]
-                    key = f"{model.upper()}-{tp}"
-                    if key not in results[target]:
-                        results[target][key] = {}
-                    
-                    # Calculate average metrics
-                    monthly_results = tp_data.get('monthly_results', [])
-                    if monthly_results:
-                        errors = []
-                        for m in monthly_results:
-                            if m.get('error') is not None and not np.isnan(m['error']):
-                                errors.append(abs(m['error']))
-                        if errors:
-                            results[target][key]['sMAE'] = np.mean(errors)
-                            results[target][key]['sMSE'] = np.mean([e**2 for e in errors])
+                if results_by_tp:
+                    # New structure with timepoint organization
+                    for tp in timepoints:
+                        if tp not in results_by_tp:
+                            continue
+                        
+                        tp_data = results_by_tp[tp]
+                        key = f"{model.upper()}-{tp}"
+                        if key not in results[target]:
+                            results[target][key] = {}
+                        
+                        # Calculate average metrics
+                        monthly_results = tp_data.get('monthly_results', [])
+                        if monthly_results:
+                            errors = []
+                            for m in monthly_results:
+                                # Check if this is a successful result with forecast and actual values
+                                if m.get('status') == 'ok' or (m.get('forecast_value') is not None and m.get('actual_value') is not None):
+                                    forecast_val = m.get('forecast_value')
+                                    actual_val = m.get('actual_value')
+                                    if forecast_val is not None and actual_val is not None:
+                                        try:
+                                            error = float(forecast_val) - float(actual_val)
+                                            if not np.isnan(error) and not np.isinf(error):
+                                                errors.append(abs(error))
+                                        except (ValueError, TypeError):
+                                            pass
+                            if errors:
+                                results[target][key]['sMAE'] = np.mean(errors)
+                                results[target][key]['sMSE'] = np.mean([e**2 for e in errors])
+                else:
+                    # Fallback: Check for flat results structure (old format or failed backtests)
+                    flat_results = data.get('results', [])
+                    if flat_results:
+                        # Check if all results are failed
+                        all_failed = all(r.get('status') == 'failed' for r in flat_results)
+                        if all_failed:
+                            # All failed - no metrics to calculate, will show N/A
+                            continue
+                        # If some succeeded, we'd need to reconstruct timepoint structure
+                        # For now, skip flat structure (requires re-run with fixed code)
+                        logger.debug(f"Skipping flat results structure for {backtest_file.name} - needs results_by_timepoint structure")
             except Exception as e:
                 logger.warning(f"Failed to load {backtest_file}: {e}")
                 continue

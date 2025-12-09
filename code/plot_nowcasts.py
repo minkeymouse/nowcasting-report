@@ -175,29 +175,43 @@ def _load_backtest_results(target: str, outputs_dir: Path, model_filter: Optiona
             with open(backtest_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
+            # Try new structure first (results_by_timepoint)
             results_by_timepoint = data.get('results_by_timepoint', {})
-            
-            for tp in timepoints:
-                if tp not in results_by_timepoint:
-                    continue
-                
-                tp_results = results_by_timepoint[tp]
-                monthly_results = tp_results.get('monthly_results', [])
-                
-                for month_data in monthly_results:
-                    month_str = month_data.get('month')
-                    if month_str is None:
+            if results_by_timepoint:
+                # New structure with timepoint organization
+                for tp in timepoints:
+                    if tp not in results_by_timepoint:
                         continue
                     
-                    if month_str not in data_by_timepoint[tp]:
-                        data_by_timepoint[tp][month_str] = {'forecasts': [], 'actual': None}
+                    tp_results = results_by_timepoint[tp]
+                    monthly_results = tp_results.get('monthly_results', [])
                     
-                    forecast_value = month_data.get('forecast_value')
-                    if forecast_value is not None and not np.isnan(forecast_value):
-                        data_by_timepoint[tp][month_str]['forecasts'].append(forecast_value)
-                    
-                    if data_by_timepoint[tp][month_str]['actual'] is None:
-                        data_by_timepoint[tp][month_str]['actual'] = month_data.get('actual_value')
+                    for month_data in monthly_results:
+                        month_str = month_data.get('month')
+                        if month_str is None:
+                            continue
+                        
+                        if month_str not in data_by_timepoint[tp]:
+                            data_by_timepoint[tp][month_str] = {'forecasts': [], 'actual': None}
+                        
+                        forecast_value = month_data.get('forecast_value')
+                        if forecast_value is not None and not np.isnan(forecast_value):
+                            data_by_timepoint[tp][month_str]['forecasts'].append(forecast_value)
+                        
+                        if data_by_timepoint[tp][month_str]['actual'] is None:
+                            data_by_timepoint[tp][month_str]['actual'] = month_data.get('actual_value')
+            else:
+                # Fallback: Check for flat results structure (old format or failed backtests)
+                flat_results = data.get('results', [])
+                if flat_results:
+                    # Check if all results are failed
+                    all_failed = all(r.get('status') == 'failed' for r in flat_results)
+                    if all_failed:
+                        # All failed - no data to plot, will show placeholder
+                        continue
+                    # If some succeeded, we'd need to reconstruct timepoint structure
+                    # For now, skip flat structure (requires re-run with fixed code)
+                    print(f"Warning: Skipping flat results structure for {backtest_file.name} - needs results_by_timepoint structure")
         except Exception as e:
             print(f"Warning: Failed to load {backtest_file}: {e}")
             continue
