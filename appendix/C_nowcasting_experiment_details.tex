@@ -2,15 +2,10 @@
 
 본 부록에서는 나우캐스팅 실험의 세부사항을 제시함.
 
-\subsubsection*{혼합주기 DFM 모형의 어려움}
-
-주/월 데이터 혼합주기 DFM 모형은 상태변수 개수가 증가하지만, 주간 데이터를 전월대비 증가율로 변환하고 월간 데이터를 주간 상태변수의 4주 평균값으로 처리함으로써 모형 복잡성을 관리함. 주간 데이터와 월간 데이터를 함께 활용하는 혼합 주기 모형을 사용하며, DFM의 기본 frequency를 주간('w')으로 설정함.
-
-따라서 공동요인 5개, 잔차항의 자기회귀, 5개 주간 지표, 30개 월간 지표, 6개 분기 데이터로 구성된 DFM 모형을 가정하면, $20 \times 5 + (5 + 4 \times 30 + 20 \times 6) = 345$개의 상태변수가 필요하여 모형 추정이 어려워짐.
-
 \subsubsection*{Big 데이터 DFM 모형 구성}
 
-\begin{table}[htbp]
+\FloatBarrier
+\begin{table}[H]
 \centering
 \small
 \begin{tabular}{lcc}
@@ -33,15 +28,19 @@
 \caption{Big 데이터 DFM 모형 변수 구성 (110개)}
 \label{tab:big_data_variables}
 \end{table}
-
+\FloatBarrier
 
 \subsubsection*{생산 부문 모형 변수 구성}
 
+\FloatBarrier
 \input{tables/tab_production_variables}
+\FloatBarrier
 
 \subsubsection*{투자 부문 모형 변수 구성}
 
+\FloatBarrier
 \input{tables/tab_investment_variables}
+\FloatBarrier
 
 \subsubsection*{Nowcasting 시각화 결과}
 
