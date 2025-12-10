@@ -2,16 +2,25 @@
 \centering
 \caption{Forecasting Results by Model-Target (Average across Horizons)}
 \label{tab:forecasting_results}
-\begin{tabular}{lcccccccccc}
+\small
+\begin{tabular}{lcccc}
 \toprule
- & \multicolumn{2}{c}{KOIPALL.G} & \multicolumn{2}{c}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
-\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
+Target & Model & sMAE & sMSE & MAE & MSE \\
 \midrule
-ARIMA & 23.92 & 571.96 & \textbf{15.62} & \textbf{244.13} & 18.03 & 325.21 \\
-VAR & \textbf{19.90} & \textbf{395.83} & 15.69 & 246.26 & \textbf{14.93} & \textbf{222.79} \\
-DFM & 23.90 & 570.97 & 15.63 & 244.24 & 18.02 & 324.70 \\
-DDFM & N/A & N/A & N/A & N/A & N/A & N/A \\
+\multirow{4}{*}{KOIPALL.G} & ARIMA & \textbf{24.57} & \textbf{603.52} & 473.21 & 223929.39 \\
+ & VAR & 58.75 & 3452.07 & \textbf{473.01} & \textbf{223734.83} \\
+ & DFM & 84.28 & 7742.36 & 398.83 & 173358.20 \\
+ & DDFM & 10.03 & 101.04 & 47.48 & 2263.61 \\
+\cmidrule(lr){1-6}
+\multirow{4}{*}{KOEQUIPTE} & ARIMA & \textbf{15.44} & \textbf{238.44} & 472.01 & 222828.13 \\
+ & VAR & 31.57 & 996.87 & \textbf{471.51} & \textbf{222354.05} \\
+ & DFM & 99.98 & 9999.70 & 472.22 & 223167.87 \\
+ & DDFM & 9.14 & 97.55 & 43.22 & 2180.22 \\
+\cmidrule(lr){1-6}
+\multirow{4}{*}{KOWRCCNSE} & ARIMA & \textbf{17.72} & \textbf{313.97} & 462.54 & 213948.13 \\
+ & VAR & 45.18 & 2041.05 & \textbf{462.40} & \textbf{213810.26} \\
+ & DFM & 190.11 & 88347.03 & 880.99 & 1900097.63 \\
+ & DDFM & 11.40 & 130.43 & 52.77 & 2793.45 \\
 \bottomrule
 \end{tabular}
 \end{table}

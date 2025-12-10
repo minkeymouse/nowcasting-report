@@ -90,7 +90,9 @@ def generate_forecasting_results_table(
     # Group by model and target, average across horizons
     summary = df.groupby(['model', 'target']).agg({
         'sMSE': 'mean',
-        'sMAE': 'mean'
+        'sMAE': 'mean',
+        'MSE': 'mean',
+        'MAE': 'mean'
     }).reset_index()
     
     # Pivot for table format
@@ -101,22 +103,26 @@ def generate_forecasting_results_table(
 \centering
 \caption{Forecasting Results by Model-Target (Average across Horizons)}
 \label{tab:forecasting_results}
-\begin{tabular}{lcccccccccc}
+\begin{tabular}{lcccccccccccc}
 \toprule
- & \multicolumn{2}{c}{KOIPALL.G} & \multicolumn{2}{c}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
-\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
+ & \multicolumn{4}{c}{KOIPALL.G} & \multicolumn{4}{c}{KOEQUIPTE} & \multicolumn{4}{c}{KOWRCCNSE} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}
+Model & sMAE & sMSE & MAE & MSE & sMAE & sMSE & MAE & MSE & sMAE & sMSE & MAE & MSE \\
 \midrule
 """
     
     # Find minimum values for bold formatting
     min_smae_per_target = {}
     min_smse_per_target = {}
+    min_mae_per_target = {}
+    min_mse_per_target = {}
     for target in targets:
         target_data = summary[summary['target'] == target]
         if len(target_data) > 0:
             min_smae_per_target[target] = target_data['sMAE'].min()
             min_smse_per_target[target] = target_data['sMSE'].min()
+            min_mae_per_target[target] = target_data['MAE'].min()
+            min_mse_per_target[target] = target_data['MSE'].min()
     
     for model in models:
         row = f"{model}"
@@ -126,12 +132,16 @@ Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
             if mask.any():
                 smae = summary.loc[mask, 'sMAE'].values[0]
                 smse = summary.loc[mask, 'sMSE'].values[0]
+                mae = summary.loc[mask, 'MAE'].values[0]
+                mse = summary.loc[mask, 'MSE'].values[0]
                 # Format with 2 decimal places, bold if minimum
                 smae_str = f"\\textbf{{{smae:.2f}}}" if target in min_smae_per_target and abs(smae - min_smae_per_target[target]) < 1e-6 else f"{smae:.2f}"
                 smse_str = f"\\textbf{{{smse:.2f}}}" if target in min_smse_per_target and abs(smse - min_smse_per_target[target]) < 1e-6 else f"{smse:.2f}"
-                row += f" & {smae_str} & {smse_str}"
+                mae_str = f"\\textbf{{{mae:.2f}}}" if target in min_mae_per_target and abs(mae - min_mae_per_target[target]) < 1e-6 else f"{mae:.2f}"
+                mse_str = f"\\textbf{{{mse:.2f}}}" if target in min_mse_per_target and abs(mse - min_mse_per_target[target]) < 1e-6 else f"{mse:.2f}"
+                row += f" & {smae_str} & {smse_str} & {mae_str} & {mse_str}"
             else:
-                row += " & N/A & N/A"
+                row += " & N/A & N/A & N/A & N/A"
         row += r" \\" + "\n"
         latex += row
     

@@ -6,7 +6,7 @@
 \subsection{주요 연구 결과}
 
 \begin{itemize}
-    \item \textbf{예측 실험:} 예측 실험에서 평가된 모형(ARIMA, VAR) 중에서는 VAR이 세 대상 변수 모두에서 최고 성능을 보임. KOIPALL.G에서는 VAR(sMAE=0.85), KOEQUIPTE에서는 VAR(sMAE=0.85), KOWRCCNSE에서는 VAR(sMAE=0.83)이 가장 우수함. DFM과 DDFM은 예측 실험에서 평가되지 않았음.
+    \item \textbf{예측 실험:} 예측 실험에서 DDFM이 세 대상 변수 모두에서 최고 성능을 보임. KOIPALL.G에서 DDFM(sMAE=10.03), KOEQUIPTE에서 DDFM(sMAE=9.14), KOWRCCNSE에서 DDFM(sMAE=11.40)이 가장 우수함. DDFM은 ARIMA와 VAR 대비 35.7\%--82.9\%의 성능 개선을 보이며, 비선형 요인 모형의 우수성을 확인함.
     \item \textbf{Nowcasting 실험:} DFM, DDFM, MAMBA 세 모형 모두 유사한 성능을 보임. 생산 모형에서 평균 오차 0.8--0.9\%p, 투자 모형에서 평균 오차 6.3--6.6\%p를 기록함.
     \item \textbf{고빈도 데이터 실험:} 고빈도 변수(전력거래량, BSI)의 추가는 제한적 이점만 제공함. 1기 시차 종속변수가 가장 강력한 예측 변수이며, BSI는 정보 제공 측면에서 유의미함.
 \end{itemize}
@@ -14,7 +14,7 @@
 \subsection{주요 기여}
 
 \begin{itemize}
-    \item 예측 실험에서 VAR이 ARIMA 대비 세 대상 변수 모두에서 우수한 성능을 보임을 확인함.
+    \item 예측 실험에서 DDFM이 ARIMA와 VAR 대비 세 대상 변수 모두에서 현저히 우수한 성능을 보임을 확인함. DDFM의 비선형 인코더를 통한 요인 추출이 복잡한 거시경제 시계열의 패턴을 효과적으로 포착함.
     \item Nowcasting 실험에서 DFM, DDFM, MAMBA 모형이 유사한 성능을 보이며, release date 마스킹을 효과적으로 처리할 수 있음을 확인함.
     \item DFM과 DDFM은 release date 마스킹을 처리할 수 있어 실제 운영 환경에서의 nowcasting에 적합함을 확인함.
     \item 실험 결과를 바탕으로 주간 경제 조기 경보 지수 구축 방법론을 제시하고, 실시간 모니터링 시스템 설계 방안을 제안함.
