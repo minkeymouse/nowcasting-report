@@ -30,13 +30,27 @@
 
 \textbf{데이터 전처리}
 \begin{itemize}
-    \item \textbf{변환:} 시계열별 변환 유형('lin', 'log', 'chg' 등) 적용
-    \item \textbf{결측치 처리:} forward-fill $\to$ backward-fill $\to$ naive forecaster 순차 적용
+    \item \textbf{변환:} 각 시계열의 특성에 따라 적절한 변환을 적용함. 변환 유형은 다음과 같음:
+    \begin{itemize}
+        \item \textbf{lin (linear):} 변환 없이 원본 수준값 사용
+        \item \textbf{log:} 로그 변환으로 비율 변화를 선형화하고 분산 안정화
+        \item \textbf{chg (change):} 전기 대비 차분으로 정상성 확보 (월간: 1개월 차분, 주간: 1주 차분, 분기: 1분기 차분)
+        \item \textbf{ch1:} 전년동기 대비 차분으로 계절성 제거 (월간: 12개월 차분, 주간: 52주 차분, 분기: 4분기 차분)
+        \item \textbf{pch (percent change):} 전기 대비 성장률 (백분율, 1기 시차)
+        \item \textbf{pc1:} 전년동기 대비 성장률 (백분율, 연간 시차)
+        \item \textbf{cha (change annualized):} 연율화 차분 변환
+        \item \textbf{pca (percent change annualized):} 연율화 성장률 변환
+    \end{itemize}
+    각 시계열의 변환 유형은 시계열의 특성(수준값/성장률, 계절성, 추세 등)을 고려하여 설정되며, 시계열별 설정 파일(config/series/\{series\_id\}.yaml)에서 관리됨. 변환은 원본 시계열의 주파수(주간/월간/분기)에서 적용되며, 이후 주파수 변환(리샘플링)이 수행됨. 예를 들어, 월간 시계열에 대해 'ch1' 변환을 적용하면 12개월 차분이 계산되고, 주간 시계열에 대해서는 52주 차분이 계산됨.
+    \item \textbf{주파수 변환:} 모형의 요구사항에 따라 주파수 변환이 수행됨. ARIMA와 VAR 모형의 경우 주간 데이터를 월간으로 리샘플링하며, 이는 각 월에 속한 주간 관측값의 평균을 사용함. DFM과 DDFM의 경우, 모형 설정에 따라 주간 클럭(clock='w')을 사용하면 주간 데이터를 그대로 유지하고, 월간 클럭을 사용하면 주간 데이터를 월간으로 리샘플링함. 혼합 주기 모형의 경우 주간 클럭을 사용하며, tent kernel을 통해 자동으로 주간/월간 데이터를 통합 처리함.
+    \item \textbf{결측치 처리:} forward-fill $\to$ backward-fill $\to$ naive forecaster 순차 적용. 먼저 전방 채움(forward-fill)을 적용하고, 여전히 결측치가 남아있는 경우 후방 채움(backward-fill)을 적용하며, 마지막으로 naive forecaster(마지막 관측값 사용)를 적용함. 모든 방법을 적용한 후에도 결측치가 남아있는 행은 제거됨. 결측치 처리는 변환 및 주파수 변환 이후에 수행되며, 각 시계열별로 독립적으로 적용됨.
+    \item \textbf{인덱스 정규화:} 시계열 데이터의 인덱스를 DatetimeIndex로 정규화하고, 중복된 날짜가 있는 경우 마지막 값을 유지함. 주파수 정보가 없는 경우 자동으로 추론하여 설정함.
     \item \textbf{표준화:}
     \begin{itemize}
-        \item ARIMA/VAR: 원본 스케일 유지
-        \item DFM/DDFM: StandardScaler 적용 (평균 0, 표준편차 1)
+        \item ARIMA/VAR: 원본 스케일 유지 (표준화 미적용)
+        \item DFM/DDFM: RobustScaler 적용. RobustScaler는 중앙값(median)을 0으로, 사분위수 범위(IQR, Interquartile Range)를 1로 조정하여 이상치에 강건한 표준화를 수행함. 이는 StandardScaler(평균과 표준편차 기반) 대비 이상치의 영향을 덜 받아 안정적인 전처리를 제공함. 표준화는 변환, 주파수 변환, 결측치 처리 이후에 수행되며, 훈련 데이터에 맞춰 학습된 스케일러를 테스트 데이터에 동일하게 적용함.
     \end{itemize}
+    \item \textbf{혼합 주기 처리:} 주간 데이터와 월간 데이터를 함께 활용하는 경우, DFM의 기본 주파수를 주간('w')으로 설정하고 tent kernel을 통해 자동으로 혼합 주기 변환이 수행됨. 월간 데이터는 주간 인덱스에 배치되며(월말에 해당하는 주에 배치), tent kernel이 주간 데이터를 월간 수준으로 집계함. 이 과정에서 Mariano \& Murasawa (2003) 방법을 따르며, 월간 전월대비 상승률은 주간 전월비 상승률 4개의 평균값으로 표현됨.
 \end{itemize}
 
 \textbf{추가 데이터셋(실험 미활용)}
@@ -139,6 +153,7 @@
 
 \subsubsection{고빈도 변수 실험}
 \begin{itemize}
-    \item 주요 모형(DFM, DDFM)은 다변량 고차원 데이터를 활용하는 반면, 고빈도 지표(전력거래량, BSI)의 단일변수 예측에서의 활용 가능성을 탐색하기 위해 실험을 수행함. 이 실험은 전산업생산지수(KOIPALL.G) 단일변수에 대해 MIDAS-AR(1), AR(1) 벤치마크, 선형 ARX, 그리고 XGBoost 기반 비선형 모형을 비교함. 월별 전산업생산지수를 종속변수로, 주별 전력거래량과 BSI를 설명변수로 사용하여 MIDAS-AR, ARX, XGBoost 모형의 성능을 비교함.
+    \item 주요 모형(DFM, DDFM)은 다변량 고차원 데이터를 활용하는 반면, 고빈도 지표(전력거래량, BSI)의 단일변수 예측에서의 활용 가능성을 탐색하기 위해 실험을 수행함.
+    \item 이 실험은 전산업생산지수(KOIPALL.G) 단일변수에 대해 MIDAS-AR(1), AR(1) 벤치마크, 선형 ARX, 그리고 XGBoost 기반 비선형 모형을 비교함. 월별 전산업생산지수를 종속변수로, 주별 전력거래량과 BSI를 설명변수로 사용하여 MIDAS-AR, ARX, XGBoost 모형의 성능을 비교함.
 \end{itemize}
 
