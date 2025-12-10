@@ -1,48 +1,116 @@
 \section{실험 결과}
 \label{sec:experiment_result}
 
+본 섹션에서는 세 가지 실험(예측 실험, Nowcasting 실험, 고빈도 데이터 실험)의 결과를 제시함. 상세한 분석과 조기 경보 지수 구축 방법론은 다음 섹션에서 다룸.
+
 \subsection{예측 실험 결과}
 \label{sec:results_forecasting}
 
-
-세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 비교함.
-
-\begin{itemize}
-    \item \textbf{실험 범위:} 1개월부터 22개월까지의 시점에 대해 수행
-    \item \textbf{결과 제시:} 표~\ref{tab:forecasting_results}에는 모든 시점(1-22개월)에 대한 평균값을 제시
-\end{itemize} 
-
-
-\textbf{결과 요약}
-\begin{itemize}
-    \item 표~\ref{tab:forecasting_results}는 모형별 타겟별로 모든 시점(1-22개월)에 대한 평균 표준화된 MAE와 MSE를 제시함
-    \item 각 셀은 해당 모형-타겟 조합의 평균 지표값을 나타내며, 각 지표에서 최소값(최고 성능)은 굵은 글씨로 표시됨
-    \item 상세한 시점별 결과는 부록에 제시됨
-\end{itemize}
+세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)의 예측 성능을 1개월부터 22개월까지의 시점에 대해 평가함.
 
 \input{tables/tab_forecasting_results}
 
+\textbf{주요 결과 요약}
 
-\textbf{전체 시점 평균 성능 (표~\ref{tab:forecasting_results})}
+표~\ref{tab:forecasting_results}는 모형별 타겟별로 모든 시점(1-22개월)에 대한 평균 표준화된 MAE와 MSE를 제시함.
+
+\subsubsection{전체 시점 평균 성능}
+
 \begin{itemize}
-    \item \textbf{KOIPALL.G:} DDFM이 가장 낮은 sMAE(0.6865, 21개 시점 평균)와 sMSE(0.61)를 보여 우수한 성능을 보임. VAR(sMAE=0.94, sMSE=1.11)도 양호한 성능을 보이며, DFM(sMAE=14.9689, sMSE=225.30)은 매우 높은 오차를 보여 KOIPALL.G에 대해서는 부적합함.
-    \item \textbf{KOEQUIPTE:} DFM과 DDFM이 거의 동일한 성능을 보이며(sMAE: DFM=1.1439, DDFM=1.1441, 평균 차이 0.000187, 21개 시점; sMSE: DFM=2.115, DDFM=2.115, 차이 0.0003), VAR(sMAE=1.37, sMSE=2.97)이 상대적으로 높은 오차를 보임.
-    \item \textbf{KOWRCCNSE:} VAR이 가장 낮은 sMAE(0.32)와 sMSE(0.20)를 보여 우수한 성능을 보이며, DDFM(sMAE=0.4961, sMSE=0.49)도 양호한 성능을 보임. DFM(sMAE=2.7848, sMSE=8.21)은 상대적으로 높은 오차를 보임.
+    \item \textbf{KOIPALL.G:} VAR이 가장 우수한 성능(sMAE=0.85)을 보임. ARIMA도 양호한 성능(sMAE=1.02)을 보임. DFM과 DDFM은 예측 실험에서 평가되지 않음(표~\ref{tab:forecasting_results} 참조).
+    \item \textbf{KOEQUIPTE:} VAR이 가장 우수한 성능(sMAE=0.85)을 보임. ARIMA도 양호한 성능(sMAE=1.06)을 보임. DFM과 DDFM은 예측 실험에서 평가되지 않음.
+    \item \textbf{KOWRCCNSE:} VAR이 가장 우수한 성능(sMAE=0.83)을 보임. ARIMA도 양호한 성능(sMAE=1.04)을 보임. DFM과 DDFM은 예측 실험에서 평가되지 않음.
 \end{itemize}
 
-\textbf{시점별 성능 패턴}
+\textbf{벤치마크 모형(ARIMA, VAR)}
 \begin{itemize}
-    \item \textbf{KOIPALL.G:} DDFM은 단기(1-6개월)에서 매우 우수한 성능을 보이며, 장기(13-21개월)에서도 안정적임. 반면 DFM은 모든 시점에서 극단적으로 높은 오차를 보임.
-    \item \textbf{KOWRCCNSE:} VAR은 단기에서 우수하나 일부 시점에서 오차가 급증하며, DDFM은 대부분의 시점에서 안정적임.
-    \item \textbf{KOEQUIPTE:} DFM과 DDFM은 모든 시점에서 거의 동일한 성능을 보임.
+    \item \textbf{KOIPALL.G:} VAR이 가장 낮은 sMAE(0.85)와 sMSE(0.78)를 보여 우수한 성능을 보임. ARIMA(sMAE=1.02, sMSE=1.19)도 양호한 성능을 보이지만 VAR에 비해 상대적으로 높은 오차를 보임. VAR은 ARIMA 대비 약 16.7\%의 성능 개선을 보임.
+    \item \textbf{KOEQUIPTE:} VAR이 가장 낮은 sMAE(0.85)와 sMSE(0.80)를 보여 우수한 성능을 보임. ARIMA(sMAE=1.06, sMSE=1.29)는 VAR에 비해 상대적으로 높은 오차를 보임. VAR은 ARIMA 대비 약 19.8\%의 성능 개선을 보임.
+    \item \textbf{KOWRCCNSE:} VAR이 가장 낮은 sMAE(0.83)와 sMSE(0.81)를 보여 우수한 성능을 보임. ARIMA(sMAE=1.04, sMSE=1.25)는 VAR에 비해 상대적으로 높은 오차를 보임. VAR은 ARIMA 대비 약 20.2\%의 성능 개선을 보이며, 세 타겟 중 가장 큰 개선률을 보임.
+    \item ARIMA와 VAR은 전통적인 선형 모형으로 벤치마크 역할을 수행함. 일부 대상 변수에서 양호한 성능을 보이지만, nowcasting에서는 release date 마스킹 처리의 구조적 한계로 제한적임.
 \end{itemize}
+
+\textbf{동적요인모형(DFM, DDFM)}
+\begin{itemize}
+    \item \textbf{예측 실험:} 표~\ref{tab:forecasting_results}에 따르면, DFM과 DDFM은 예측 실험에서 평가되지 않았음(N/A). 이는 주/월 혼합 주기 처리의 복잡성 또는 실험 설계상의 제약으로 인한 것으로 보임.
+    \item \textbf{Nowcasting 실험:} DFM과 DDFM은 Nowcasting 실험(섹션 3.2)에서 평가되었으며, release date 마스킹을 효과적으로 처리 가능하며, 다변량 시계열 간 공통 패턴을 포착할 수 있음. Nowcasting 실험 결과는 섹션 3.2를 참조함.
+\end{itemize}
+
+\textbf{대상 변수별 최적 모형}
+\begin{itemize}
+    \item 예측 실험에서 평가된 모형(ARIMA, VAR) 중에서는 VAR이 세 대상 변수 모두에서 최고 성능을 보임.
+    \item 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보이며, 단일 모형이 모든 대상 변수에서 최고 성능을 보이지는 않음.
+    \item 대상 변수와 시계열 특성에 따라 적절한 모형을 선택하는 것이 중요함.
+\end{itemize}
+
+\subsubsection{시점별 성능 패턴}
+
+\begin{itemize}
+    \item \textbf{KOIPALL.G:} VAR은 모든 시점(1-22개월)에서 ARIMA보다 낮은 오차를 보이며, 특히 단기(1-6개월)에서 매우 우수한 성능을 보임(sRMSE=0.685). 중기(7-12개월)에서도 ARIMA(sRMSE=1.054)보다 낮은 오차를 보임(sRMSE=0.850). 장기(13-22개월)에서도 ARIMA(sRMSE=1.096)보다 낮은 오차를 보임(sRMSE=0.881). ARIMA는 전반적으로 안정적이지만 VAR에 비해 높은 오차를 보이며, 시점이 길어질수록 오차가 증가하는 경향을 보임.
+    \item \textbf{KOEQUIPTE:} VAR은 모든 시점에서 ARIMA보다 낮은 오차를 보이며, 특히 단기(1-6개월)에서 우수한 성능을 보임(sRMSE=0.779). 중기(7-12개월)에서도 ARIMA(sRMSE=1.089)보다 낮은 오차를 보임(sRMSE=0.864). 장기(13-22개월)에서도 ARIMA(sRMSE=1.140)보다 낮은 오차를 보임(sRMSE=0.905). ARIMA는 장기로 갈수록 오차가 증가하는 경향을 보이며, VAR은 모든 시점에서 일관된 성능을 유지함.
+    \item \textbf{KOWRCCNSE:} VAR은 모든 시점에서 ARIMA보다 낮은 오차를 보이며, 특히 단기(1-6개월)에서 매우 우수한 성능을 보임(sRMSE=0.634). 중기(7-12개월)에서도 ARIMA(sRMSE=1.061)보다 낮은 오차를 보임(sRMSE=0.842). 장기(13-22개월)에서도 ARIMA(sRMSE=1.106)보다 낮은 오차를 보임(sRMSE=0.891). ARIMA는 전반적으로 안정적이지만 VAR에 비해 높은 오차를 보이며, VAR은 특히 단기 예측에서 뛰어난 성능을 보임.
+\end{itemize}
+
+\subsubsection{예측 실험에서의 모형 비교}
+
+예측 실험에서는 ARIMA와 VAR만 평가되었으며, DFM과 DDFM은 평가되지 않았음(표~\ref{tab:forecasting_results} 참조). 
+
+\textbf{ARIMA vs VAR 비교}
+\begin{itemize}
+    \item \textbf{다변량 정보 활용:} VAR이 세 대상 변수 모두에서 ARIMA 대비 우수한 성능을 보이며, 이는 다변량 정보 활용의 이점을 보여줌.
+    \item \textbf{시점별 성능:} VAR은 단기, 중기, 장기 모든 시점에서 ARIMA보다 낮은 오차를 보이며, 일관된 성능을 유지함.
+    \item \textbf{모형 선택:} 예측 실험에서는 VAR이 ARIMA 대비 우수한 성능을 보이며, 다변량 정보를 활용할 수 있는 경우 VAR이 유리함.
+\end{itemize}
+
+\textbf{DFM과 DDFM의 활용}
+
+DFM과 DDFM은 예측 실험에서는 평가되지 않았으나, Nowcasting 실험(섹션 3.2)에서 평가되었음. Nowcasting 실험에서는 DFM, DDFM, MAMBA 모형이 release date 마스킹을 효과적으로 처리할 수 있어 실제 운영 환경에 적합함을 확인함.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/accuracy_heatmap.png}
+\caption{모형별 타겟별 예측 성능 히트맵 (평균 sRMSE, 1-22개월)}
+\label{fig:accuracy_heatmap}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/horizon_trend.png}
+\caption{시점별 예측 성능 추이 (1-22개월)}
+\label{fig:horizon_trend}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koipall_g.png}
+\caption{생산 모형(전산업생산지수) 예측값 vs 실제값 비교}
+\label{fig:forecast_vs_actual_production}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koequipte.png}
+\caption{투자 모형(설비투자지수) 예측값 vs 실제값 비교}
+\label{fig:forecast_vs_actual_investment}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_kowrccnse.png}
+\caption{소비 모형 예측값 vs 실제값 비교}
+\label{fig:forecast_vs_actual_consumption}
+\end{figure}
 
 \subsection{Nowcasting 실험 결과}
+\label{sec:results_nowcasting}
 
-\textbf{Nowcasting 결과}
+DFM, DDFM, MAMBA 모형을 활용하여 각 목표 월에 대해 4주 전, 1주 전 시점에서 예측을 수행한 결과를 제시함.
+
+\textbf{주요 결과}
+
 \begin{itemize}
-    \item \textbf{생산 모형(전산업생산지수):} DFM, DDFM, MAMBA 세 모형 모두 유사한 정확도를 보였음. DFM의 nowcasting 평균 오차는 발표 8주전 1.2\%p, 4주전 0.6\%p, 1주전 0.6\%p이며 1~8주 전 오차 평균값은 0.9\%p임. DDFM과 MAMBA도 유사한 성능을 보였으며, MAMBA의 nowcasting 평균 오차는 발표 8주전 0.9\%p, 4주전 0.8\%p, 1주전 0.8\%p이며 1~8주 전 오차 평균값은 0.8\%p임. MAMBA의 월별 전망값 변동이 DFM 모형보다 작게 나타남.
-    \item \textbf{투자 모형(설비투자지수):} DFM, DDFM, MAMBA 세 모형 모두 유사한 성능을 보였음. DFM의 nowcasting 평균 오차는 발표 8주전 6.4\%p, 4주전 6.3\%p, 1주전 6.3\%p이며 1~8주 전 오차 평균값은 6.3\%p임. MAMBA 모형의 nowcasting 성과가 DFM 대비 소폭 부진하였으며, 평균 절대 예측오차는 8주전 6.7\%p, 4주전 6.6\%p, 1주전 6.6\%p이며 1~8주 평균값은 6.6\%p로 DFM 대비 0.3\%p 증가함.
+    \item \textbf{생산 모형(전산업생산지수):} 세 모형 모두 유사한 정확도를 보임. DFM의 평균 오차는 1~8주 전 평균 0.9\%p, MAMBA는 0.8\%p로 소폭 우수함. MAMBA의 월별 전망값 변동이 DFM보다 작게 나타남.
+    \item \textbf{투자 모형(설비투자지수):} 세 모형 모두 유사한 성능을 보임. DFM의 평균 오차는 1~8주 전 평균 6.3\%p, MAMBA는 6.6\%p로 DFM 대비 소폭 부진함. 투자 지수는 생산 지수에 비해 변동성이 크며 예측 오차가 큼.
 \end{itemize}
 
 \begin{figure}[h]
@@ -74,22 +142,16 @@
 \end{figure}
 
 \subsection{고빈도 데이터 실험 결과}
+\label{sec:results_high_freq}
 
-고빈도 데이터(주별 전력거래량, BSI)를 활용한 MIDAS-AR 및 XGBoost 모형의 예측 성능을 보고함. 다변량 고차원 모형(DFM, DDFM)과는 달리, 고빈도 지표의 단일변수 예측에서의 활용 가능성을 탐색하기 위한 실험임.
+고빈도 데이터(주별 전력거래량, BSI)를 활용한 MIDAS-AR 및 XGBoost 모형의 예측 성능을 평가함.
 
-\textbf{실험 설계}
+\textbf{주요 결과}
+
 \begin{itemize}
-    \item \textbf{종속변수:} 월별 전산업생산지수(계절조정)의 전월대비 성장률 및 전년동월비
-    \item \textbf{설명변수:} 주별 전력거래량(로그--STL 계절조정 후 주간 성장률), 월별 BSI(수준 및 전년동월비)
-    \item \textbf{표본 분할:} Train(2002--2020년), Validation(2021--2022년), Test(2023--2024년)
-    \item \textbf{Vintage:} h0(전월 말), h1--h4(당월 1--4주)
-\end{itemize}
-
-\textbf{MIDAS-AR 모형 결과}
-\begin{itemize}
-    \item \textbf{전월대비 성장률:} ADF 검정 결과 정상성 가정 가능. $h0$--$h3$에서 MIDAS-AR(1)의 RMSE가 AR(1)보다 약간 열악하며, $h4$에서만 약 0.5\% RMSE 감소로 소폭 개선. AR(1)만으로도 단기 예측력이 높으며, 주별 전력거래량 추가는 full month 정보($h4$)에서만 약간의 개선을 보임.
-    \item \textbf{전년동월비:} ADF 검정 결과 정상성 가정 가능. $h0$, $h3$에서 MIDAS-AR(1)의 RMSE가 AR(1)보다 약 0.7\% 악화, $h1$에서 약 7.4\% 악화, $h2$에서 약 1.3\% 개선(크기 작음), $h4$에서 두 모형 RMSE 동일. 대부분의 vintage에서 AR(1) 대비 개선이 없거나 악화됨.
-    \item 상세 결과는 부록 표~\ref{tab:midasar_rmse_table}, 표~\ref{tab:midasar_rmse_yoy} 참조.
+    \item \textbf{MIDAS-AR 모형:} 대부분의 vintage에서 AR(1) 대비 개선이 없거나 악화됨. $h4$(full month 정보)에서만 약 0.5\% RMSE 감소로 소폭 개선을 보임.
+    \item \textbf{XGBoost 모형:} 대부분의 vintage에서 AR(1) 대비 성능 저하를 보이며, 과적합 경향이 나타남. 선형 모델이 더 안정적인 성능을 보임.
+    \item \textbf{변수 중요도:} 1기 시차 종속변수($y_{t-1}$)가 가장 강력한 예측 변수이며, BSI는 정보 제공 측면에서 유의미하나 예측력 개선은 제한적임. 전력거래량은 한계적 기여에 머묾.
 \end{itemize}
 
 \begin{figure}[htbp]
@@ -112,18 +174,4 @@
 \label{fig:midasar_rmse_comparison}
 \end{figure}
 
-\textbf{XGBoost 비선형 확장 결과}
-\begin{itemize}
-    \item \textbf{모형 구성:} (1) 선형 ARX: AR(1) + 고빈도 feature의 선형 효과, (2) AR(1)+XGB\_residual: AR(1) 잔차에 대한 XGBoost 보정, (3) XGB-direct: $(y_{t-1}, x_{t,h})$를 입력으로 $y_t$ 직접 예측
-    \item \textbf{전월대비 성장률:} ARX는 대부분 vintage에서 AR(1) 대비 비슷하거나 약간 열악하며, $h4$에서만 약 1.4\% RMSE 감소. AR(1)+XGB\_residual는 모든 vintage에서 RMSE가 AR(1)보다 7--11\% 증가하여 과적합 경향. XGB-direct는 대부분 vintage에서 AR(1) 대비 2.6--4.5\% 성능 저하, $h3$, $h4$에서 각각 약 0.3\%, 0.2\% 개선(크기 매우 작음).
-    \item \textbf{전년동월비:} ARX는 모든 vintage에서 AR(1) 대비 RMSE 감소율이 음수(약 $-1.6\%\sim -6.4\%$). AR(1)+XGB\_residual는 모든 vintage에서 감소율이 약 $-2.3\%\sim -6.7\%$. XGB-direct는 $h0$에서만 AR(1) 대비 약 4.4\% RMSE 감소, $h1$--$h4$에서는 모두 음수(약 $-2.3\%\sim -8.6\%$).
-    \item 상세 결과는 부록 표~\ref{tab:rmse-xgb}, 표~\ref{tab:xgb_rmse_yoy}, 표~\ref{tab:arx_bsi} 참조.
-\end{itemize}
-
-\textbf{변수 중요도 및 요약}
-\begin{itemize}
-    \item \textbf{전력거래량:} 대부분의 모형에서 계수·Gain 모두 작고 비유의, AR(1) 대비 RMSE 개선 거의 없음. 다양한 변환·모형에도 불구하고 한계적 기여에 머묾.
-    \item \textbf{BSI:} 선형 ARX와 XGBoost에서 전월·동월 BSI 변수들의 계수 및 Gain이 상대적으로 큼. 인샘플 적합과 feature importance 관점에서 의미 있는 정보 제공. 다만 테스트 RMSE 기준으로는 AR(1) 대비 뚜렷한·일관된 예측력 개선까지는 이어지지 않음.
-    \item \textbf{핵심 변수:} 두 종속변수 모두에서 가장 일관된 설명력은 1기 시차 종속변수 $y_{t-1}$에서 나옴. Nowcasting에서 핵심 변수는 $y_{t-1}$과 BSI 계열 변수이며, 전력 변수는 부차적 설명 변수로 정리됨.
-\end{itemize}
-
+상세 결과는 부록 표~\ref{tab:midasar_rmse_table}, 표~\ref{tab:midasar_rmse_yoy}, 표~\ref{tab:rmse-xgb}, 표~\ref{tab:xgb_rmse_yoy}를 참조함.

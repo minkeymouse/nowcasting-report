@@ -109,6 +109,15 @@ Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
 \midrule
 """
     
+    # Find minimum values for bold formatting
+    min_smae_per_target = {}
+    min_smse_per_target = {}
+    for target in targets:
+        target_data = summary[summary['target'] == target]
+        if len(target_data) > 0:
+            min_smae_per_target[target] = target_data['sMAE'].min()
+            min_smse_per_target[target] = target_data['sMSE'].min()
+    
     for model in models:
         row = f"{model}"
         for target in targets:
@@ -117,8 +126,10 @@ Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
             if mask.any():
                 smae = summary.loc[mask, 'sMAE'].values[0]
                 smse = summary.loc[mask, 'sMSE'].values[0]
-                # Format with 2 decimal places
-                row += f" & {smae:.2f} & {smse:.2f}"
+                # Format with 2 decimal places, bold if minimum
+                smae_str = f"\\textbf{{{smae:.2f}}}" if target in min_smae_per_target and abs(smae - min_smae_per_target[target]) < 1e-6 else f"{smae:.2f}"
+                smse_str = f"\\textbf{{{smse:.2f}}}" if target in min_smse_per_target and abs(smse - min_smse_per_target[target]) < 1e-6 else f"{smse:.2f}"
+                row += f" & {smae_str} & {smse_str}"
             else:
                 row += " & N/A & N/A"
         row += r" \\" + "\n"

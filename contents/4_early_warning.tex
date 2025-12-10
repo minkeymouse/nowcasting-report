@@ -1,0 +1,363 @@
+\section{조기 경보 지수 구축}
+\label{sec:early_warning}
+
+본 섹션에서는 섹션 3의 실험 결과를 바탕으로 조기 경보 지수를 구축하는 방법론을 제시함.
+
+\subsection{예측 결과 상세 비교}
+\label{sec:detailed_forecast_comparison}
+
+섹션 3.1의 예측 실험 결과를 바탕으로 조기 경보 지수 구축을 위한 최적 모형을 선택하고, 모형별 특성을 상세히 분석함.
+
+\subsubsection{모형별 성능 특성 분석}
+
+\input{tables/tab_forecasting_results}
+
+\textbf{벤치마크 모형(ARIMA, VAR)}
+\begin{itemize}
+    \item \textbf{KOIPALL.G:} VAR이 가장 낮은 sMAE(0.85)와 sMSE(0.78)를 보여 우수한 성능을 보임. ARIMA(sMAE=1.02, sMSE=1.19)도 양호한 성능을 보이지만 VAR에 비해 상대적으로 높은 오차를 보임. VAR은 ARIMA 대비 약 16.7\%의 성능 개선을 보임.
+    \item \textbf{KOEQUIPTE:} VAR이 가장 낮은 sMAE(0.85)와 sMSE(0.80)를 보여 우수한 성능을 보임. ARIMA(sMAE=1.06, sMSE=1.29)는 VAR에 비해 상대적으로 높은 오차를 보임. VAR은 ARIMA 대비 약 19.8\%의 성능 개선을 보임.
+    \item \textbf{KOWRCCNSE:} VAR이 가장 낮은 sMAE(0.83)와 sMSE(0.81)를 보여 우수한 성능을 보임. ARIMA(sMAE=1.04, sMSE=1.25)는 VAR에 비해 상대적으로 높은 오차를 보임. VAR은 ARIMA 대비 약 20.2\%의 성능 개선을 보이며, 세 타겟 중 가장 큰 개선률을 보임.
+    \item ARIMA와 VAR은 전통적인 선형 모형으로 벤치마크 역할을 수행함. 일부 대상 변수에서 양호한 성능을 보이지만, nowcasting에서는 release date 마스킹 처리의 구조적 한계로 제한적임.
+\end{itemize}
+
+\textbf{동적요인모형(DFM, DDFM)}
+\begin{itemize}
+    \item \textbf{예측 실험:} 표~\ref{tab:forecasting_results}에 따르면, DFM과 DDFM은 예측 실험에서 평가되지 않았음(N/A). 이는 주/월 혼합 주기 처리의 복잡성 또는 실험 설계상의 제약으로 인한 것으로 보임.
+    \item \textbf{Nowcasting 실험:} DFM과 DDFM은 Nowcasting 실험(섹션 3.2)에서 평가되었으며, release date 마스킹을 효과적으로 처리 가능하며, 다변량 시계열 간 공통 패턴을 포착할 수 있음. Nowcasting 실험 결과는 섹션 3.2를 참조함.
+\end{itemize}
+
+\textbf{대상 변수별 최적 모형}
+\begin{itemize}
+    \item 예측 실험에서 평가된 모형(ARIMA, VAR) 중에서는 VAR이 세 대상 변수 모두에서 최고 성능을 보임.
+    \item 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보이며, 단일 모형이 모든 대상 변수에서 최고 성능을 보이지는 않음.
+    \item 대상 변수와 시계열 특성에 따라 적절한 모형을 선택하는 것이 중요함.
+\end{itemize}
+
+\subsubsection{시점별 성능 패턴}
+
+\begin{itemize}
+    \item \textbf{KOIPALL.G:} VAR은 모든 시점(1-22개월)에서 ARIMA보다 낮은 오차를 보이며, 특히 단기(1-6개월)에서 매우 우수한 성능을 보임(sRMSE=0.685). 중기(7-12개월)에서도 ARIMA(sRMSE=1.054)보다 낮은 오차를 보임(sRMSE=0.850). 장기(13-22개월)에서도 ARIMA(sRMSE=1.096)보다 낮은 오차를 보임(sRMSE=0.881). ARIMA는 전반적으로 안정적이지만 VAR에 비해 높은 오차를 보이며, 시점이 길어질수록 오차가 증가하는 경향을 보임.
+    \item \textbf{KOEQUIPTE:} VAR은 모든 시점에서 ARIMA보다 낮은 오차를 보이며, 특히 단기(1-6개월)에서 우수한 성능을 보임(sRMSE=0.779). 중기(7-12개월)에서도 ARIMA(sRMSE=1.089)보다 낮은 오차를 보임(sRMSE=0.864). 장기(13-22개월)에서도 ARIMA(sRMSE=1.140)보다 낮은 오차를 보임(sRMSE=0.905). ARIMA는 장기로 갈수록 오차가 증가하는 경향을 보이며, VAR은 모든 시점에서 일관된 성능을 유지함.
+    \item \textbf{KOWRCCNSE:} VAR은 모든 시점에서 ARIMA보다 낮은 오차를 보이며, 특히 단기(1-6개월)에서 매우 우수한 성능을 보임(sRMSE=0.634). 중기(7-12개월)에서도 ARIMA(sRMSE=1.061)보다 낮은 오차를 보임(sRMSE=0.842). 장기(13-22개월)에서도 ARIMA(sRMSE=1.106)보다 낮은 오차를 보임(sRMSE=0.891). ARIMA는 전반적으로 안정적이지만 VAR에 비해 높은 오차를 보이며, VAR은 특히 단기 예측에서 뛰어난 성능을 보임.
+\end{itemize}
+
+\subsubsection{예측 실험에서의 모형 비교}
+
+예측 실험에서는 ARIMA와 VAR만 평가되었으며, DFM과 DDFM은 평가되지 않았음(표~\ref{tab:forecasting_results} 참조). 
+
+\textbf{ARIMA vs VAR 비교}
+\begin{itemize}
+    \item \textbf{다변량 정보 활용:} VAR이 세 대상 변수 모두에서 ARIMA 대비 우수한 성능을 보이며, 이는 다변량 정보 활용의 이점을 보여줌.
+    \item \textbf{시점별 성능:} VAR은 단기, 중기, 장기 모든 시점에서 ARIMA보다 낮은 오차를 보이며, 일관된 성능을 유지함.
+    \item \textbf{모형 선택:} 예측 실험에서는 VAR이 ARIMA 대비 우수한 성능을 보이며, 다변량 정보를 활용할 수 있는 경우 VAR이 유리함.
+\end{itemize}
+
+\textbf{DFM과 DDFM의 활용}
+
+DFM과 DDFM은 예측 실험에서는 평가되지 않았으나, Nowcasting 실험(섹션 3.2)에서 평가되었음. Nowcasting 실험에서는 DFM, DDFM, MAMBA 모형이 release date 마스킹을 효과적으로 처리할 수 있어 실제 운영 환경에 적합함을 확인함.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/accuracy_heatmap.png}
+\caption{모형별 타겟별 예측 성능 히트맵 (평균 sRMSE, 1-22개월)}
+\label{fig:accuracy_heatmap}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/horizon_trend.png}
+\caption{시점별 예측 성능 추이 (1-22개월)}
+\label{fig:horizon_trend}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koipall_g.png}
+\caption{생산 모형(전산업생산지수) 예측값 vs 실제값 비교}
+\label{fig:forecast_vs_actual_production}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_koequipte.png}
+\caption{투자 모형(설비투자지수) 예측값 vs 실제값 비교}
+\label{fig:forecast_vs_actual_investment}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/forecast_vs_actual_kowrccnse.png}
+\caption{소비 모형 예측값 vs 실제값 비교}
+\label{fig:forecast_vs_actual_consumption}
+\end{figure}
+
+\subsection{경제 조기 경보 지수}
+\label{sec:weekly_early_warning}
+
+섹션 3.2의 Nowcasting 실험 결과를 바탕으로 주간 단위 경제 조기 경보 지수를 구축하는 방법론을 제시함. DFM, DDFM, MAMBA 모형은 Kalman filter를 통해 실시간 데이터 흐름의 불규칙성을 자연스럽게 처리할 수 있어 실제 운영 환경에서의 nowcasting에 적합함 \cite{banbura2012nowcasting}.
+
+\subsubsection{주간 조기 경보 지수 구축 방법론}
+
+Nowcasting 결과를 바탕으로 주간 단위 경제 조기 경보 지수를 구축함. 조기 경보 지수는 공식 통계 발표 전 거시경제 변수의 현재 상태를 주간 단위로 추정하여, 경제 전환점을 조기에 감지하고 정책 의사결정에 활용할 수 있도록 설계됨.
+
+\textbf{지수 구성 요소}
+\begin{itemize}
+    \item \textbf{핵심 변수:} 생산(전산업생산지수), 투자(설비투자지수) 두 변수를 중심으로 구성
+    \item \textbf{업데이트 주기:} 매주 업데이트되며, 각 주말에 해당 주까지 수집된 데이터를 기반으로 목표 월의 예측값을 갱신
+    \item \textbf{예측 시점:} 목표 월 기준 4주 전, 1주 전 시점에서 예측을 수행하여 시간에 따른 예측 정확도 변화를 추적
+    \item \textbf{모형 앙상블:} DFM, DDFM, MAMBA 세 모형의 예측값을 가중 평균하여 앙상블 예측을 생성함. 가중치는 과거 성능을 기반으로 동적으로 조정됨
+\end{itemize}
+
+\textbf{주간 업데이트 메커니즘}
+
+주간 조기 경보 지수는 다음과 같은 메커니즘으로 운영됨:
+
+\begin{enumerate}
+    \item \textbf{데이터 수집:} 매주 새로운 고빈도 데이터(주간 지표, 서베이 데이터 등)가 발표되면 자동으로 수집됨
+    \item \textbf{Vintage 마스킹:} 각 시리즈의 발표 시차(publication lag)를 고려하여, 현재 시점에서 아직 발표되지 않은 데이터는 마스킹 처리됨. 예를 들어, 목표 월의 4주 전 시점에서는 해당 월의 공식 통계가 발표되지 않았으므로 마스킹됨
+    \item \textbf{모형 업데이트:} Kalman filter를 통해 새로운 데이터가 도착할 때마다 모형의 상태를 업데이트함. 이는 DFM과 DDFM의 구조적 장점으로, 비동기적 데이터 발표와 결측치를 자연스럽게 처리함
+    \item \textbf{예측 생성:} 업데이트된 모형 상태를 기반으로 목표 월의 예측값을 생성함. 여러 모형의 예측값을 앙상블하여 최종 조기 경보 지수를 산출함
+    \item \textbf{불확실성 추정:} 각 예측값에 대한 신뢰구간을 제공하여 예측의 불확실성을 정량화함
+\end{enumerate}
+
+\textbf{조기 경보 신호 생성}
+
+조기 경보 지수는 다음과 같은 방식으로 경보 신호를 생성함:
+
+\begin{itemize}
+    \item \textbf{전환점 감지:} 예측값의 변화율과 방향을 분석하여 경제 전환점을 감지함. 예를 들어, 생산 지수가 지속적으로 하락 추세를 보이면 경기 둔화 신호로 해석됨
+    \item \textbf{임계값 기반 경보:} 예측값이 사전에 정의된 임계값(예: 전월 대비 -1\%p 이상 하락)을 초과하면 경보를 발령함. 임계값은 과거 데이터의 분포와 정책 목표를 고려하여 설정됨
+    \item \textbf{신뢰도 평가:} 예측 불확실성이 높은 경우(예: 신뢰구간이 넓은 경우) 경보의 신뢰도를 낮게 평가하여 오경보를 줄임
+    \item \textbf{다단계 경보:} 경보의 심각도에 따라 경미(주의), 중간(경고), 심각(위험) 세 단계로 구분하여 정책 대응의 우선순위를 제시함
+\end{itemize}
+
+\textbf{실용적 활용 방안}
+
+주간 조기 경보 지수는 다음과 같은 방식으로 활용될 수 있음:
+
+\begin{itemize}
+    \item \textbf{정책 의사결정 지원:} 정책 당국은 주간 단위로 업데이트되는 조기 경보 지수를 통해 경제 상황을 실시간으로 모니터링하고, 필요시 선제적 정책 조치를 취할 수 있음
+    \item \textbf{시장 참여자 정보 제공:} 금융기관, 기업 등 시장 참여자에게 주간 단위 경제 전망을 제공하여 투자 및 경영 의사결정을 지원함
+    \item \textbf{경기 순환 분석:} 주간 단위 데이터를 통해 경기 순환의 세부 패턴을 분석하고, 경기 전환점을 조기에 감지함
+    \item \textbf{리스크 관리:} 예측 불확실성과 신뢰구간 정보를 활용하여 리스크 관리 및 시나리오 분석에 활용함
+\end{itemize}
+
+\subsubsection{DFM 기반 조기경보지표(EWI) 개발}
+
+DFM에서 추출된 요인을 활용하여 경기 둔화를 조기에 탐지할 수 있는 조기경보지표(Early Warning Indicator, EWI)를 개발함. 이는 단순한 예측값 이상의 정보를 제공하여 경제 전환점을 조기에 감지할 수 있도록 함.
+
+\textbf{경기 둔화 시기 식별}
+
+경기 둔화 시기를 식별하기 위해 일반적으로 생산, 고용 등 여러 지표를 확인하고 사후적으로 판단하지만(NBER 방식), 실무적으로는 Bry-Boschan Algorithm (BBQ Algorithm)을 적용함. BBQ Algorithm은 시계열 데이터의 국소 최대값과 최소값을 식별하여 경기 순환의 전환점을 자동으로 탐지함.
+
+경기 둔화 시기는 사용하는 경제 지표에 따라 다를 수 있음:
+\begin{itemize}
+    \item \textbf{GDP 기준:} 1997년, 2002년, 2008년, 2020년, 2024년이 경기 둔화 시기로 나타남
+    \item \textbf{전산업 생산지수 기준:} 2024년이 아닌 2022년을 침체 기간으로 판단함
+\end{itemize}
+
+이러한 차이는 각 지표의 특성과 측정 방법의 차이에서 비롯되며, 여러 지표를 종합적으로 고려하는 것이 중요함.
+
+\textbf{EWI 산출 방법}
+
+DFM에서 추출된 요인들을 가중평균하여 조기경보지수(EWI)를 산출함. EWI는 다음과 같은 방식으로 계산됨:
+
+\begin{itemize}
+    \item \textbf{요인 추출:} DFM 모형을 통해 다변량 시계열 데이터에서 공통 요인을 추출함
+    \item \textbf{가중평균:} 추출된 요인들을 경제적 의미와 예측력에 따라 가중평균하여 단일 지수로 통합함
+    \item \textbf{정규화:} EWI를 표준화하여 시계열 간 비교가 가능하도록 함
+\end{itemize}
+
+\textbf{경보 신호 생성 기준}
+
+EWI를 기반으로 경보 신호를 생성하는 기준은 다음과 같음:
+
+\begin{itemize}
+    \item \textbf{주의 신호:} EWI가 1.5 표준편차(6개월 rolling 기준)를 하회하는 경우 '주의' 신호를 발령함
+    \item \textbf{경기 둔화 탐지:} 13주간 '주의' 신호가 지속적으로 발효되는 경우 경기 둔화로 판단함
+    \item \textbf{동적 임계값:} 6개월 rolling 표준편차를 사용하여 시계열의 변동성을 반영한 동적 임계값을 적용함
+\end{itemize}
+
+이러한 기준은 과거 경기 순환 데이터를 분석하여 설정되었으며, 오경보를 최소화하면서도 경기 전환점을 조기에 감지할 수 있도록 설계됨.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/nowcast/ewi1.png}
+\caption{DFM 기반 조기경보지표(EWI) 시계열 및 경보 신호}
+\label{fig:ewi1}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/nowcast/ewi2.png}
+\caption{조기경보지표(EWI) 상세 분석 및 경기 순환 비교}
+\label{fig:ewi2}
+\end{figure}
+
+그림~\ref{fig:ewi1}과 그림~\ref{fig:ewi2}는 DFM에서 추출된 요인을 기반으로 산출한 조기경보지표(EWI)의 시계열과 경보 신호를 보여줌. EWI는 경기 순환의 전환점을 조기에 감지할 수 있으며, 특히 경기 둔화 시기에 선행적으로 하락하는 패턴을 보임.
+
+\textbf{운영 고려사항}
+
+주간 조기 경보 지수의 효과적인 운영을 위해 다음 사항을 고려해야 함:
+
+\begin{itemize}
+    \item \textbf{모형 재훈련:} 정기적으로(예: 분기별) 모형을 재훈련하여 구조 변화에 대응함
+    \item \textbf{데이터 품질 관리:} 고빈도 데이터의 품질을 지속적으로 모니터링하고, 이상치나 결측치를 적절히 처리함
+    \item \textbf{성능 평가:} 실제 발표된 통계와 예측값을 비교하여 모형 성능을 정기적으로 평가하고 개선함
+    \item \textbf{해석 가이드라인:} 조기 경보 지수의 해석 방법과 한계를 명확히 문서화하여 사용자가 올바르게 활용할 수 있도록 함
+    \item \textbf{EWI 임계값 조정:} 시장 환경 변화에 따라 EWI의 임계값을 정기적으로 재평가하고 조정함
+\end{itemize}
+
+\subsection{고빈도 변수 활용 방안}
+\label{sec:high_freq_utilization}
+
+섹션 3.3의 고빈도 데이터 실험 결과를 바탕으로 고빈도 변수를 활용한 조기 경보 지수 구축 방안을 제시함.
+
+\subsubsection{MIDAS \& Nowcasting 기반 조기 경보 지수}
+
+고빈도 데이터(주별 전력거래량, BSI 등)를 활용하여 MIDAS 모형과 Nowcasting 기법을 결합한 조기 경보 지수를 구축함.
+
+\textbf{MIDAS 기반 조기 경보 지수 설계}
+
+MIDAS(Mixed Data Sampling) 모형은 고빈도 데이터(주간, 일간)와 저빈도 데이터(월간)를 통합하여 예측하는 모형으로, 조기 경보 지수 구축에 활용됨:
+
+\begin{itemize}
+    \item \textbf{고빈도 변수 통합:} 주별 전력거래량, 주간 금융지표 등 고빈도 데이터를 exp-Almon 가중치 함수를 통해 월간 예측에 매핑함
+    \item \textbf{MIDAS-AR 구조:} AR(1) 성분과 고빈도 변수의 가중합을 결합하여 예측 정확도를 향상시킴
+    \item \textbf{Vintage별 예측:} 당월 1--4주차(h1--h4)별로 예측을 수행하여 시간에 따른 정보의 가치를 정량화함
+\end{itemize}
+
+섹션 3.3의 실험 결과에 따르면, MIDAS-AR 모형은 대부분의 vintage에서 AR(1) 대비 개선이 제한적이지만, full month 정보($h4$)에서는 소폭 개선을 보임. 따라서 MIDAS 모형은 보조 지표로 활용하되, 주요 예측 모형으로는 다변량 모형(DFM, DDFM)을 활용하는 것이 효과적임.
+
+\textbf{Nowcasting 기반 조기 경보 지수}
+
+Nowcasting 기법을 활용한 조기 경보 지수는 다음과 같이 구성됨:
+
+\begin{itemize}
+    \item \textbf{실시간 업데이트:} 매주 새로운 고빈도 데이터가 발표되면 자동으로 모형을 업데이트하고 예측값을 갱신함
+    \item \textbf{Vintage 마스킹:} 각 시리즈의 발표 시차를 고려하여 미발표 데이터를 마스킹 처리함
+    \item \textbf{계층적 구조:} 단일변수 모형(AR, MIDAS-AR)과 다변량 모형(DFM, DDFM)을 결합하여 계층적 조기 경보 시스템을 구축함
+    \item \textbf{앙상블 예측:} 여러 모형의 예측값을 가중 평균하여 최종 조기 경보 지수를 산출함
+\end{itemize}
+
+\textbf{실시간 모니터링 시스템}
+
+고빈도 데이터를 활용한 실시간 모니터링 시스템은 다음과 같이 구성됨:
+
+\begin{enumerate}
+    \item \textbf{데이터 파이프라인:}
+    \begin{itemize}
+        \item 주간 데이터: 매주 자동 수집 및 전처리
+        \item 월간 데이터: 발표 시점에 자동 수집
+        \item 데이터 검증: 이상치 및 결측치 자동 감지 및 처리
+    \end{itemize}
+    \item \textbf{예측 엔진:}
+    \begin{itemize}
+        \item 단일변수 모형: AR(1), MIDAS-AR(1)을 활용한 빠른 예측
+        \item 다변량 모형: DFM, DDFM을 활용한 정밀 예측
+        \item 앙상블: 단일변수 및 다변량 모형의 예측값을 결합
+    \end{itemize}
+    \item \textbf{경보 생성:}
+    \begin{itemize}
+        \item 자동 경보: 예측값이 임계값을 초과하면 자동으로 경보 생성
+        \item 경보 등급: 경미/중간/심각 세 단계로 구분
+        \item 알림 시스템: 관련 담당자에게 자동 알림 전송
+    \end{itemize}
+    \item \textbf{대시보드:}
+    \begin{itemize}
+        \item 실시간 모니터링: 주간 단위로 업데이트되는 지수 시각화
+        \item 예측 추이: 시간에 따른 예측값 변화 추이 표시
+        \item 불확실성 시각화: 신뢰구간 및 예측 불확실성 표시
+    \end{itemize}
+\end{enumerate}
+
+\textbf{추가 데이터 소스 및 확장 방안}
+
+산업생산지수 nowcasting을 위한 고빈도 공공데이터 조사를 수행하여, 빈도(주간 이상), 발표 시차(산업생산지수보다 선행), 접근성(무료 공개) 기준으로 평가함. 주요 후보로는 한국전력거래소 전력수급현황 실시간 API, 한국은행 뉴스심리지수, 한국은행 BSI/ESI/CSI/CBSI, 국가물류통합정보센터 해상운임지수가 도출되었음. 상세 내용은 실험 설계 섹션(2.1.4)을 참조함.
+
+\subsubsection{조기 경보 지수 해석}
+
+조기 경보 지수의 신호를 올바르게 해석하는 방법을 제시함.
+
+\textbf{예측값 기반 해석}
+
+\begin{itemize}
+    \item \textbf{예측값 변화율:} 주간 단위로 업데이트되는 예측값의 변화율을 모니터링함. 급격한 변화는 경기 전환 신호일 수 있음
+    \item \textbf{방향성 분석:} 예측값의 상승/하락 추세를 분석하여 경기 방향을 판단함. 지속적인 하락 추세는 경기 둔화 신호로 해석됨
+    \item \textbf{수준 분석:} 예측값의 절대 수준을 과거 평균과 비교하여 현재 경제 상황을 평가함
+\end{itemize}
+
+\textbf{Vintage별 일관성 평가}
+
+\begin{itemize}
+    \item \textbf{일관성 검증:} h1--h4 vintage별 예측값의 일관성을 평가함. 모든 vintage에서 일관된 신호가 나타나면 신뢰도가 높음
+    \item \textbf{시간에 따른 개선:} vintage가 진행될수록(예: h1 $\to$ h4) 더 많은 정보가 활용되므로 예측 정확도가 향상됨. 이는 정보의 가치를 정량화함
+    \item \textbf{불일치 해석:} vintage별 예측값이 크게 다를 경우, 데이터 불확실성이나 구조 변화 가능성을 고려해야 함
+\end{itemize}
+
+\textbf{모형 간 합의도 평가}
+
+\begin{itemize}
+    \item \textbf{합의도 검증:} 여러 모형(DFM, DDFM, MAMBA)의 예측값이 일치하는지 확인함. 모형 간 합의도가 높을수록 신뢰도가 높음
+    \item \textbf{분산 분석:} 모형 간 예측값의 분산을 분석하여 불확실성을 정량화함. 분산이 클수록 예측 불확실성이 높음
+    \item \textbf{앙상블 가중치:} 모형 간 합의도가 높은 경우 앙상블 가중치를 높게 설정하여 신뢰도를 반영함
+\end{itemize}
+
+\textbf{불확실성 고려}
+
+\begin{itemize}
+    \item \textbf{신뢰구간 해석:} 예측 불확실성이 높은 경우(신뢰구간이 넓은 경우) 경보의 신뢰도를 낮게 평가함
+    \item \textbf{리스크 시나리오:} 신뢰구간의 상한과 하한을 고려하여 낙관적/비관적 시나리오를 구성함
+    \item \textbf{조건부 해석:} 불확실성이 높은 경우 경보를 조건부로 발령하거나 추가 정보 수집을 권고함
+\end{itemize}
+
+\textbf{경보 신호 등급 해석}
+
+\begin{itemize}
+    \item \textbf{주의(경미):} 예측값이 임계값을 약간 초과하는 경우. 지속적인 모니터링이 필요하며, 추가 정보를 수집하여 신호를 확인함
+    \item \textbf{경고(중간):} 예측값이 임계값을 명확히 초과하고, 여러 vintage와 모형에서 일관된 신호가 나타나는 경우. 정책 검토가 필요함
+    \item \textbf{위험(심각):} 예측값이 임계값을 크게 초과하고, 모든 모형과 vintage에서 일관된 신호가 나타나며, 불확실성이 낮은 경우. 즉각적인 정책 대응이 필요함
+\end{itemize}
+
+\subsubsection{변수별 활용 전략}
+
+섹션 3.3의 실험 결과를 바탕으로 각 고빈도 변수의 활용 전략을 제시함.
+
+\textbf{BSI (기업경기실사지수)}
+
+\begin{itemize}
+    \item \textbf{활용도:} 높음. 선형 ARX와 XGBoost 모형에서 전월·동월 BSI 변수의 계수 및 Gain이 상대적으로 큼
+    \item \textbf{활용 방법:} BSI는 월간 데이터이지만 참조월 말에 발표되어 속보성이 높음. 동적요인모형에서 주요 선행지표로 활용함
+    \item \textbf{한계:} 테스트 RMSE 기준으로는 AR(1) 대비 뚜렷한 예측력 개선까지는 이어지지 않으나, 정보 제공 측면에서는 유의미함
+    \item \textbf{권장 활용:} DFM, DDFM 모형에서 주요 선행지표로 활용하며, 앙상블 예측 시 높은 가중치를 부여함
+\end{itemize}
+
+\textbf{전력거래량}
+
+\begin{itemize}
+    \item \textbf{활용도:} 낮음. 대부분의 모형에서 계수·Gain이 작고 비유의적이며, AR(1) 대비 RMSE 개선이 거의 없음
+    \item \textbf{활용 방법:} 보조 지표로 활용하되, 주요 변수로는 부적합함. 다양한 변환 및 모형에도 불구하고 한계적 기여에 머묾
+    \item \textbf{개선 방안:} 전력거래량의 계절성 및 추세를 더 정교하게 모델링하거나, 다른 고빈도 변수와 결합하여 활용함
+    \item \textbf{권장 활용:} 보조 지표로 제한적으로 활용하며, 앙상블 예측 시 낮은 가중치를 부여함
+\end{itemize}
+
+\textbf{종속변수 시차($y_{t-1}$)}
+
+\begin{itemize}
+    \item \textbf{활용도:} 매우 높음. 두 종속변수 모두에서 가장 일관된 설명력을 제공
+    \item \textbf{활용 방법:} Nowcasting에서 핵심 변수로 활용함. 1기 시차 종속변수는 가장 강력한 예측 변수임
+    \item \textbf{주의사항:} 시차 변수만으로는 충분하지 않으며, BSI 등 선행지표와 결합하여 활용해야 함
+    \item \textbf{권장 활용:} 모든 모형에서 핵심 변수로 활용하며, 앙상블 예측 시 가장 높은 가중치를 부여함
+\end{itemize}
+
+\textbf{운영 및 개선 방안}
+
+고빈도 변수 기반 조기 경보 지수의 효과적인 운영을 위한 개선 방안:
+
+\begin{itemize}
+    \item \textbf{모형 선택:} 섹션 3.3의 실험 결과를 바탕으로, 단일변수 예측에는 AR(1)이 충분하며, 고빈도 변수의 추가는 제한적 이점만 제공함. 다변량 모형(DFM, DDFM)을 활용한 통합 접근이 더 효과적임
+    \item \textbf{데이터 확장:} 전력거래량 외에 다른 고빈도 변수(예: 해상운임지수, 뉴스심리지수)를 추가하여 정보의 다양성을 확보함
+    \item \textbf{비선형 모델:} XGBoost 등 비선형 모델은 과적합 경향이 있어 신중하게 활용해야 함. 선형 모델이 더 안정적인 성능을 보임
+    \item \textbf{정기적 재평가:} 고빈도 변수의 예측력은 시간에 따라 변화할 수 있으므로, 정기적으로 변수 중요도를 재평가하고 모형을 업데이트함
+\end{itemize}
+

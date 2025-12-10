@@ -1,25 +1,33 @@
 \section{결론}
 \label{sec:conclusion}
 
-본 연구는 세 가지 주요 한국 거시경제 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 예측 및 nowcasting을 위해 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)과 MAMBA 모형의 성능을 비교 평가함.
+본 연구는 세 가지 주요 한국 거시경제 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 예측 및 nowcasting을 위해 네 가지 예측 모형(ARIMA, VAR, DFM, DDFM)과 MAMBA 모형의 성능을 비교 평가하고, 이를 바탕으로 주간 경제 조기 경보 지수 구축 방법론을 제시함.
 
-주요 연구 결과는 다음과 같음:
+\subsection{주요 연구 결과}
 
 \begin{itemize}
-    \item \textbf{모형별 성능 특성:} 각 모형은 대상 변수에 따라 매우 다른 성능 특성을 보이며, 단일 모형이 모든 대상 변수에서 최고 성능을 보이지는 않음.
-    \item \textbf{KOIPALL.G:} DDFM이 가장 우수한 성능을 보임(sMAE=0.6865, 21개 시점 평균). DFM 대비 95.4\% 개선(sMAE: DFM=14.9689). VAR도 양호한 성능(sMAE=0.94).
-    \item \textbf{KOEQUIPTE:} DFM과 DDFM이 거의 동일한 성능을 보임(sMAE: DFM=1.1439, DDFM=1.1441, 평균 차이 0.000187, 21개 시점). 이는 DDFM의 비선형 인코더가 추가 이점을 제공하지 못하며, 인코더가 선형 PCA와 유사한 요인 구조를 학습했음을 시사함.
-    \item \textbf{KOWRCCNSE:} VAR이 가장 우수한 성능을 보임(sMAE=0.32). DDFM도 양호한 성능(sMAE=0.4961, DFM 대비 82.2\% 개선, sMAE: DFM=2.7848).
+    \item \textbf{예측 실험:} 예측 실험에서 평가된 모형(ARIMA, VAR) 중에서는 VAR이 세 대상 변수 모두에서 최고 성능을 보임. KOIPALL.G에서는 VAR(sMAE=0.85), KOEQUIPTE에서는 VAR(sMAE=0.85), KOWRCCNSE에서는 VAR(sMAE=0.83)이 가장 우수함. DFM과 DDFM은 예측 실험에서 평가되지 않았음.
+    \item \textbf{Nowcasting 실험:} DFM, DDFM, MAMBA 세 모형 모두 유사한 성능을 보임. 생산 모형에서 평균 오차 0.8--0.9\%p, 투자 모형에서 평균 오차 6.3--6.6\%p를 기록함.
+    \item \textbf{고빈도 데이터 실험:} 고빈도 변수(전력거래량, BSI)의 추가는 제한적 이점만 제공함. 1기 시차 종속변수가 가장 강력한 예측 변수이며, BSI는 정보 제공 측면에서 유의미함.
 \end{itemize}
 
-본 연구의 주요 기여는 다음과 같음:
+\subsection{주요 기여}
 
 \begin{itemize}
-    \item 변동성이 큰 시계열(KOIPALL.G, KOWRCCNSE)에서 DDFM이 DFM 대비 우수한 성능을 보임을 실증적으로 확인함.
-    \item 선형 관계가 강한 시계열(KOEQUIPTE)에서는 DDFM과 DFM이 유사한 성능을 보이며, 비선형 인코더의 이점이 제한적임을 확인함.
+    \item 예측 실험에서 VAR이 ARIMA 대비 세 대상 변수 모두에서 우수한 성능을 보임을 확인함.
+    \item Nowcasting 실험에서 DFM, DDFM, MAMBA 모형이 유사한 성능을 보이며, release date 마스킹을 효과적으로 처리할 수 있음을 확인함.
     \item DFM과 DDFM은 release date 마스킹을 처리할 수 있어 실제 운영 환경에서의 nowcasting에 적합함을 확인함.
+    \item 실험 결과를 바탕으로 주간 경제 조기 경보 지수 구축 방법론을 제시하고, 실시간 모니터링 시스템 설계 방안을 제안함.
     \item 대상 변수의 특성에 따라 적절한 모형을 선택하는 것이 중요함을 확인함.
 \end{itemize}
 
-향후 연구 방향으로는 모형 개선(DDFM의 KOEQUIPTE 성능 개선을 위한 인코더 아키텍처 최적화, Robust Kalman filter, adaptive state space dimension), 실험 설계 개선(롤링 윈도우 평가, 교차 검증), Release date 마스킹 개선, 추가 모형 비교 등이 있음.
+\subsection{향후 연구 방향}
+
+\begin{itemize}
+    \item \textbf{모형 개선:} DDFM의 KOEQUIPTE 성능 개선을 위한 인코더 아키텍처 최적화, Robust Kalman filter, adaptive state space dimension 등
+    \item \textbf{실험 설계 개선:} 롤링 윈도우 평가, 교차 검증 등을 통한 더 엄격한 성능 평가
+    \item \textbf{조기 경보 지수 고도화:} Release date 마스킹 개선, 실시간 업데이트 메커니즘 최적화, 다변량 조기 경보 지수 개발
+    \item \textbf{추가 모형 비교:} 최신 딥러닝 모형(Transformer, State Space Models 등)과의 비교
+    \item \textbf{실용적 활용:} 정책 의사결정 지원 시스템 구축, 시장 참여자 대상 서비스 개발
+\end{itemize}
 

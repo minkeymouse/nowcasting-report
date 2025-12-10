@@ -403,11 +403,17 @@ def plot_horizon_trend(save_path: Optional[Path] = None):
 
 
 def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
-    """Create forecast vs actual time series plot for a specific target."""
+    """Create forecast vs actual time series plot for a specific target.
+    
+    Shows:
+    - Historical actual values (extended period, e.g., 2019-01 to 2023-12)
+    - Forecast period actual values (2024-01 to 2025-10)
+    - Model forecasts (ARIMA, VAR, and optionally DFM, DDFM) in original scale with different colors
+    """
     project_root = _setup_import_paths()
     
-    from src.evaluation import collect_all_comparison_results
-    all_results = collect_all_comparison_results(OUTPUTS_DIR)
+    # Use the local function instead of importing from src.evaluation
+    all_results = _load_comparison_results(OUTPUTS_DIR)
     
     if target not in all_results or not all_results[target]:
         if save_path is None:
@@ -431,79 +437,223 @@ def plot_forecast_vs_actual(target: str, save_path: Optional[Path] = None):
         
         y_full = data[[target]].dropna()
         
-        hist_start = pd.Timestamp('2023-01-01')
+        # Extended historical period (e.g., 2019-01 to 2023-12)
+        hist_start = pd.Timestamp('2019-01-01')
         hist_end = pd.Timestamp('2023-12-31')
         forecast_start = pd.Timestamp('2024-01-01')
         forecast_end = pd.Timestamp('2025-10-31')
         
+        # Historical data (extended)
         y_historical = y_full[(y_full.index >= hist_start) & (y_full.index <= hist_end)]
         y_historical_monthly = y_historical.resample('ME').last()
+        
+        # Actual forecast period data
         y_actual_forecast = y_full[(y_full.index >= forecast_start) & (y_full.index <= forecast_end)]
         y_actual_forecast_monthly = y_actual_forecast.resample('ME').last()
         
         trans_type = _get_transformation_type(target)
         
-        # Get base value for historical data
-        hist_base_data = y_full[(y_full.index < hist_start)]
+        # Determine data scale: check if recent data is transformed
+        # Recent data (2010+) is typically in transformed scale for this target
+        recent_check_data = y_full[(y_full.index >= '2010-01-01') & (y_full.index <= '2019-12-31')]
+        recent_check_monthly = recent_check_data.resample('ME').last()
+        if target in recent_check_monthly.columns:
+            recent_check_values = recent_check_monthly[target].dropna().values
+            data_is_transformed = len(recent_check_values) > 0 and np.abs(recent_check_values).mean() < 10
+        else:
+            data_is_transformed = False
+        
+        # Get base value for inverse transformation
+        # The data has mixed scales: training period (1985-2019) has mixed original/transformed values
+        # Recent period (2010+) is in transformed scale
+        # Model predicts in original scale (matching the scale of training data)
+        
+        # Method: Use the model's training data to determine the correct base value
+        # The model was trained on data ending at 2019-12, so we use that as reference
+        train_data = y_full[(y_full.index >= '1985-01-01') & (y_full.index <= '2019-12-31')]
+        train_monthly = train_data.resample('ME').last()
+        
         hist_base_value = 0.0
-        if len(hist_base_data) > 0:
-            hist_base_monthly = hist_base_data.resample('ME').last()
-            hist_base_values = hist_base_monthly[target].dropna()
-            if len(hist_base_values) > 0:
-                cumulative_before_2023 = np.cumsum(hist_base_values.values)
-                hist_base_value = float(cumulative_before_2023[-1]) if len(cumulative_before_2023) > 0 else 0.0
+        if target in train_monthly.columns:
+            train_values = train_monthly[target].dropna()
+            if len(train_values) > 0:
+                train_values_array = train_values.values
+                train_dates = train_values.index
+                
+                # Find the last original-scale value in training period (used by model)
+                # Original-scale values are typically > 50 in absolute value
+                original_scale_mask = np.abs(train_values_array) > 50
+                
+                if np.any(original_scale_mask):
+                    # Get the last original-scale value and its date
+                    last_original_idx = np.where(original_scale_mask)[0][-1]
+                    last_original_date = train_dates[last_original_idx]
+                    hist_base_value = float(train_values_array[last_original_idx])
+                    
+                    # Accumulate transformed values from that point to 2019-12
+                    if last_original_idx < len(train_values_array) - 1:
+                        remaining_values = train_values_array[last_original_idx + 1:]
+                        if trans_type == 'chg':
+                            # For 'chg' (difference), accumulate to get level
+                            cumulative_remaining = np.cumsum(remaining_values)
+                            hist_base_value = hist_base_value + float(cumulative_remaining[-1]) if len(cumulative_remaining) > 0 else hist_base_value
+                        else:
+                            # For other transformations, use the last value directly
+                            hist_base_value = float(remaining_values[-1]) if len(remaining_values) > 0 else hist_base_value
+                else:
+                    # No original-scale values found - all data is transformed
+                    # Use cumulative sum from beginning
+                    if trans_type == 'chg':
+                        cumulative_all = np.cumsum(train_values_array)
+                        hist_base_value = float(cumulative_all[-1]) if len(cumulative_all) > 0 else 0.0
+                    else:
+                        hist_base_value = float(train_values_array[-1]) if len(train_values_array) > 0 else 0.0
         
+        # Convert historical data to original scale
         hist_values_transformed = y_historical_monthly[target].values
-        hist_values_original = None
-        if trans_type == 'chg' and len(hist_values_transformed) > 0:
+        if data_is_transformed and trans_type == 'chg' and len(hist_values_transformed) > 0:
             hist_values_original = _inverse_transform_chg(hist_values_transformed, hist_base_value)
-            base_value = float(hist_values_original[-1])
+            base_value = float(hist_values_original[-1]) if len(hist_values_original) > 0 else hist_base_value
         else:
-            if len(hist_values_transformed) > 0:
-                base_value = float(hist_values_transformed[-1])
-            else:
-                base_value = _get_base_value(target, forecast_start)
+            hist_values_original = hist_values_transformed
+            base_value = float(hist_values_original[-1]) if len(hist_values_original) > 0 else hist_base_value
         
-        forecast_data = {}
+        # Convert actual forecast period to original scale
         actual_transformed = y_actual_forecast_monthly[target].values
-        if trans_type == 'chg':
-            forecast_data['Actual'] = _inverse_transform_chg(actual_transformed, base_value)
+        if data_is_transformed and trans_type == 'chg':
+            actual_original = _inverse_transform_chg(actual_transformed, base_value)
         else:
-            forecast_data['Actual'] = actual_transformed
+            actual_original = actual_transformed
+        
+        # Get forecast dates (needed for model forecasts)
+        forecast_dates = y_actual_forecast_monthly.index
+        horizon = len(forecast_dates)
+        
+        # Load model forecasts from checkpoints
+        checkpoint_dir = project_root / "checkpoints"
+        forecast_data = {}
+        model_colors = {
+            'ARIMA': '#1f77b4',  # Blue
+            'VAR': '#ff7f0e',     # Orange
+            'DFM': '#2ca02c',     # Green
+            'DDFM': '#d62728'     # Red
+        }
+        
+        # Models to try (in order of preference)
+        models_to_load = ['arima', 'var', 'dfm', 'ddfm']
+        
+        for model_name in models_to_load:
+            checkpoint_path = checkpoint_dir / f"{target}_{model_name}" / "model.pkl"
+            if not checkpoint_path.exists():
+                continue
+            
+            try:
+                import pickle
+                from src.models import forecast_arima, forecast_var, forecast_dfm, forecast_ddfm
+                from src.preprocessing import resample_to_monthly
+                
+                # Load checkpoint
+                with open(checkpoint_path, 'rb') as f:
+                    model_data = pickle.load(f)
+                
+                forecaster = model_data.get('forecaster')
+                if forecaster is None:
+                    continue
+                
+                # Generate forecast for all horizons (22 months: 2024-01 to 2025-10)
+                # For ARIMA/VAR: recursive forecasting from training end (2019-12)
+                # Training ends: 2019-12-31, Forecast starts: 2024-01-01
+                # Since forecast_arima/var uses MS (Month Start) frequency,
+                # 2019-12-31 + 1 month (MS) = 2020-02-01
+                # To reach 2024-01-01: 2020-02-01 to 2024-01-01 = 48 steps
+                if horizon == 0:
+                    continue
+                
+                training_end = pd.Timestamp('2019-12-31')
+                
+                # Calculate steps: 2020-02-01 (first forecast) to 2024-01-01 (forecast start) = 48 steps
+                months_to_forecast_start = 48
+                total_horizon = months_to_forecast_start + horizon
+                
+                # Generate forecast
+                if model_name.lower() == 'arima':
+                    forecast_df = forecast_arima(forecaster, total_horizon, training_end)
+                elif model_name.lower() == 'var':
+                    forecast_df = forecast_var(forecaster, total_horizon, training_end)
+                elif model_name.lower() == 'dfm':
+                    forecast_df = forecast_dfm(forecaster, total_horizon, training_end)
+                elif model_name.lower() == 'ddfm':
+                    forecast_df = forecast_ddfm(forecaster, total_horizon, training_end)
+                else:
+                    continue
+                
+                # Extract the last 'horizon' values (corresponding to 2024-01 to 2025-10)
+                # The forecast index uses MS (Month Start), but forecast_dates uses ME (Month End)
+                # So we extract by position and reassign index
+                if isinstance(forecast_df, pd.DataFrame):
+                    forecast_df = forecast_df.iloc[-horizon:].copy()
+                elif isinstance(forecast_df, pd.Series):
+                    forecast_df = forecast_df.iloc[-horizon:].copy()
+                
+                # Reassign index to match forecast_dates (ME frequency)
+                forecast_df.index = forecast_dates[:len(forecast_df)]
+                
+                # Extract target series from forecast
+                if isinstance(forecast_df, pd.DataFrame):
+                    if target in forecast_df.columns:
+                        forecast_series = forecast_df[target]
+                    else:
+                        forecast_series = forecast_df.iloc[:, 0]
+                else:
+                    forecast_series = forecast_df
+                
+                # Convert forecast to original scale
+                forecast_values = forecast_series.values
+                if len(forecast_values) > horizon:
+                    forecast_values = forecast_values[:horizon]
+                
+                # Model forecasts are typically in original scale (175-177 for this target)
+                # Actual data is in transformed scale, so we've already converted it to original scale above
+                # Therefore, forecast is already in the correct scale (original) and can be used as-is
+                forecast_original = forecast_values
+                
+                # Store forecast
+                model_display_name = model_name.upper()
+                forecast_data[model_display_name] = forecast_original
+                
+            except Exception as e:
+                print(f"Warning: Failed to load forecast for {model_name}: {e}")
+                continue
         
         # Create plot
         fig, ax = plt.subplots(figsize=(14, 6))
         
+        # Plot historical actual values
         hist_dates = y_historical_monthly.index
-        if trans_type == 'chg' and hist_values_original is not None:
-            hist_values = hist_values_original
-        else:
-            hist_values = hist_values_transformed
+        ax.plot(hist_dates, hist_values_original, color='gray', linestyle='-', 
+               linewidth=2, label='Historical Actual', alpha=0.8)
         
-        ax.plot(hist_dates, hist_values, color='gray', linestyle='-', linewidth=2, 
-               label='Historical (2023)', alpha=0.8)
-        
+        # Plot forecast period actual values
         forecast_dates = y_actual_forecast_monthly.index
-        n_forecast_periods = len(forecast_dates)
-        
-        for model_name in forecast_data.keys():
-            if len(forecast_data[model_name]) > n_forecast_periods:
-                forecast_data[model_name] = forecast_data[model_name][:n_forecast_periods]
-            elif len(forecast_data[model_name]) < n_forecast_periods:
-                padded = np.full(n_forecast_periods, np.nan)
-                padded[:len(forecast_data[model_name])] = forecast_data[model_name]
-                forecast_data[model_name] = padded
-        
-        ax.plot(forecast_dates, forecast_data['Actual'], 'k-', linewidth=2.5, 
+        ax.plot(forecast_dates, actual_original, 'k-', linewidth=2.5, 
                label='Actual (2024-2025)', alpha=0.9)
         
-        ax.axvline(x=forecast_start, color='red', linestyle=':', linewidth=1, alpha=0.5, 
-                  label='Forecast Start (2024-01)')
+        # Plot model forecasts with different colors
+        for model_name in ['ARIMA', 'VAR', 'DFM', 'DDFM']:
+            if model_name in forecast_data:
+                forecast_values = forecast_data[model_name]
+                if len(forecast_values) == len(forecast_dates):
+                    color = model_colors.get(model_name, 'gray')
+                    ax.plot(forecast_dates, forecast_values, color=color, linestyle='--', 
+                           linewidth=2, label=f'{model_name} Forecast', alpha=0.8, marker='o', markersize=3)
+        
+        # Add vertical line at forecast start
+        ax.axvline(x=forecast_start, color='red', linestyle=':', linewidth=1, alpha=0.5)
         
         ax.set_xlabel('Date', fontsize=11)
         ax.set_ylabel(f'{target} Value (Original Scale)', fontsize=11)
         ax.set_title(f'Forecast vs Actual: {target} (Original Scale)', fontsize=13, fontweight='bold')
-        ax.legend(loc='best', fontsize=9)
+        ax.legend(loc='best', fontsize=9, ncol=2)
         ax.grid(alpha=0.3)
         fig.autofmt_xdate()
         

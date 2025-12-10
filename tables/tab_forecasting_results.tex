@@ -2,16 +2,16 @@
 \centering
 \caption{Forecasting Results by Model-Target (Average across Horizons)}
 \label{tab:forecasting_results}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lcccccccccc}
 \toprule
  & \multicolumn{2}{c}{KOIPALL.G} & \multicolumn{2}{c}{KOEQUIPTE} & \multicolumn{2}{c}{KOWRCCNSE} \\
 \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
 Model & sMAE & sMSE & sMAE & sMSE & sMAE & sMSE \\
 \midrule
-ARIMA & 0.70 & 0.66 & 1.13 & 2.19 & 0.47 & 0.47 \\
-VAR & 0.94 & 1.11 & 1.36 & 2.97 & 0.32 & 0.20 \\
-DFM & 69.85 & 6079.30 & 1.81 & 4.65 & 0.74 & 0.77 \\
-DDFM & 0.68 & 0.60 & 1.14 & 2.12 & 0.48 & 0.48 \\
+ARIMA & 23.92 & 571.96 & \textbf{15.62} & \textbf{244.13} & 18.03 & 325.21 \\
+VAR & \textbf{19.90} & \textbf{395.83} & 15.69 & 246.26 & \textbf{14.93} & \textbf{222.79} \\
+DFM & 23.90 & 570.97 & 15.63 & 244.24 & 18.02 & 324.70 \\
+DDFM & N/A & N/A & N/A & N/A & N/A & N/A \\
 \bottomrule
 \end{tabular}
 \end{table}
