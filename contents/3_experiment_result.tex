@@ -92,33 +92,35 @@ DFM, DDFM, MAMBA 모형을 활용하여 각 목표 월에 대해 4주 전, 1주 
     \item \textbf{투자 모형(설비투자지수):} 세 모형 모두 유사한 성능을 보임. DFM의 평균 오차는 1~8주 전 평균 6.3\%p, MAMBA는 6.6\%p로 DFM 대비 소폭 부진함. 투자 지수는 생산 지수에 비해 변동성이 크며 예측 오차가 큼.
 \end{itemize}
 
-\begin{figure}[h]
+\FloatBarrier
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcast/production_nowcast_compare.png}
 \caption{생산 모형(전산업생산지수) Nowcasting 비교: DFM, DDFM, MAMBA 모형의 예측값과 실제값 비교.}
 \label{fig:production_nowcast_compare}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcast/production_nowcast_ensemble.png}
 \caption{생산 모형(전산업생산지수) Nowcasting 앙상블: 모형별 예측값과 앙상블 결과.}
 \label{fig:production_nowcast_ensemble}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcast/investment_nowcast_compare.png}
 \caption{투자 모형(설비투자지수) Nowcasting 비교}
 \label{fig:investment_nowcast_compare}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{images/nowcast/investment_nowcast_ensemble.png}
 \caption{투자 모형(설비투자지수) Nowcasting 앙상블: 모형별 예측값과 앙상블 결과.}
 \label{fig:investment_nowcast_ensemble}
 \end{figure}
+\FloatBarrier
 
 \subsection{고빈도 데이터 실험 결과}
 \label{sec:results_high_freq}
@@ -133,7 +135,8 @@ DFM, DDFM, MAMBA 모형을 활용하여 각 목표 월에 대해 4주 전, 1주 
     \item \textbf{변수 중요도:} 1기 시차 종속변수($y_{t-1}$)가 가장 강력한 예측 변수이며, BSI는 정보 제공 측면에서 유의미하나 예측력 개선은 제한적임. 전력거래량은 한계적 기여에 머묾.
 \end{itemize}
 
-\begin{figure}[htbp]
+\FloatBarrier
+\begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\textwidth}
 \centering
@@ -152,5 +155,6 @@ DFM, DDFM, MAMBA 모형을 활용하여 각 목표 월에 대해 4주 전, 1주 
 \caption{Vintage별 테스트 RMSE 비교: 전산업생산지수. AR(1)과 MIDAS-AR(1) 모형의 vintage별 예측 성능을 비교함.}
 \label{fig:midasar_rmse_comparison}
 \end{figure}
+\FloatBarrier
 
 상세 결과는 부록 표~\ref{tab:midasar_rmse_table}, 표~\ref{tab:midasar_rmse_yoy}, 표~\ref{tab:rmse-xgb}, 표~\ref{tab:xgb_rmse_yoy}를 참조함.
