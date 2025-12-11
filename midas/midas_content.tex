@@ -347,7 +347,7 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/midasar_sample_fit.png}
-    \caption{Vintage별 MIDAS–AR(1) 모형의 인샘플 적합 경로 (2002–2022). 종속변수는 전산업생산지수 월간 로그 성장률이며, 각 패널은 정보세트 $h0$–$h4$에서 검증 RMSE가 최소가 되도록 선택된 $K^{*}(h)$를 사용한 MIDAS–AR(1) 적합치를 나타낸다. 검은 실선은 실제값, 빨간 점선은 MIDAS–AR(1) 적합치를 의미한다.}
+    \caption{MIDAS–AR(1) 인샘플 적합: 실제값 vs 예측값}
     \label{fig:midasar_insample}
 \end{figure}
 
@@ -370,7 +370,7 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/midasar_weight.png}
-    \caption{Vintage별 최종 추정 exp–Almon 가중치. 가로축은 주별 래그 인덱스 $k$ (1 = 가장 최근 주), 세로축은 가중치 $w_k^{(h)}$이며, 각 패널이 하나의 vintage 정보세트 ($h0$–$h4$)에 해당한다.}
+    \caption{exp–Almon 가중치}
     \label{fig:midasar_weights}
 \end{figure}
 
@@ -399,7 +399,7 @@ h3 & 0.950 (0.0) & 0.951 (-0.1) \\
 h4 & 0.950 (0.0) & 0.945 (0.5)  \\
 \bottomrule
 \end{tabular}
-\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율: AR(1) vs MIDAS-AR(1) (2023–2024)}
+\caption{테스트 RMSE: AR(1) vs MIDAS-AR(1)}
 \label{tab:midasar_rmse_table}
 \end{table}
 
@@ -417,7 +417,7 @@ h4 & 0.950 (0.0) & 0.945 (0.5)  \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/midasar_test_fit.png}
-    \caption{테스트 구간(2023–2024)에서의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트($h0$–$h4$)에 대응하며, 검은 실선은 실제 월별 IIP 성장률, 파란 실선은 AR(1) 예측, 빨간 점선은 MIDAS–AR(1) 예측을 나타낸다. 각 패널 상단에는 해당 vintage에서의 RMSE(MIDAS, AR(1))가 표시되어 있다.}
+    \caption{테스트 기간 예측 경로: AR(1) vs MIDAS-AR(1)}
     \label{fig:midasar_test}
 \end{figure}
 
@@ -457,14 +457,14 @@ h4 & 0.950 (0.0) & 0.945 (0.5)  \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/midasar_mom_sample_fit.png}
-    \caption{전년동월비를 종속변수로 한 vintage별 MIDAS–AR(1)의 인샘플 적합 경로(2002–2022). 각 패널은 정보세트 $h0$–$h4$에서 선택된 $K^\ast(h)$와 추정 계수를 사용한 MIDAS–AR(1) 적합치를 나타낸다. 검은 실선은 실제 전년동월비, 빨간 점선은 MIDAS–AR(1) 적합치이다.}
+    \caption{MIDAS–AR(1) 인샘플 적합: 전년동월비}
     \label{fig:midasar_yoy_insample}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/midasar_mom_weight.png}
-    \caption{전년동월비 모형에서의 vintage별 exp–Almon 가중치. 가로축은 주별 래그 인덱스 $k$ (1 = 가장 최근 주), 세로축은 가중치 $w_k^{(h)}$이며, 각 패널은 정보세트 $h0$–$h4$를 나타낸다.}
+    \caption{exp–Almon 가중치: 전년동월비 모형}
     \label{fig:midasar_yoy_weights}
 \end{figure}
 
@@ -499,7 +499,7 @@ h3 & 1.49 (0.0) & 1.50 (-0.7) \\
 h4 & 1.49 (0.0) & 1.49 (0.0)  \\
 \bottomrule
 \end{tabular}
-\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율: 전년동월비 (2023–2024)}
+\caption{테스트 RMSE: 전년동월비 (MIDAS-AR)}
 \label{tab:midasar_rmse_yoy}
 \end{table}
 
@@ -518,7 +518,7 @@ h4 & 1.49 (0.0) & 1.49 (0.0)  \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/midasar_mom_test_fit.png}
-    \caption{전년동월비를 종속변수로 한 테스트 기간(2023–2024)의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트(h0–h4)에 대응하며, 검은 실선은 실제 전년동월비, 파란 실선은 AR(1) 예측, 빨간 점선은 MIDAS–AR(1) 예측을 나타낸다. 패널 상단에는 vintage별 RMSE(MIDAS, AR(1))가 표시되어 있다.}
+    \caption{테스트 기간 예측 경로: 전년동월비}
     \label{fig:midasar_yoy_test}
 \end{figure}
 
@@ -600,7 +600,7 @@ h4 & 1.49 (0.0) & 1.49 (0.0)  \\
     \quad bsi\_t\_yoy &         &            &            &            & \checkmark \\
     \bottomrule
   \end{tabular}
-\caption{Vintage 정보세트별 사용 설명변수}
+\caption{Vintage별 설명변수}
 \end{table}
 
 \begin{itemize}
@@ -735,7 +735,7 @@ h4 & 0.953 (0.0)         & \textbf{0.940} (1.4)& 1.040 (-7.0)  & 0.951 (0.2)  \\
 \bottomrule
 \end{tabular}
 \begin{flushleft}
-\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율 (2023–2024)}
+\caption{테스트 RMSE: XGBoost 모형}
 \footnotesize
 \textit{주}: 각 셀은 2023–2024년 테스트 구간에서의 RMSE와,
 괄호 안의 AR(1) 대비 RMSE 감소율(\%)을 함께 보고한다.
@@ -769,7 +769,7 @@ h4 & 0.953 (0.0)         & \textbf{0.940} (1.4)& 1.040 (-7.0)  & 0.951 (0.2)  \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/xgboost_test_plots.png}
-    \caption{전산업생산지수 성장률을 종속변수로 한 테스트 기간(2023–2024)의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트($h0$–$h4$)에 대응하며, 검은 실선은 실제 전산업생산지수 성장률, 초록 점선은 AR(1) 예측, 파란 점선은 AR(1)+XGB\_residual 예측, 노란색 점선은 ARX 예측, 분홍 점섬은 XGB-direct 예측을 나타낸다.}
+    \caption{테스트 기간 예측 경로: XGBoost 모형}
     \label{fig:xgboost_test_plots}
 \end{figure}
 
@@ -787,7 +787,7 @@ h4 & 0.953 (0.0)         & \textbf{0.940} (1.4)& 1.040 (-7.0)  & 0.951 (0.2)  \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/heatmap_iip.png}
-    \caption{전산업생산지수 변수 중요도 (feature importance) 히트맵}
+    \caption{변수 중요도 히트맵}
     \label{fig:xgb-imp-heatmap_iip}
 \end{figure}
 
@@ -841,7 +841,7 @@ $R^{2}$       & \multicolumn{3}{r}{0.239} \\
 \bottomrule
 \end{tabular}
 \begin{flushleft}
-\caption{ARX 모형 추정 결과: 월별 IIP 성장률에 대한 BSI 및 전력거래량의 영향}
+\caption{ARX 모형 추정 결과}
 \footnotesize
 \textit{주}: 종속변수는 전산업생산지수 월별 성장률($y_t$)이며,
 $y_{t-1}$은 1기 시차, $\text{pw}$는 월별(또는 주별) 전력거래량 관련 변수,
@@ -888,7 +888,7 @@ h4 & \textbf{1.48} (0.0)& 1.53 (-2.9)        & 1.53 (-2.9)        & 1.52 (-2.3) 
 \bottomrule
 \end{tabular}
 \begin{flushleft}
-\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율: 전년동월비 (2023–2024)}
+\caption{테스트 RMSE: 전년동월비 (XGBoost)}
 \footnotesize\textit{주}: 각 셀은 2023–2024년 테스트 구간에서의 RMSE와, 괄호 안의 AR(1) 대비 RMSE 감소율(\%)을 함께 보고한다. 감소율은 $100 \times (1 - \mathrm{RMSE}_{m,h}/\mathrm{RMSE}_{\mathrm{AR(1)},h})$로 정의되며, 양수 값은 동일한 vintage에서 AR(1) 모형보다 예측 오차가 작다는 것을 의미한다.
 \end{flushleft}
 \label{tab:xgb_rmse_yoy}
@@ -933,7 +933,7 @@ h4 & \textbf{1.48} (0.0)& 1.53 (-2.9)        & 1.53 (-2.9)        & 1.52 (-2.3) 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{midas/images/xgboost_test_mom_plot.png}
-    \caption{전년동월비를 종속변수로 한 테스트 기간(2023-2024)의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트($h0$-$h4$)에 대응하며, 검은 실선은 실제 전년동월비, 초록 점선은 AR(1) 예측, 파란 점선은 AR(1)+XGB\_residual 예측, 노란색 점선은 ARX 예측, 분홍 점선은 XGB-direct 예측을 나타낸다.}
+    \caption{테스트 기간 예측 경로: 전년동월비 (XGBoost)}
     \label{fig:xgboost_test_mom_plots}
 \end{figure}
 
@@ -948,7 +948,7 @@ h4 & \textbf{1.48} (0.0)& 1.53 (-2.9)        & 1.53 (-2.9)        & 1.52 (-2.3) 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{midas/images/heatmap_mom.png}
-    \caption{Feature importance heatmap}
+    \caption{변수 중요도 히트맵: 전년동월비}
     \label{fig:xgb-imp-heatmap_iip}
 \end{figure}
 \begin{itemize}
@@ -998,7 +998,7 @@ $R^{2}$       & \multicolumn{3}{r}{0.788} \\
 관측치 수     & \multicolumn{3}{r}{188}   \\
 \bottomrule
 \end{tabular}
-\caption{ARX 모형 추정 결과: 월별 IIP 성장률에 대한 BSI 및 전력거래량의 영향}
+\caption{ARX 모형 추정 결과}
 \begin{flushleft}
 \footnotesize
 \textit{주}: 종속변수는 전산업생산지수 월별 성장률($y_t$)이며,

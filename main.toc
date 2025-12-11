@@ -1,0 +1,123 @@
+\babel@toc {english}{}\relax 
+\contentsline {part}{I\hspace {1em}고빈도 데이터를 활용한 단일변수 예측 실험}{3}{part.1}%
+\contentsline {section}{\numberline {1}데이터 및 빈도 불일치 자료의 구성}{4}{section.0.1}%
+\contentsline {subsection}{\numberline {1.1}분석 개요 및 데이터 출처}{4}{subsection.0.1.1}%
+\contentsline {subsection}{\numberline {1.2}종속변수: 월별 산업생산 지표}{4}{subsection.0.1.2}%
+\contentsline {subsection}{\numberline {1.3}설명변수: 주별/일별 전력거래량 성장률}{5}{subsection.0.1.3}%
+\contentsline {section}{\numberline {2}MIDAS-AR 모형 설정과 추정 방법}{5}{section.0.2}%
+\contentsline {subsection}{\numberline {2.1}MIDAS-AR(1) 모형}{5}{subsection.0.2.1}%
+\contentsline {subsection}{\numberline {2.2}exp–Almon 가중치와 MIDAS regressor}{6}{subsection.0.2.2}%
+\contentsline {subsection}{\numberline {2.3}\citet {clements2008macroeconomic} 추정 절차}{6}{subsection.0.2.3}%
+\contentsline {subsection}{\numberline {2.4}K 선택과 예측 설계}{7}{subsection.0.2.4}%
+\contentsline {section}{\numberline {3}AR(1) 벤치마크와 Vintage별 MIDAS–AR(1)}{8}{section.0.3}%
+\contentsline {subsection}{\numberline {3.1}공통 샘플 및 AR(1) 벤치마크}{8}{subsection.0.3.1}%
+\contentsline {subsection}{\numberline {3.2}Vintage 정보세트 정의}{9}{subsection.0.3.2}%
+\contentsline {subsection}{\numberline {3.3}Vintage별 MIDAS–AR(1) 추정 및 요약}{9}{subsection.0.3.3}%
+\contentsline {section}{\numberline {4}실증 결과 요약: AR(1) vs MIDAS–AR(1)}{10}{section.0.4}%
+\contentsline {subsection}{\numberline {4.1}종속변수: 전산업생산지수 성장률}{10}{subsection.0.4.1}%
+\contentsline {paragraph}{정태성 검정}{10}{section*.1}%
+\contentsline {paragraph}{Vintage별 MIDAS–AR(1) 인샘플 적합}{11}{figure.caption.3}%
+\contentsline {paragraph}{Vintage별 exp–Almon 가중치}{12}{figure.caption.5}%
+\contentsline {paragraph}{Vintage별 Test RMSE: AR(1) vs MIDAS–AR(1)}{12}{table.caption.7}%
+\contentsline {paragraph}{테스트 기간 예측 경로}{13}{figure.caption.9}%
+\contentsline {subsection}{\numberline {4.2}종속변수: 전년동월비}{14}{subsection.0.4.2}%
+\contentsline {paragraph}{정태성 검정}{14}{section*.10}%
+\contentsline {paragraph}{인샘플 적합 및 exp–Almon 가중치}{15}{figure.caption.13}%
+\contentsline {paragraph}{Vintage별 Test RMSE (전년동월비)}{16}{table.caption.15}%
+\contentsline {paragraph}{테스트 기간 예측 경로(전년동월비)}{16}{figure.caption.17}%
+\contentsline {section}{\numberline {5}XGBoost를 활용한 비선형 확장}{17}{section.0.5}%
+\contentsline {subsection}{\numberline {5.1}기본 아이디어 및 표본 분할}{17}{subsection.0.5.1}%
+\contentsline {subsection}{\numberline {5.2}feature 구성 및 vintage별 정보세트(요약)}{18}{subsection.0.5.2}%
+\contentsline {subsection}{\numberline {5.3}모형별 정의}{18}{subsection.0.5.3}%
+\contentsline {paragraph}{(1) 선형 ARX}{18}{section*.19}%
+\contentsline {paragraph}{(2) AR(1)+XGB\_residual}{19}{section*.20}%
+\contentsline {paragraph}{(3) XGB\_direct}{19}{section*.21}%
+\contentsline {subsection}{\numberline {5.4}하이퍼파라미터 및 롤링 검증}{19}{subsection.0.5.4}%
+\contentsline {section}{\numberline {6}실증 결과 요약}{20}{section.0.6}%
+\contentsline {subsection}{\numberline {6.1}종속변수: 전산업생산지수 성장률}{20}{subsection.0.6.1}%
+\contentsline {subsubsection}{예측 성능: RMSE 및 상대 개선율}{20}{section*.22}%
+\contentsline {subsubsection}{시각적 비교와 feature importance}{21}{section*.24}%
+\contentsline {paragraph}{테스트 예측 경로}{21}{figure.caption.26}%
+\contentsline {paragraph}{Feature importance (Gain 기준)}{22}{figure.caption.28}%
+\contentsline {subsubsection}{ARX 모형: BSI와 전력거래량의 역할}{23}{section*.29}%
+\contentsline {subsection}{\numberline {6.2}종속변수: 전년동월비}{24}{subsection.0.6.2}%
+\contentsline {subsubsection}{예측 성능: RMSE 및 상대 개선율}{24}{section*.31}%
+\contentsline {subsubsection}{시각적 비교와 feature importance}{25}{section*.33}%
+\contentsline {paragraph}{테스트 예측 경로}{25}{figure.caption.35}%
+\contentsline {paragraph}{Feature importance (Gain 기준)}{26}{figure.caption.37}%
+\contentsline {subsubsection}{ARX 모형: BSI와 전력거래량의 역할}{27}{section*.38}%
+\contentsline {section}{\numberline {7}요약: 변수 선택 관점에서 본 결과}{28}{section.0.7}%
+\contentsline {part}{II\hspace {1em}거시경제 변수 딥러닝 예측 실험}{29}{part.2}%
+\contentsline {section}{\numberline {1}개요}{30}{section.0.1}%
+\contentsline {subsection}{\numberline {1.1}거시 경제 예측 필요성}{30}{subsection.0.1.1}%
+\contentsline {subsection}{\numberline {1.2}거시 경제 변수 예측 주요 이슈}{30}{subsection.0.1.2}%
+\contentsline {subsection}{\numberline {1.3}실험의 필요성}{30}{subsection.0.1.3}%
+\contentsline {section}{\numberline {2}실험 소개}{31}{section.0.2}%
+\contentsline {subsection}{\numberline {2.1}이론적 배경}{31}{subsection.0.2.1}%
+\contentsline {subsubsection}{동적요인모형}{31}{section*.40}%
+\contentsline {paragraph}{DFM 안정화 문제 및 개선 방안:}{31}{section*.41}%
+\contentsline {subsection}{\numberline {2.2}데이터 소개}{32}{subsection.0.2.2}%
+\contentsline {subsubsection}{기본 데이터 탐색}{32}{section*.42}%
+\contentsline {subsubsection}{주요 변수 소개}{32}{section*.44}%
+\contentsline {subsubsection}{전처리}{33}{section*.45}%
+\contentsline {section}{\numberline {3}실험 방법론}{34}{section.0.3}%
+\contentsline {subsection}{\numberline {3.1}예측 모형}{34}{subsection.0.3.1}%
+\contentsline {subsubsection}{딥러닝 시계열 모형}{34}{section*.47}%
+\contentsline {subsubsection}{상태공간 모형}{35}{section*.48}%
+\contentsline {subsection}{\numberline {3.2}실험 구성}{36}{subsection.0.3.2}%
+\contentsline {subsubsection}{평가 기준}{36}{section*.49}%
+\contentsline {subsubsection}{하이퍼 패러미터}{36}{section*.50}%
+\contentsline {subsubsection}{성능 지표}{37}{section*.51}%
+\contentsline {section}{\numberline {4}실험 결과}{37}{section.0.4}%
+\contentsline {subsection}{\numberline {4.1}예측 결과 비교}{37}{subsection.0.4.1}%
+\contentsline {subsubsection}{전체 시점 평균 성능}{37}{section*.52}%
+\contentsline {subsubsection}{시점별 성능 패턴}{39}{section*.54}%
+\contentsline {subsection}{\numberline {4.2}성능 비교}{39}{subsection.0.4.2}%
+\contentsline {subsubsection}{모형별 성능 비교}{39}{section*.55}%
+\contentsline {subsubsection}{동적요인모형(DFM, DDFM)의 성능}{40}{section*.56}%
+\contentsline {subsection}{\numberline {4.3}논의}{40}{subsection.0.4.3}%
+\contentsline {subsubsection}{모형별 특성과 성능}{40}{section*.57}%
+\contentsline {subsubsection}{이론적 함의}{40}{section*.58}%
+\contentsline {subsubsection}{실무적 시사점}{40}{section*.59}%
+\contentsline {section}{\numberline {5}결론}{41}{section.0.5}%
+\contentsline {subsection}{\numberline {5.1}주요 발견사항}{41}{subsection.0.5.1}%
+\contentsline {subsection}{\numberline {5.2}이론적 기여}{41}{subsection.0.5.2}%
+\contentsline {subsection}{\numberline {5.3}향후 연구 방향}{42}{subsection.0.5.3}%
+\contentsline {subsection}{\numberline {5.4}최종 결론}{42}{subsection.0.5.4}%
+\contentsline {section}{\numberline {1}부록: 상세 예측 결과}{42}{section.Alph0.1}%
+\contentsline {subsection}{\numberline {1.1}전체 평가지표 비교}{42}{subsection.Alph0.1.1}%
+\contentsline {subsection}{\numberline {1.2}타겟 변수별 시점별 상세 결과}{42}{subsection.Alph0.1.2}%
+\contentsline {subsubsection}{KOIPALL.G (생산)}{42}{section*.60}%
+\contentsline {subsubsection}{KOEQUIPTE (투자)}{42}{section*.62}%
+\contentsline {subsubsection}{KOWRCCNSE (소비)}{45}{section*.64}%
+\contentsline {part}{III\hspace {1em}실시간 경기 진단 및 위기 알림 모형 구축}{47}{part.3}%
+\contentsline {part}{IV\hspace {1em}거시경제 예측을 위한 데이터 활용 방안 조사}{49}{part.4}%
+\contentsline {section}{\numberline {1}연구 목적 및 평가 기준}{50}{section.Alph0.1}%
+\contentsline {section}{\numberline {2}데이터 유형별 검토}{50}{section.Alph0.2}%
+\contentsline {subsection}{\numberline {2.1}기업 실적 데이터}{50}{subsection.Alph0.2.1}%
+\contentsline {subsubsection}{상장사 재무데이터 (NICE V-se, KIS-Value, Value Search 등)}{50}{section*.66}%
+\contentsline {subsection}{\numberline {2.2}설비가동률 및 전력 관련 데이터}{51}{subsection.Alph0.2.2}%
+\contentsline {subsubsection}{한국전력공사(KEPCO) 전력판매량}{51}{section*.67}%
+\contentsline {subsubsection}{한국전력거래소(KPX) 시계열 데이터}{51}{section*.68}%
+\contentsline {paragraph}{(1) 시도별 시간대별 전력 계량 데이터(2013--2023, 1회성)}{51}{section*.69}%
+\contentsline {paragraph}{(2) 시도별 시간대별 전력거래량(2001--2024)}{51}{section*.70}%
+\contentsline {paragraph}{(3) KPX 전력수급현황 실시간 API(5분 단위)}{52}{section*.71}%
+\contentsline {subsection}{\numberline {2.3}ESG/탄소 및 환경 센서 데이터}{52}{subsection.Alph0.2.3}%
+\contentsline {subsubsection}{굴뚝자동측정기기(TMS) 데이터 – 한국환경공단}{52}{section*.72}%
+\contentsline {subsubsection}{에어코리아 대기오염정보}{53}{section*.73}%
+\contentsline {subsubsection}{해양수질자동측정망 관측정보(해양수산부·해양환경공단)}{54}{section*.74}%
+\contentsline {subsection}{\numberline {2.4}텍스트\slash 뉴스 및 심리지수}{55}{subsection.Alph0.2.4}%
+\contentsline {subsubsection}{한국은행 뉴스심리지수}{55}{section*.75}%
+\contentsline {subsubsection}{한국은행 BSI\slash ESI\slash CSI 등 월간 심리지수}{56}{section*.76}%
+\contentsline {subsubsection}{BIGKinds(뉴스 빅데이터, 한국언론진흥재단)}{56}{section*.77}%
+\contentsline {subsection}{\numberline {2.5}운송 및 물류 관련 데이터}{58}{subsection.Alph0.2.5}%
+\contentsline {subsubsection}{항만 물동량 통계 (국가물류통합정보센터, PORT\textendash MIS)}{58}{section*.78}%
+\contentsline {subsubsection}{해상운임 지수 (국내·국외)}{58}{section*.79}%
+\contentsline {subsubsection}{항공화물 및 수출입 화물 물동량 통계}{59}{section*.80}%
+\contentsline {subsubsection}{내륙화물(도로) 수송실적 및 생활물류(택배) 통계}{60}{section*.81}%
+\contentsline {section}{\numberline {3}종합 평가 및 권고}{61}{section.Alph0.3}%
+\contentsline {subsection}{\numberline {3.1}요약 표}{61}{subsection.Alph0.3.1}%
+\contentsline {subsection}{\numberline {3.2}우선 활용 권고}{61}{subsection.Alph0.3.2}%
+\contentsline {section}{\numberline {4}향후 과제 및 결론}{62}{section.Alph0.4}%
+\contentsline {subsection}{\numberline {4.1}향후 과제}{62}{subsection.Alph0.4.1}%
+\contentsline {subsection}{\numberline {4.2}결론}{63}{subsection.Alph0.4.2}%
