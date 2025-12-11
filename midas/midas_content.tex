@@ -1,0 +1,1084 @@
+\section{데이터 및 빈도 불일치 자료의 구성}
+
+\subsection{분석 개요 및 데이터 출처}
+
+\begin{itemize}
+  \item 목적:
+    \begin{itemize}
+      \item 월별 산업활동지표(전산업생산지수)를 종속변수로 사용.
+      \item 주별 전력거래량을 고빈도 설명변수로 사용.
+      \item MIDAS-AR 및 AR(1) 벤치마크, XGBoost 확장을 통해 nowcasting 성능 비교.
+    \end{itemize}
+  \item 데이터 출처:
+    \begin{itemize}
+      \item 월별 전산업생산지수 (계절조정): 국가 통계 자료.
+      \item 전력거래량: 공공데이터포털에서 시간대별·지역별 거래량 자료를 수집 후 일·주 단위로 집계.
+      \item 기업경기실사지수(BSI): 월별 심리지표.
+    \end{itemize}
+  \item 소프트웨어:
+    \begin{itemize}
+      \item R 사용.
+      \item 주요 패키지: \texttt{readxl}, \texttt{dplyr}, \texttt{lubridate}, \texttt{forecast}, \texttt{xgboost} 등.
+    \end{itemize}
+\end{itemize}
+
+\subsection{종속변수: 월별 산업생산 지표}
+
+\begin{itemize}
+  \item 표기:
+    \begin{itemize}
+      \item $I^{\text{tot}}_t$: 전산업생산지수(계절조정, 월 $t$).
+      \item $y^{\text{tot}}_t$: 월간 로그 성장률.
+      \item $y^{\text{tot,YoY}}_t$: 전년동월비.
+      \item $t$: 월(month) 인덱스.
+      \item 사용 가능 기간: 2000년 1월–2025년 9월 (실제 추정에선 샘플 제약 존재).
+    \end{itemize}
+  \item 정의:
+    \begin{align}
+      y^{\text{tot}}_t 
+        &= 100\left( \log I^{\text{tot}}_t - \log I^{\text{tot}}_{t-1} \right), \\
+      y^{\text{tot,YoY}}_t
+        &= 100\left( \frac{I^{\text{tot}}_t}{I^{\text{tot}}_{t-12}} - 1 \right)
+          \approx 100\left( \log I^{\text{tot}}_t - \log I^{\text{tot}}_{t-12} \right).
+    \end{align}
+  \item 실제 추정:
+    \begin{itemize}
+      \item $y^{\text{tot}}_t$ 또는 $y^{\text{tot,YoY}}_t$ 중 하나를 선택하여 $y_t$로 표기.
+      \item 두 경우 모두 계절조정된 전산업생산지수를 기반으로 계산.
+    \end{itemize}
+\end{itemize}
+
+\subsection{설명변수: 주별/일별 전력거래량 성장률}
+
+\begin{itemize}
+  \item 표기:
+    \begin{itemize}
+      \item $P_s$: 주 $s$에서의 전력거래량.
+      \item $\ell_s = \log P_s$: 로그 전력거래량.
+      \item $\ell^{\text{SA}}_s$: 계절조정된 로그 전력거래량.
+      \item $x_s$: 계절조정된 로그 성장률.
+    \end{itemize}
+  \item 계절조정 및 성장률:
+    \begin{align}
+      \ell_s &= \log P_s, \\
+      \ell^{\text{SA}}_s &= \text{seasadj}\big( \text{STL}(\ell_s) \big), \\
+      x_s &= 100\left( \ell^{\text{SA}}_s - \ell^{\text{SA}}_{s-1} \right).
+    \end{align}
+  \item $x_s$를 MIDAS 회귀의 고빈도 설명변수로 사용.
+\end{itemize}
+
+\section{MIDAS-AR 모형 설정과 추정 방법}
+
+\subsection{MIDAS-AR(1) 모형}
+
+\begin{itemize}
+  \item 기본 구조:
+    \begin{align}
+      y_t
+        &= \lambda y_{t-1}
+           + \beta_0 + \beta_1 Z_t(K,\theta)
+           + \varepsilon_t.
+    \end{align}
+  \item 구성 요소:
+    \begin{itemize}
+      \item $\lambda$: AR(1) 계수.
+      \item $\beta_0, \beta_1$: 상수항 및 MIDAS 회귀자 계수.
+      \item $\theta = (\theta_1,\theta_2)$: exp–Almon 가중치 모수.
+      \item $K$: 사용하는 고빈도 래그 개수.
+      \item $Z_t(K,\theta)$: 고빈도 성장률의 가중 합.
+    \end{itemize}
+  \item 안정성 제약:
+    \begin{itemize}
+      \item 재파라미터화 예: $\lambda = \tanh(\lambda^{\text{raw}})$ 등.
+      \item $\lvert \lambda \rvert < 1$ 자동 충족.
+    \end{itemize}
+\end{itemize}
+
+\subsection{exp–Almon 가중치와 MIDAS regressor}
+
+\begin{itemize}
+  \item 월별 cutoff:
+    \begin{itemize}
+      \item $T_t$: 월 $t$의 말일.
+      \item cutoff까지의 고빈도 성장률 $\{x_s : s \le T_t\}$ 중 최근 $K$개를 선택:
+      \[
+        x_{t,1},\dots,x_{t,K},
+      \]
+      \item $x_{t,1}$: 가장 최근 주, $x_{t,K}$: 가장 오래된 래그.
+    \end{itemize}
+  \item exp–Almon 가중치:
+    \begin{align}
+      Z_t(K,\theta) 
+        &= \sum_{k=1}^K w_k(\theta)\, x_{t,k}, \\
+      w_k(\theta_1,\theta_2)
+        &= \frac{\exp(\theta_1 k + \theta_2 k^2)}
+                {\sum_{j=1}^K \exp(\theta_1 j + \theta_2 j^2)}, \quad k=1,\dots,K.
+    \end{align}
+  \item 제약 및 재파라미터화:
+    \begin{itemize}
+      \item $w_k(\theta)\ge 0$, $\sum_k w_k(\theta)=1$.
+      \item $\theta_2 < 0$ 제약을 통해 오래된 래그 가중치 감소 유도.
+      \item 구현:
+      \begin{equation*}
+        \theta_1 = 300 \tanh(\theta_{1,\text{raw}}), \quad
+        \theta_2 = -10 \frac{\exp(\theta_{2,\text{raw}})}{1 + \exp(\theta_{2,\text{raw}})}.
+      \end{equation*}
+      \item 결과: $|\theta_1|<300$, $-10<\theta_2<0$ 보장.
+      \item 목적: 수치적 안정성 확보, corner solution 방지.
+    \end{itemize}
+  \item $K$ 선택:
+    \begin{itemize}
+      \item 후보: $K \in \{8,13,26,52\}$.
+      \item Validation RMSE 최소 기준으로 최적 $K^*$ 선택.
+    \end{itemize}
+\end{itemize}
+
+\subsection{\citet{clements2008macroeconomic} 추정 절차}
+
+\begin{itemize}
+  \item 샘플 분할:
+    \begin{itemize}
+      \item Train: 2002–2020년.
+      \item Validation: 2021–2022년.
+      \item Test: 2023–2024년.
+      \item COVID 구간 포함 (제외 여부에 따른 성능 변화 미미).
+    \end{itemize}
+  \item 1단계 (Standard MIDAS, AR 없음):
+    \begin{align}
+      y_t = \beta_0 + \beta_1 Z_t(K,\theta) + \varepsilon_t.
+    \end{align}
+    \begin{itemize}
+      \item NLS로 $(\beta_0,\beta_1,\theta)$ 추정 → 초기값 획득.
+    \end{itemize}
+  \item 2단계 (잔차의 AR 추정):
+    \begin{align}
+      \hat{\varepsilon}_t
+        &= \lambda^{(0)} \hat{\varepsilon}_{t-1} + u_t.
+    \end{align}
+    \begin{itemize}
+      \item OLS로 $\lambda^{(0)}$ 추정.
+    \end{itemize}
+  \item 3단계 ($\lambda$ 고정 MIDAS-AR):
+    \begin{align}
+      y_t
+        &= \lambda^{(0)} y_{t-1}
+           + \beta_0 + \beta_1 \widetilde{Z}_t(K,\theta;\lambda^{(0)})
+           + \varepsilon_t.
+    \end{align}
+    \begin{itemize}
+      \item $y_t$의 자기회귀 구조를 반영하여 고빈도 성장률을 한 번 조정한 뒤 가중치 부여.
+      \item $y_{t-1}$이 설명하는 저빈도 움직임과 고빈도 정보의 분리를 목표.
+      \item NLS로 $(\beta_0,\beta_1,\theta)$ 재추정.
+    \end{itemize}
+  \item 4단계 (Full MIDAS-AR 공동 추정):
+    \begin{itemize}
+      \item $(\lambda,\beta_0,\beta_1,\theta)$를 동시에 NLS로 추정.
+      \item 초기값: 3단계 추정치.
+      \item 최적화 알고리즘: BFGS.
+    \end{itemize}
+\end{itemize}
+
+\subsection{K 선택과 예측 설계}
+
+\begin{itemize}
+  \item 튜닝 단계:
+    \begin{itemize}
+      \item 후보 $K$: $\{8,13,26,52\}$.
+      \item 각 $K$에 대해 위 절차(1–4단계)를 수행.
+      \item Validation 구간에서 one-step-ahead 예측치 $\hat{y}_t$ 계산.
+      \item Validation RMSE:
+      \begin{align}
+        \text{RMSE}_{\text{val}}(K,1)
+          = \sqrt{\frac{1}{T_{\text{val}}}
+                  \sum_{t\in\text{val}} (y_t - \hat{y}_t)^2 }.
+      \end{align}
+      \item RMSE 최소가 되는 $K^*$ 선택.
+    \end{itemize}
+  \item 최종 예측:
+    \begin{itemize}
+      \item Train+Val(2002–2022) 전체로 재추정 → $(\hat{\lambda},\hat{\beta}_0,\hat{\beta}_1,\hat{\theta})$.
+      \item one-step-ahead 예측:
+      \begin{align}
+        \hat{y}_t
+          &= \hat{\lambda} y_{t-1} 
+             + \hat{\beta}_0 + \hat{\beta}_1 Z_t(K^*,\hat{\theta}).
+      \end{align}
+      \item Test RMSE:
+      \begin{align}
+        \text{RMSE}_{\text{test}}
+          &= \sqrt{\frac{1}{T_{\text{test}}}
+                  \sum_{t\in\text{test}} (y_t - \hat{y}_t)^2 }.
+      \end{align}
+    \end{itemize}
+\end{itemize}
+
+\section{AR(1) 벤치마크와 Vintage별 MIDAS–AR(1)}
+
+\subsection{공통 샘플 및 AR(1) 벤치마크}
+
+\begin{itemize}
+  \item 공통 샘플:
+    \begin{itemize}
+      \item $y_t$ 사용 가능 시점: 2002-03–2024-12 (가정).
+      \item 주별 전력 성장률 $x_s$: 2001-04 이후.
+      \item MIDAS 래그가 정의 가능한 월만 남긴 공통 집합:
+      \[
+        \mathcal{T}_\text{common} \subset \{2002\text{-03},\dots,2024\text{-12}\}.
+      \]
+    \end{itemize}
+  \item AR(1) 모형:
+    \begin{align}
+      y_t &= \alpha + \phi y_{t-1} + e_t.
+    \end{align}
+  \item 추정 및 예측:
+    \begin{itemize}
+      \item 2002–2022년 (공통 샘플 내)에서 OLS로 $(\hat{\alpha},\hat{\phi})$ 추정.
+      \item one-step-ahead 예측:
+      \begin{align}
+        \hat{y}_t^{\text{AR(1)}} &= \hat{\alpha} + \hat{\phi} y_{t-1}.
+      \end{align}
+      \item Test RMSE:
+      \begin{align}
+        \text{RMSE}_\text{test}^{\text{AR(1)}}
+          &= \sqrt{\frac{1}{T_\text{test}} \sum_{t \in \mathcal{T}_\text{test}}
+                    ( y_t - \hat{y}_t^{\text{AR(1)}} )^2}.
+      \end{align}
+      \item $\mathcal{T}_\text{test} = \{ t \in \mathcal{T}_\text{common} : 2023\text{-01} \le t \le 2024\text{-12}\}$.
+      \item AR(1)은 고빈도 정보를 사용하지 않으므로 vintage와 무관하게 동일한 RMSE를 가짐.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Vintage 정보세트 정의}
+
+\begin{itemize}
+  \item 정의:
+    \begin{itemize}
+      \item $m_t$: 월 $t$의 첫날.
+      \item $T_t$: 월 $t$의 말일.
+      \item 각 주 $s$에 대해 월(month) 및 주차(week-in-month) 계산.
+    \end{itemize}
+  \item cutoff date $C_t^{(h)}$:
+    \begin{itemize}
+      \item h0: $C_t^{(\text{h0})} = m_t - 1$ (전월 말까지).
+      \item h1: $t$월 week $\le 1$인 주 중 마지막 주 날짜.
+      \item h2: $t$월 week $\le 2$인 주 중 마지막 주 날짜.
+      \item h3: $t$월 week $\le 3$인 주 중 마지막 주 날짜.
+      \item h4: $C_t^{(\text{h4})} = T_t$ (당월 전체).
+    \end{itemize}
+  \item 각 vintage별 MIDAS 래그:
+    \begin{itemize}
+      \item $\{x_s : s \le C_t^{(h)}\}$ 중 최근 $K$개 선택:
+      \[
+        x^{(h)}_{t,1},\dots,x^{(h)}_{t,K}.
+      \]
+      \item exp–Almon 가중치 적용:
+      \[
+        Z_t^{(h)}(K,\theta) = \sum_{k=1}^K w_k(\theta)\, x^{(h)}_{t,k}.
+      \]
+    \end{itemize}
+\end{itemize}
+
+\subsection{Vintage별 MIDAS–AR(1) 추정 및 요약}
+
+\begin{itemize}
+  \item 모형:
+    \begin{align}
+      y_t = \lambda^{(h)} y_{t-1}
+           + \beta_0^{(h)} + \beta_1^{(h)} Z_t^{(h)}(K,\theta^{(h)})
+           + \varepsilon_t^{(h)}.
+    \end{align}
+  \item 모수:
+    \begin{itemize}
+      \item $\lambda^{(h)}$: AR(1) 계수.
+      \item $\beta_0^{(h)},\beta_1^{(h)}$: 상수 및 MIDAS 계수.
+      \item $\theta^{(h)}$: exp–Almon 모수.
+      \item $K$: 래그 개수 (vintage별 최적 $K^*(h)$ 선택).
+    \end{itemize}
+  \item 제약 및 최적화:
+    \begin{itemize}
+      \item 재파라미터화로 $|\lambda^{(h)}|<1$, $|\theta_1^{(h)}|<300$, $-10<\theta_2^{(h)}<0$ 보장.
+      \item BFGS로 NLS 추정.
+    \end{itemize}
+  \item 튜닝 및 최종 예측:
+    \begin{itemize}
+      \item 각 $h$에 대해 $K \in \{8,13,26,52\}$ 중 Validation RMSE 최소인 $K^*(h)$ 선택.
+      \item 2002–2022년 전체로 재추정 → $(\hat{\lambda}^{(h)},\hat{\beta}_0^{(h)},\hat{\beta}_1^{(h)},\hat{\theta}^{(h)})$.
+      \item 테스트 구간 예측:
+      \[
+        \hat{y}_t^{(h)}
+          = \hat{\lambda}^{(h)} y_{t-1}
+           + \hat{\beta}_0^{(h)} 
+           + \hat{\beta}_1^{(h)} Z_t^{(h)}(K^*(h),\hat{\theta}^{(h)}).
+      \]
+      \item Test RMSE:
+      \[
+        \text{RMSE}_\text{test}^{(h)}
+          = \sqrt{\frac{1}{T_\text{test}} \sum_{t \in \mathcal{T}_\text{test}}
+             ( y_t - \hat{y}_t^{(h)} )^2 }.
+      \]
+    \end{itemize}
+  \item exp–Almon 가중치 해석:
+    \begin{itemize}
+      \item 각 vintage에서 $w_k^{(h)} = w_k(\hat{\theta}_1^{(h)},\hat{\theta}_2^{(h)})$ 계산.
+      \item $k=1$: 가장 최근 주, $k=K^*(h)$: 가장 오래된 래그.
+      \item $w_k^{(h)}$ 패턴으로 어떤 시점의 전력 정보가 중요하게 사용되는지 확인.
+    \end{itemize}
+\end{itemize}
+
+\section{실증 결과 요약: AR(1) vs MIDAS–AR(1)}
+
+\subsection{종속변수: 전산업생산지수 성장률}
+
+\paragraph{정태성 검정}
+
+\begin{itemize}
+  \item ADF 검정:
+    \begin{itemize}
+      \item R 함수: \texttt{adf.test()}.
+      \item lag 선택: $k = \lfloor (T-1)^{1/3} \rfloor = 6$.
+      \item 검정통계량: 약 $-7.59$.
+      \item p-value: $< 0.01$.
+      \item 결론: 1\% 유의수준에서 단위근 귀무가설 기각 → 수준에서 정상성(stationarity) 가정 가능.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Vintage별 MIDAS–AR(1) 인샘플 적합}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/midasar_sample_fit.png}
+    \caption{Vintage별 MIDAS–AR(1) 모형의 인샘플 적합 경로 (2002–2022). 종속변수는 전산업생산지수 월간 로그 성장률이며, 각 패널은 정보세트 $h0$–$h4$에서 검증 RMSE가 최소가 되도록 선택된 $K^{*}(h)$를 사용한 MIDAS–AR(1) 적합치를 나타낸다. 검은 실선은 실제값, 빨간 점선은 MIDAS–AR(1) 적합치를 의미한다.}
+    \label{fig:midasar_insample}
+\end{figure}
+
+\begin{itemize}
+  \item Figure~\ref{fig:midasar_insample}:
+    \begin{itemize}
+      \item 2002–2022년 구간 인샘플 적합.
+      \item 모든 vintage에서 인샘플 RMSE: 약 1.24–1.26.
+      \item AR(1)이 설명하는 저빈도 움직임 위에 MIDAS 회귀자가 세부 변동을 추가 설명.
+      \item $K^*(h)$:
+        \begin{itemize}
+          \item $h0$, $h1$: 상대적으로 짧은 래그($K=8$).
+          \item $h2$, $h4$: $K=52$ 등 긴 래그 선택.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Vintage별 exp–Almon 가중치}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/midasar_weight.png}
+    \caption{Vintage별 최종 추정 exp–Almon 가중치. 가로축은 주별 래그 인덱스 $k$ (1 = 가장 최근 주), 세로축은 가중치 $w_k^{(h)}$이며, 각 패널이 하나의 vintage 정보세트 ($h0$–$h4$)에 해당한다.}
+    \label{fig:midasar_weights}
+\end{figure}
+
+\begin{itemize}
+  \item Figure~\ref{fig:midasar_weights}:
+    \begin{itemize}
+      \item 전반적으로 최근 몇 주(1–3주)에 가중치 집중.
+      \item $h0$: (t-1)월 정보만 사용 → 최근 주 중심 우하향 패턴.
+      \item $h2$, $h4$: $K^*(h)=52$이나 실질 가중치는 최근 1–4주에 집중, 나머지는 0에 근접.
+      \item $h3$: 가장 최근 1주에 거의 전 가중치 집중.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Vintage별 Test RMSE: AR(1) vs MIDAS–AR(1)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Vintage & AR(1) & MIDAS-AR(1) \\
+\midrule
+h0 & 0.950 (0.0) & 0.952 (-0.2) \\
+h1 & 0.950 (0.0) & 0.951 (-0.1) \\
+h2 & 0.950 (0.0) & 0.952 (-0.2) \\
+h3 & 0.950 (0.0) & 0.951 (-0.1) \\
+h4 & 0.950 (0.0) & 0.945 (0.5)  \\
+\bottomrule
+\end{tabular}
+\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율: AR(1) vs MIDAS-AR(1) (2023–2024)}
+\label{tab:midasar_rmse_table}
+\end{table}
+
+\begin{itemize}
+  \item 표 해석:
+    \begin{itemize}
+      \item 괄호 안 숫자: AR(1) 대비 RMSE 감소율(\%).
+      \item $h0$–$h3$: MIDAS–AR(1)의 감소율 $\approx -0.2\%$~$-0.1\%$ (AR(1)보다 약간 열악).
+      \item $h4$: MIDAS–AR(1)의 RMSE가 약 $0.5\%$ 감소 (소폭 개선).
+    \end{itemize}
+\end{itemize}
+
+\paragraph{테스트 기간 예측 경로}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/midasar_test_fit.png}
+    \caption{테스트 구간(2023–2024)에서의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트($h0$–$h4$)에 대응하며, 검은 실선은 실제 월별 IIP 성장률, 파란 실선은 AR(1) 예측, 빨간 점선은 MIDAS–AR(1) 예측을 나타낸다. 각 패널 상단에는 해당 vintage에서의 RMSE(MIDAS, AR(1))가 표시되어 있다.}
+    \label{fig:midasar_test}
+\end{figure}
+
+\begin{itemize}
+  \item Figure~\ref{fig:midasar_test}:
+    \begin{itemize}
+      \item 2023–2024년 테스트 구간에서 AR(1) vs MIDAS–AR(1) 예측 경로 비교.
+      \item 전 vintage에서 두 모형의 궤적이 거의 동일.
+      \item $h0$–$h3$: 일부 달에서 미세한 차이 있으나 RMSE 개선으로 연결되지 않음.
+      \item $h4$: 몇몇 국면에서 MIDAS–AR(1)이 실제값에 조금 더 근접.
+    \end{itemize}
+  \item 결론(월간 성장률):
+    \begin{itemize}
+      \item AR(1)만으로도 단기 예측력이 높음.
+      \item 주별 전력거래량을 추가한 MIDAS–AR(1)은 full month 정보(h4)에서만 약간의 개선.
+      \item 월 중(h0–h2) 정보만으로는 추가 예측력 거의 없음.
+    \end{itemize}
+\end{itemize}
+
+\subsection{종속변수: 전년동월비}
+
+\paragraph{정태성 검정}
+
+\begin{itemize}
+  \item ADF 검정:
+    \begin{itemize}
+      \item R \texttt{adf.test()} 사용.
+      \item lag: 자동 선택 ($k \approx 6$).
+      \item 검정통계량: $-5.56$.
+      \item p-value: $<0.01$.
+      \item 결론: 수준에서 정상(stationary)으로 판단.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{인샘플 적합 및 exp–Almon 가중치}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/midasar_mom_sample_fit.png}
+    \caption{전년동월비를 종속변수로 한 vintage별 MIDAS–AR(1)의 인샘플 적합 경로(2002–2022). 각 패널은 정보세트 $h0$–$h4$에서 선택된 $K^\ast(h)$와 추정 계수를 사용한 MIDAS–AR(1) 적합치를 나타낸다. 검은 실선은 실제 전년동월비, 빨간 점선은 MIDAS–AR(1) 적합치이다.}
+    \label{fig:midasar_yoy_insample}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/midasar_mom_weight.png}
+    \caption{전년동월비 모형에서의 vintage별 exp–Almon 가중치. 가로축은 주별 래그 인덱스 $k$ (1 = 가장 최근 주), 세로축은 가중치 $w_k^{(h)}$이며, 각 패널은 정보세트 $h0$–$h4$를 나타낸다.}
+    \label{fig:midasar_yoy_weights}
+\end{figure}
+
+\begin{itemize}
+  \item Figure~\ref{fig:midasar_yoy_insample}:
+    \begin{itemize}
+      \item 전년동월비의 변동성이 크고 스파이크가 존재.
+      \item MIDAS–AR(1) 적합치는 각 vintage에서 실제값을 비교적 잘 따라감.
+      \item 인샘플 RMSE: 대략 1.78–1.88 (월간 성장률 모형보다 크다).
+    \end{itemize}
+  \item Figure~\ref{fig:midasar_yoy_weights}:
+    \begin{itemize}
+      \item $h0$: $K^*(h0)=52$, 실제 가중치는 최근 5–7주에 집중.
+      \item $h1$, $h2$: 종 모양(hump-shaped) 패턴; cutoff 이전 4–6주 전 래그에 큰 가중치.
+      \item $h3$, $h4$: 짧은 래그($K^*=8$) 선택, 단조 감소형 가중치.
+      \item 전반적으로 최근 1–2개월 내 전력 사용 정보가 중요, 일부 vintage에서 약간 더 이전 주에 비중.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Vintage별 Test RMSE (전년동월비)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Vintage & AR(1) & MIDAS-AR(1) \\
+\midrule
+h0 & 1.49 (0.0) & 1.50 (-0.7) \\
+h1 & 1.49 (0.0) & 1.60 (-7.4) \\
+h2 & 1.49 (0.0) & 1.47 (1.3)  \\
+h3 & 1.49 (0.0) & 1.50 (-0.7) \\
+h4 & 1.49 (0.0) & 1.49 (0.0)  \\
+\bottomrule
+\end{tabular}
+\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율: 전년동월비 (2023–2024)}
+\label{tab:midasar_rmse_yoy}
+\end{table}
+
+\begin{itemize}
+  \item 해석:
+    \begin{itemize}
+      \item $h0$, $h3$: MIDAS–AR(1)의 RMSE가 AR(1)보다 약 $0.7\%$ 악화.
+      \item $h1$: RMSE 약 $7.4\%$ 악화.
+      \item $h2$: RMSE 약 $1.3\%$ 개선(크기 작음).
+      \item $h4$: 두 모형 RMSE 동일.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{테스트 기간 예측 경로(전년동월비)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/midasar_mom_test_fit.png}
+    \caption{전년동월비를 종속변수로 한 테스트 기간(2023–2024)의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트(h0–h4)에 대응하며, 검은 실선은 실제 전년동월비, 파란 실선은 AR(1) 예측, 빨간 점선은 MIDAS–AR(1) 예측을 나타낸다. 패널 상단에는 vintage별 RMSE(MIDAS, AR(1))가 표시되어 있다.}
+    \label{fig:midasar_yoy_test}
+\end{figure}
+
+\begin{itemize}
+    \item Figure~\ref{fig:midasar_yoy_test}:
+    \begin{itemize}
+      \item 전반적으로 AR(1)과 MIDAS–AR(1)의 궤적 유사.
+      \item $h1$: MIDAS–AR(1)이 일부 구간에서 노이즈를 과도하게 따라가며 RMSE 악화.
+      \item $h2$: 일부 구간(예: 2023년·2024년 초 상승 국면)에서 MIDAS–AR(1)이 실제값에 더 근접.
+      \item $h0$, $h3$, $h4$: 두 모형 간 차이가 미미.
+    \end{itemize}
+  \item 결론(전년동월비):
+    \begin{itemize}
+      \item AR(1)만으로도 상당한 단기 예측력 확보.
+      \item 주별 전력거래량을 활용한 MIDAS–AR(1)은 대부분의 vintage에서 AR(1) 대비 개선 없음.
+      \item $h2$에서만 소폭의 RMSE 감소, 그 외 vintage에서는 개선 불충분 또는 악화.
+    \end{itemize}
+\end{itemize}
+
+\section{XGBoost를 활용한 비선형 확장}\label{sec:xgb}
+
+\subsection{기본 아이디어 및 표본 분할}
+
+\begin{itemize}
+  \item 기본 가정:
+    \begin{itemize}
+      \item $y_{t-1}$만으로도 강한 자기회귀 구조 존재 → AR(1) 벤치마크.
+      \item 전력거래량, BSI 등 고빈도·심리지표는 비선형 추가정보 가능.
+    \end{itemize}
+  \item 비교 대상:
+    \begin{itemize}
+      \item (1) 선형 ARX: AR(1) + 고빈도 feature의 선형 효과.
+      \item (2) AR(1) 잔차에 대한 XGBoost 보정: $e_t$를 비선형 함수로 설명.
+      \item (3) XGBoost 직접 예측: $(y_{t-1}, x_{t,h})$를 입력으로 $y_t$ 직접 예측.
+    \end{itemize}
+  \item 표본 분할:
+    \begin{itemize}
+      \item 데이터: $y_t$, 주별 전력, BSI가 모두 존재하는 2003년 이후.
+      \item Train: 2003–2020년.
+      \item Validation: 2021–2022년.
+      \item Test: 2023–2024년.
+      \item vintage $h0$–$h4$: 모두 동일한 분할, feature만 다름.
+    \end{itemize}
+\end{itemize}
+
+\subsection{feature 구성 및 vintage별 정보세트(요약)}
+
+\begin{table}[H]
+  \centering
+  \label{tab:vintage_features}
+  \begin{tabular}{lccccc}
+    \toprule
+    Feature & $h0$ & $h1$ & $h2$ & $h3$ & $h4$ \\
+    \midrule
+    \multicolumn{6}{l}{\textbf{(t-1)월 주별 전력거래량}} \\
+    \quad pw\_tm1\_w1 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_tm1\_w2 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_tm1\_w3 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_tm1\_w4 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{(t-1)월 BSI 지수}} \\
+    \quad bsi\_tm1      & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad bsi\_tm1\_yoy & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{t월 주별 전력거래량}} \\
+    \quad pw\_t\_w1 &           & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_t\_w2 &           &            & \checkmark & \checkmark & \checkmark \\
+    \quad pw\_t\_w3 &           &            &            & \checkmark & \checkmark \\
+    \quad pw\_t\_w4 &           &            &            &            & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{t월 주별 전력거래량 전년동월대비}} \\
+    \quad pwyoy\_t\_w1 &        & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \quad pwyoy\_t\_w2 &        &            & \checkmark & \checkmark & \checkmark \\
+    \quad pwyoy\_t\_w3 &        &            &            & \checkmark & \checkmark \\
+    \quad pwyoy\_t\_w4 &        &            &            &            & \checkmark \\
+    \addlinespace[0.5ex]
+    \multicolumn{6}{l}{\textbf{t월 BSI 지수 (동행)}} \\
+    \quad bsi\_t      &         &            &            &            & \checkmark \\
+    \quad bsi\_t\_yoy &         &            &            &            & \checkmark \\
+    \bottomrule
+  \end{tabular}
+\caption{Vintage 정보세트별 사용 설명변수}
+\end{table}
+
+\begin{itemize}
+  \item 공통 전월 정보:
+    \begin{itemize}
+      \item $(t-1)$월 주별 전력: \texttt{pw\_tm1\_w1}–\texttt{pw\_tm1\_w4}.
+      \item $(t-1)$월 BSI: \texttt{bsi\_tm1}, \texttt{bsi\_tm1\_yoy}.
+    \end{itemize}
+  \item 현재 월 주별 전력 및 YoY:
+    \begin{itemize}
+      \item vintage별로 사용 가능한 주차까지 \texttt{pw\_t\_w$j$}, \texttt{pwyoy\_t\_w$j$} 추가.
+      \item h1: 1주, h2: 1–2주, h3: 1–3주, h4: 1–4주.
+    \end{itemize}
+  \item 동월 BSI:
+    \begin{itemize}
+      \item h4: \texttt{bsi\_t}, \texttt{bsi\_t\_yoy} 포함.
+    \end{itemize}
+  \item feature 벡터:
+    \[
+      x_{t,h} = (\text{pw\_tm1\_w1-w4},\; \text{bsi\_tm1}, \text{bsi\_tm1\_yoy},
+      \text{pw\_t\_w1-w4}, \text{pwyoy\_t\_w1-w4}, \text{bsi\_t},\text{bsi\_t\_yoy})'.
+    \]
+\end{itemize}
+
+
+\subsection{모형별 정의}
+
+\paragraph{(1) 선형 ARX}
+
+\begin{itemize}
+  \item 모형:
+    \begin{equation}
+      y_t = \alpha + \phi y_{t-1} + \beta_h' x_{t,h} + \varepsilon_{t,h}.
+    \end{equation}
+  \item 추정:
+    \begin{itemize}
+      \item 2003–2022년 전체로 OLS.
+      \item 테스트 구간에서 out-of-sample 예측.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{(2) AR(1)+XGB\_residual}
+
+\begin{itemize}
+  \item 1단계: AR(1) 적합.
+    \begin{itemize}
+      \item 모형: $y_t = \alpha + \phi y_{t-1} + u_t$.
+      \item 잔차: $e_t = y_t - \hat{y}_t^{AR(1)}$.
+    \end{itemize}
+  \item 2단계: 잔차에 대한 XGBoost:
+    \begin{equation}
+      e_t = f_h(x_{t,h}) + \eta_{t,h}.
+    \end{equation}
+  \item 테스트 예측:
+    \[
+      \hat y_{t,h}^{AR(1)+XGB\_res}
+      = \hat y_t^{AR(1)} + \hat f_h(x_{t,h}).
+    \]
+\end{itemize}
+
+\paragraph{(3) XGB\_direct}
+
+\begin{itemize}
+  \item 입력:
+    \[
+      z_{t,h} = (y_{t-1}, x_{t,h})'.
+    \]
+  \item 모형:
+    \[
+      y_t = g_h(z_{t,h}) + \xi_{t,h}.
+    \]
+  \item 테스트 예측:
+    \[
+      \hat y_{t,h}^{XGB\_direct} = \hat g_h(z_{t,h}).
+    \]
+\end{itemize}
+
+\subsection{하이퍼파라미터 및 롤링 검증}
+
+\begin{itemize}
+  \item XGBoost 설정:
+    \begin{itemize}
+      \item \texttt{objective} = "reg:squarederror".
+      \item \texttt{eval\_metric} = "rmse".
+      \item $\eta = 0.05$, \texttt{max\_depth} = 3.
+      \item \texttt{subsample} = 0.8, \texttt{colsample\_bytree} = 0.8.
+    \end{itemize}
+  \item 선택 파라미터:
+    \begin{itemize}
+      \item 부스팅 반복 횟수 $n_{\text{round}} \in \{50,100,150,200\}$.
+    \end{itemize}
+  \item 롤링 교차검증:
+    \begin{itemize}
+      \item 2003–2022년 중 뒤쪽 24개월을 네 개의 6개월 validation 윈도우로 분할.
+      \item 각 윈도우 $j$: $t < v_j$는 train, $v_j \le t \le v_j+5$는 validation.
+      \item 각 $n_{\text{round}}$에 대해 네 윈도우의 평균 RMSE 계산.
+      \item 평균 RMSE 최소의 $n_{\text{round}}$ 선택.
+    \end{itemize}
+  \item 최종 학습 및 평가:
+    \begin{itemize}
+      \item 선택된 $n_{\text{round}}$로 2003–2022년 전체로 재학습.
+      \item 2023–2024년 테스트 구간에 대한 예측 수행.
+      \item 성능지표:
+      \[
+        \text{RMSE}_{h}^{(m)} =
+          \sqrt{\frac{1}{T_{\text{test}}}
+              \sum_{t \in \text{test}}
+              (y_t - \hat y_{t,h}^{(m)})^2}.
+      \]
+    \end{itemize}
+\end{itemize}
+
+
+\section{실증 결과 요약}
+
+\subsection{종속변수: 전산업생산지수 성장률}
+
+\subsubsection{예측 성능: RMSE 및 상대 개선율}
+
+\begin{table}[H]
+\centering
+\label{tab:rmse-xgb}
+\begin{tabular}{lcccc}
+\toprule
+Vintage & AR(1) & ARX (linear) & AR(1)+XGB\_residual & XGB-direct \\
+\midrule
+h0 & 0.952 (0.0)         & \textbf{0.950} (0.2) & 1.110 (-10.3) & 1.030 (-4.5) \\
+h1 & \textbf{0.953} (0.0)& 0.964 (-1.2)        & 1.040 (-11.2) & 0.979 (-2.6) \\
+h2 & \textbf{0.953} (0.0)& 0.964 (-1.2)        & 1.040 (-10.2) & 1.000 (-4.4) \\
+h3 & \textbf{0.953} (0.0)& 0.964 (-1.2)        & 1.000 (-7.0)  & 1.000 (-7.0)  \\
+h4 & 0.953 (0.0)         & \textbf{0.940} (1.4)& 1.040 (-7.0)  & 0.951 (0.2)  \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율 (2023–2024)}
+\footnotesize
+\textit{주}: 각 셀은 2023–2024년 테스트 구간에서의 RMSE와,
+괄호 안의 AR(1) 대비 RMSE 감소율(\%)을 함께 보고한다.
+감소율은 $100 \times (1 - \text{RMSE}_{m,h} / \text{RMSE}_{\text{AR(1)},h})$로 정의되며,
+양수 값은 동일한 vintage에서 AR(1) 모형보다 예측 오차가 작다는 것을 의미한다.
+\end{flushleft}
+\end{table}
+
+\begin{itemize}
+  \item ARX:
+    \begin{itemize}
+      \item 대부분의 vintage에서 AR(1) 대비 감소율 $\approx -1.2\%$ 수준 (비슷하거나 약간 열악).
+      \item $h4$: 약 1.4\% RMSE 감소 (소폭 개선).
+    \end{itemize}
+  \item AR(1)+XGB\_residual:
+    \begin{itemize}
+      \item 모든 vintage에서 RMSE가 AR(1)보다 7–11\% 증가.
+      \item 잔차에 대한 부스팅이 노이즈를 과적합하는 경향.
+    \end{itemize}
+  \item XGB-direct:
+    \begin{itemize}
+      \item 대부분의 vintage에서 AR(1) 대비 2.6–4.5\% 수준 성능 저하.
+      \item $h3$, $h4$: 각각 약 0.3\%, 0.2\% 개선(크기는 매우 작음).
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{시각적 비교와 feature importance}
+
+\paragraph{테스트 예측 경로}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/xgboost_test_plots.png}
+    \caption{전산업생산지수 성장률을 종속변수로 한 테스트 기간(2023–2024)의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트($h0$–$h4$)에 대응하며, 검은 실선은 실제 전산업생산지수 성장률, 초록 점선은 AR(1) 예측, 파란 점선은 AR(1)+XGB\_residual 예측, 노란색 점선은 ARX 예측, 분홍 점섬은 XGB-direct 예측을 나타낸다.}
+    \label{fig:xgboost_test_plots}
+\end{figure}
+
+\begin{itemize}
+  \item Figure~\ref{fig:xgboost_test_plots}:
+    \begin{itemize}
+      \item 각 vintage별 테스트 구간에서 AR(1), ARX, AR(1)+XGB\_res, XGB\_direct 예측 경로 비교.
+      \item 네 모형 모두 AR(1) 궤적과 매우 유사한 패턴.
+      \item AR(1)+XGB\_residual: 일부 시점에서 진폭 과대 → RMSE 악화와 일치.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Feature importance (Gain 기준)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/heatmap_iip.png}
+    \caption{전산업생산지수 변수 중요도 (feature importance) 히트맵}
+    \label{fig:xgb-imp-heatmap_iip}
+\end{figure}
+
+\begin{itemize}
+  \item 정의:
+    \begin{itemize}
+      \item Gain: 해당 변수로 분할했을 때의 손실 감소량 $\Delta L$을 모든 노드에서 합산한 값.
+      \item vintage별로 합이 1이 되도록 정규화해 feature importance로 사용.
+    \end{itemize}
+  \item Figure~\ref{fig:xgb-imp-heatmap_iip}:
+    \begin{itemize}
+      \item XGB-direct와 AR(1)+XGB\_residual의 normalized Gain을 히트맵으로 비교.
+    \end{itemize}
+  \item XGB-direct:
+    \begin{itemize}
+      \item 모든 vintage에서 $y_{t-1}$의 중요도가 가장 높음.
+      \item XGBoost가 AR(1) 구조를 재현하는 방향으로 작동.
+      \item 보조적으로 $(t-1)$월 BSI 및 $h4$의 동월 BSI가 사용됨.
+      \item 현재 달 1주 전력거래량 및 YoY는 일부 vintage에서만 제한적으로 중요.
+    \end{itemize}
+  \item AR(1)+XGB\_residual:
+    \begin{itemize}
+      \item \texttt{bsi\_tm1\_yoy}, \texttt{pw\_tm1\_w1}의 중요도가 상대적으로 큼.
+      \item AR(1)이 설명하지 못한 잔차 패턴이 전월 BSI YoY와 전월 초 전력거래량과 관련됨을 시사.
+      \item 잔차의 신호대잡음비가 낮아 RMSE 개선으로는 이어지지 않음.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{ARX 모형: BSI와 전력거래량의 역할}
+
+\begin{table}[H]
+\centering
+\label{tab:arx_bsi}
+\begin{tabular}{lrrr}
+\toprule
+변수 & 계수 추정치 & 표준오차 & t값 \\
+\midrule
+상수항          & -1.699        & 1.906 & -0.89 \\
+$y_{t-1}$       & -0.403$^{***}$& 0.071 & -5.67 \\
+$\text{pw}_{t-1,w1}$     &  0.000        & 0.000 &  0.21 \\
+$\text{BSI}_{t-1}$       & -0.076$^{*}$  & 0.035 & -2.20 \\
+$\text{BSI}_{t-1}^{\text{YoY}}$ & -0.051$^{*}$  & 0.022 & -2.33 \\
+$\text{pw}_{t,w1}$       &  0.000        & 0.000 & -0.21 \\
+$\text{pw}_{t,w1}^{\text{YoY}}$ & -0.000       & 0.005 & -0.09 \\
+$\text{BSI}_{t}$         &  0.096$^{**}$ & 0.035 &  2.76 \\
+$\text{BSI}_{t}^{\text{YoY}}$   &  0.053$^{*}$  & 0.022 &  2.47 \\
+\midrule
+$R^{2}$       & \multicolumn{3}{r}{0.239} \\
+조정 $R^{2}$  & \multicolumn{3}{r}{0.205} \\
+관측치 수     & \multicolumn{3}{r}{188} \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\caption{ARX 모형 추정 결과: 월별 IIP 성장률에 대한 BSI 및 전력거래량의 영향}
+\footnotesize
+\textit{주}: 종속변수는 전산업생산지수 월별 성장률($y_t$)이며,
+$y_{t-1}$은 1기 시차, $\text{pw}$는 월별(또는 주별) 전력거래량 관련 변수,
+$\text{BSI}$는 기업경기실사지수, ``YoY''는 전년동월 대비 변화를 의미한다.
+두 번째 열은 계수 추정치, 세 번째 열은 표준오차, 네 번째 열은 t값을 나타낸다.
+\textit{***} $p<0.01$, \textit{**} $p<0.05$, \textit{*} $p<0.10$.
+\end{flushleft}
+\end{table}
+
+\begin{itemize}
+  \item $y_{t-1}$:
+    \begin{itemize}
+      \item 계수 약 $-0.40$, 1\% 유의수준에서 유의.
+      \item 기본적인 평균회귀 패턴 반영.
+    \end{itemize}
+  \item 전력거래량 변수:
+    \begin{itemize}
+      \item 계수 크기 매우 작고 모두 비유의.
+      \item 본 사양에서는 추가 설명력 제한적.
+    \end{itemize}
+  \item BSI 관련 변수:
+    \begin{itemize}
+      \item $t-1$, $t$ 시점의 BSI 수준 및 전년동월비 모두 5\% 수준 내에서 유의.
+      \item 경기국면 및 실물활동에 대한 선행·동행 정보 제공.
+      \item AR(1) 대비 추가적인 예측력의 상당 부분을 BSI가 제공하는 것으로 해석 가능.
+    \end{itemize}
+\end{itemize}
+
+\subsection{종속변수: 전년동월비}
+
+\subsubsection{예측 성능: RMSE 및 상대 개선율}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Vintage & AR(1) & ARX (linear) & AR(1)+XGB\_residual & XGB-direct \\
+\midrule
+h0 & 1.49 (0.0)         & 1.51 (-1.6)        & 1.52 (-2.3)        & \textbf{1.42} (4.4) \\
+h1 & \textbf{1.48} (0.0)& 1.58 (-6.4)        & 1.55 (-4.3)        & 1.61 (-8.6)         \\
+h2 & \textbf{1.48} (0.0)& 1.58 (-6.4)        & 1.58 (-6.7)        & 1.55 (-4.3)         \\
+h3 & \textbf{1.48} (0.0)& 1.58 (-6.4)        & 1.55 (-4.3)        & 1.58 (-6.7)         \\
+h4 & \textbf{1.48} (0.0)& 1.53 (-2.9)        & 1.53 (-2.9)        & 1.52 (-2.3)         \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\caption{Vintage별 테스트 RMSE 및 AR(1) 대비 RMSE 감소율: 전년동월비 (2023–2024)}
+\footnotesize\textit{주}: 각 셀은 2023–2024년 테스트 구간에서의 RMSE와, 괄호 안의 AR(1) 대비 RMSE 감소율(\%)을 함께 보고한다. 감소율은 $100 \times (1 - \mathrm{RMSE}_{m,h}/\mathrm{RMSE}_{\mathrm{AR(1)},h})$로 정의되며, 양수 값은 동일한 vintage에서 AR(1) 모형보다 예측 오차가 작다는 것을 의미한다.
+\end{flushleft}
+\label{tab:xgb_rmse_yoy}
+\end{table}
+
+\begin{itemize}
+  \item \textbf{벤치마크(AR(1)) 성능}
+  \begin{itemize}
+    \item 모든 vintage에서 AR(1)의 테스트 RMSE는 약 1.48--1.49 수준으로 거의 동일함.
+    \item 전년동월비 기준에서도 단순 AR(1)이 안정적인 기준 예측력을 제공함.
+  \end{itemize}
+
+  \item \textbf{ARX (linear)}
+  \begin{itemize}
+    \item 모든 vintage에서 AR(1) 대비 RMSE 감소율이 음수(약 $-1.6\%\sim -6.4\%$)로, 선형으로 고빈도 변수를 추가하면 예측력이 일관되게 악화됨.
+    \item 특히 $h1$--$h3$에서는 약 $6\%$ 수준의 성능 저하가 반복적으로 관찰됨.
+  \end{itemize}
+
+  \item \textbf{AR(1)+XGB\_residual}
+  \begin{itemize}
+    \item 모든 vintage에서 감소율이 약 $-2.3\%\sim -6.7\%$로, AR(1)보다 RMSE가 항상 더 큼.
+    \item AR(1)이 이미 설명한 구조 위에 잔차에 대해 부스팅을 적용하면, 전년동월비 기준에서는 잔차의 노이즈를 과적합하는 경향이 강함.
+  \end{itemize}
+
+  \item \textbf{XGB-direct}
+  \begin{itemize}
+    \item $h0$에서만 AR(1) 대비 약 $4.4\%$의 RMSE 감소가 나타나, 전월까지의 정보만 사용할 수 있는 시점에서는 비선형 모형이 일정 부분 개선을 제공함.
+    \item $h1$--$h4$에서는 감소율이 모두 음수(약 $-2.3\%\sim -8.6\%$)로, 고빈도 정보를 비선형으로 활용해도 AR(1)보다 예측오차가 커짐.
+  \end{itemize}
+
+  \item \textbf{종합}
+  \begin{itemize}
+    \item 전년동월비를 종속변수로 두었을 때, 대부분의 vintage에서 AR(1) 벤치마크가 가장 안정적인 선택임.
+    \item 예외적으로 $h0$에서의 XGB-direct만 제한적인 개선을 보이며, 나머지 경우에는 고빈도 변수의 선형·비선형 확장이 예측력을 유의하게 개선하지 못함.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{시각적 비교와 feature importance}
+
+\paragraph{테스트 예측 경로}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/xgboost_test_mom_plot.png}
+    \caption{전년동월비를 종속변수로 한 테스트 기간(2023-2024)의 one-step-ahead 예측 경로. 각 패널은 하나의 vintage 정보세트($h0$-$h4$)에 대응하며, 검은 실선은 실제 전년동월비, 초록 점선은 AR(1) 예측, 파란 점선은 AR(1)+XGB\_residual 예측, 노란색 점선은 ARX 예측, 분홍 점선은 XGB-direct 예측을 나타낸다.}
+    \label{fig:xgboost_test_mom_plots}
+\end{figure}
+
+\begin{itemize}
+    \item AR(1)+XGB\_residual 모형은 몇몇 시점에서 진폭을 과도하게 확대해 실제값 주변의 노이즈까지 따라가는 모습이 관찰되며, 이는 앞선 RMSE 결과에서 확인된 성능 악화와 일관된 패턴이다.
+    \item XGB-direct 모형은 일부 vintage에서 국지적으로 실제값에 더 근접하는 구간이 있으나, 전반적인 궤적은 여전히 AR(1)과 유사하며 전체 RMSE 관점에서는 뚜렷한 우위를 보이지 않음.
+    \item 종합적으로, 전년동월비 기준 테스트 구간에서도 고빈도 변수를 활용한 비선형 확장이 AR(1) 벤치마크 대비 예측 경로를 체계적으로 개선하지 못함.
+\end{itemize}
+
+\paragraph{Feature importance (Gain 기준)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{midas/images/heatmap_mom.png}
+    \caption{Feature importance heatmap}
+    \label{fig:xgb-imp-heatmap_iip}
+\end{figure}
+\begin{itemize}
+  \item XGB-direct:
+    \begin{itemize}
+      \item 모든 vintage에서 1기 시차 종속변수 $y_{t-1}$의 중요도가
+            가장 높음.
+      \item XGBoost가 기본적으로 강한 자기회귀 구조를 먼저 학습하고 있음을 시사.
+      \item 다음으로는 전월 BSI 수준(\texttt{bsi\_tm1})과 전월 BSI 전년동월비(\texttt{bsi\_tm1\_yoy})의 중요도가 상대적으로 크게 나타나, 경기심리지표가 보조적인 예측 정보를 제공하고 있음을 보여줌
+      \item 현재 월 주별 전력거래량 및 YoY 변수(\texttt{pw\_t\_w1},
+            \texttt{pwyoy\_t\_w1} 등)는 일부 vintage에서만 제한적인
+            중요도를 가지며, 전체적으로는 기여도가 크지 않음.
+    \end{itemize}
+  \item AR(1)+XGB\_residual:
+    \begin{itemize}
+      \item 잔차를 설명하는 단계에서는 전월 BSI 전년동월비 (\texttt{bsi\_tm1\_yoy})와 전월 1주 전력거래량 (\texttt{pw\_tm1\_w1})의 중요도가 상대적으로 크게 나타남.
+      \item 이는 AR(1)이 설명하지 못한 부분이 전월 경기심리의 변화와 전월 초 전력 사용 변화와 연관되어 있음을 시사하지만, 잔차의 신호대잡음비가 낮아 전체 예측 RMSE 개선으로 이어지지는 않음.
+      \item 동월 BSI(\texttt{bsi\_t}, \texttt{bsi\_t\_yoy})는 주로 모든 정보가 이용 가능한 $h4$에서만 의미 있는 중요도를 보임.
+    \end{itemize}
+  \item 전반적으로, XGBoost 모형에서 가장 핵심적인 설명변수는 종속변수의 래그값과 BSI이며, 주별 전력거래량 변수의 한계적 기여는 제한적인 것으로 해석됨.
+\end{itemize}
+
+
+\subsubsection{ARX 모형: BSI와 전력거래량의 역할}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+변수 & 계수 추정치 & 표준오차 & t값 \\
+\midrule
+상수항                    & -11.587$^{***}$ &  2.754 & -4.21 \\
+$y_{t-1}$                 &   0.398$^{***}$ &  0.066 &  6.07 \\
+$\text{pw}_{t-1,w1}$      &  -0.000         &  0.000 & -0.45 \\
+$\text{BSI}_{t-1}$        &   0.113$^{*}$   &  0.046 &  2.48 \\
+$\text{BSI}_{t-1}^{\text{YoY}}$
+                          &  -0.076$^{**}$  &  0.029 & -2.64 \\
+$\text{pw}_{t,w1}$        &   0.000         &  0.000 &  1.58 \\
+$\text{pw}_{t,w1}^{\text{YoY}}$
+                          &  -0.008         &  0.006 & -1.28 \\
+$\text{BSI}_{t}$          &   0.004         &  0.045 &  0.08 \\
+$\text{BSI}_{t}^{\text{YoY}}$
+                          &   0.123$^{***}$ &  0.028 &  4.40 \\
+\midrule
+$R^{2}$       & \multicolumn{3}{r}{0.788} \\
+조정 $R^{2}$  & \multicolumn{3}{r}{0.779} \\
+관측치 수     & \multicolumn{3}{r}{188}   \\
+\bottomrule
+\end{tabular}
+\caption{ARX 모형 추정 결과: 월별 IIP 성장률에 대한 BSI 및 전력거래량의 영향}
+\begin{flushleft}
+\footnotesize
+\textit{주}: 종속변수는 전산업생산지수 월별 성장률($y_t$)이며,
+$y_{t-1}$은 1기 시차, $\text{pw}$는 전력거래량 관련 변수,
+$\text{BSI}$는 기업경기실사지수, ``YoY''는 전년동월 대비 변화를 의미한다.
+두 번째 열은 계수 추정치, 세 번째 열은 표준오차, 네 번째 열은 t값을 나타낸다.
+\textit{***} $p<0.01$, \textit{**} $p<0.05$, \textit{*} $p<0.10$.
+\end{flushleft}
+\label{tab:arx_mom}
+\end{table}
+
+\begin{itemize}
+  \item $y_{t-1}$:
+    \begin{itemize}
+      \item 계수 약 $0.40$, 1\% 유의수준에서 매우 유의.
+      \item 전년동월비가 상당한 자기상관(지속성)을 갖고 있음을 보여줌.
+    \end{itemize}
+
+  \item 전력거래량 변수:
+    \begin{itemize}
+      \item 전월·당월 1주 전력 및 그 전년동월비 계수는 모두 0에 가깝고 비유의.
+      \item 이 사양에서 전력거래량만으로는 추가적인 설명력이 거의 없는 것으로 나타남.
+    \end{itemize}
+
+  \item BSI 관련 변수:
+    \begin{itemize}
+      \item 전월 BSI 수준($\text{BSI}_{t-1}$)과 전월 BSI 전년동월비($\text{BSI}^\text{YoY}_{t-1}$)는 각각 10\%, 5\% 수준에서 유의하며, 과거 경기심리가 향후 전년동월비 변화에 정보를 제공함을 시사.
+      \item 동월 BSI 수준($\text{BSI}_{t}$)은 비유의이지만, 동월 BSI 전년동월비($\text{BSI}^\text{YoY}_{t}$)는 1\% 수준에서 유의한 양(+)의 계수:
+      \item 전반적으로, AR(1)에서 포착하지 못한 부분 중 상당 부분은 BSI 수준·증감에 의해 설명되고, 전력 변수의 추가 기여는 제한적인 것으로 해석 가능.
+    \end{itemize}
+
+  \item 적합도:
+    \begin{itemize}
+      \item $R^{2}\approx 0.79$, 조정 $R^{2}\approx 0.78$로 비교적 높은 설명력.
+      \item 다만 앞선 테스트 RMSE 결과와 함께 볼 때, 높은 인샘플 적합에 비해 out-of-sample 예측력 개선은 제한적이라는 점을 시사.
+    \end{itemize}
+\end{itemize}
+
+\section{요약: 변수 선택 관점에서 본 결과}
+
+\begin{itemize}
+    \item \textbf{전월대비 성장률 기준}
+        \begin{itemize}
+            \item 전력거래량
+            \begin{itemize}
+                \item 시간대별 자료를 로그–STL 계절조정 후 주간 로그 성장률로 변환.
+                \item (t-1)월, t월 주별 성장률 및 전년동월비를 MIDAS 가중합·ARX·XGB feature로 사용.
+                \item 대부분의 모형에서 계수·Gain 모두 작고 비유의, AR(1) 대비 RMSE 개선 거의 없음.
+            \end{itemize}
+            \item BSI
+            \begin{itemize}
+                \item 수준(\texttt{bsi\_tm1}, \texttt{bsi\_t})과 전년동월비(\texttt{bsi\_tm1\_yoy}, \texttt{bsi\_t\_yoy})로 분해해 사용.
+                \item 선형 ARX와 XGBoost에서 전월·동월 BSI 변수들의 계수 및 Gain이 상대적으로 큼.
+                \item 다만 전월대비 기준 out-of-sample RMSE는 AR(1) 대비 소폭·불안정한 개선에 그침.
+            \end{itemize}
+        \end{itemize}
+
+    \item \textbf{전년동월비 기준}
+    \begin{itemize}
+        \item 전력거래량
+        \begin{itemize}
+            \item 동일한 변환(로그–STL 계절조정 후 주간 성장률·전년동월비)을 적용해 feature 구성.
+            \item ARX, AR(1)+XGB\_residual, XGB-direct에서 중요도 낮고, 대부분 vintage에서 AR(1)보다 RMSE 악화.
+            \item 예외적으로 $h0$–XGB-direct만 약 4\% 수준의 RMSE 개선, 다른 vintage로 일반화되지 않음.
+        \end{itemize}
+        \item BSI
+        \begin{itemize}
+            \item 전월 수준/전년동월비, 동월 전년동월비가 유의한 계수 및 높은 Gain을 보임.
+            \item 과거·현재 경기심리 변화가 전년동월 기준 실물 변동에 일정 정보 제공.
+            \item 그럼에도 대부분 vintage에서 AR(1)이 여전히 가장 안정적인 예측 성능 유지.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{종합}
+    \begin{itemize}
+        \item 두 종속변수 모두에서 가장 일관된 설명력은 1기 시차 종속변수 $y_{t-1}$에서 나옴.
+        \item 전력거래량 고빈도 변수는 다양한 변환·모형에도 불구하고 한계적 기여(보조 변수 수준)에 머묾.
+        \item BSI 수준·전년동월비는 인샘플 적합과 feature importance 관점에서 의미 있는 정보 제공.
+        \item 그러나 테스트 RMSE 기준으로는 AR(1) 벤치마크 대비 뚜렷한·일관된 예측력 개선까지는 이어지지 않음.
+        \item 현재 변환 설정(주별 전력 성장률, BSI 수준·전년동월비)을 기준으로 볼 때, nowcasting에서 핵심 변수는 $y_{t-1}$과 BSI 계열 변수, 전력 변수는 부차적 설명 변수로 정리됨.
+    \end{itemize}
+    \end{itemize}
+

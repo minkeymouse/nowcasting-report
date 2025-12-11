@@ -1,0 +1,17 @@
+\begin{table}[h]
+\centering
+\caption{Forecasting Results by Model-Target (Average across Horizons)}
+\label{tab:forecasting_results}
+\begin{tabular}{lcccccccccccc}
+\toprule
+ & \multicolumn{4}{c}{KOIPALL.G} & \multicolumn{4}{c}{KOEQUIPTE} & \multicolumn{4}{c}{KOWRCCNSE} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}
+Model & sMAE & sMSE & MAE & MSE & sMAE & sMSE & MAE & MSE & sMAE & sMSE & MAE & MSE \\
+\midrule
+ARIMA & \textbf{24.57} & \textbf{603.52} & 473.21 & 223929.39 & \textbf{15.44} & \textbf{238.44} & 472.01 & 222828.13 & \textbf{17.72} & \textbf{313.97} & 462.54 & 213948.13 \\
+VAR & 58.75 & 3452.07 & \textbf{473.01} & \textbf{223734.83} & 31.57 & 996.87 & \textbf{471.51} & \textbf{222354.05} & 45.18 & 2041.05 & \textbf{462.40} & \textbf{213810.26} \\
+DFM & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A \\
+DDFM & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A & N/A \\
+\bottomrule
+\end{tabular}
+\end{table}

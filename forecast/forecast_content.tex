@@ -1,0 +1,208 @@
+\section{개요}
+\label{sec:overview}
+
+\subsection{거시 경제 예측 필요성}
+\label{sec:macro_forecast_necessity}
+
+거시경제 변수의 정확한 예측은 정책 수립, 기업 경영 전략, 금융 시장 분석 등 다양한 분야에서 핵심적인 역할을 수행함. 특히 한국 경제의 주요 거시경제 변수인 생산, 투자, 소비에 대한 신뢰할 수 있는 예측은 경제 정책의 효과성과 시장 참여자의 의사결정 품질을 크게 좌우하는 것으로 확인됨.
+
+\subsection{거시 경제 변수 예측 주요 이슈}
+\label{sec:forecast_issues}
+
+거시경제 변수 예측에서 주요한 도전 과제는 다음과 같음:
+\begin{itemize}
+    \item \textbf{고차원 데이터:} 수십 개의 거시경제 지표를 동시에 활용할 때 차원의 저주 문제와 계산 복잡도가 증가함. 소수의 공통 요인(common factors)으로 차원을 축소하는 기법이 필요함. 전통적 회귀 모형은 고차원 데이터에서 과적합 문제를 겪으며, 요인 모형은 공분산 구조를 소수 요인으로 집약하여 이를 해결함.
+    \item \textbf{혼합 주기 데이터:} 주간, 월간, 분기 데이터가 혼재되어 있어 이를 효과적으로 통합하는 방법이 필요함. 특히 nowcasting에서는 비동기적 데이터 발표(jagged edges)와 결측치를 자연스럽게 처리할 수 있는 모형이 요구됨. Jagged edges는 서로 다른 변수가 서로 다른 시점에 발표되어 발생하는 데이터 불균형 문제로, 상태공간 모형의 Kalman filter는 이를 재귀적으로 처리할 수 있음.
+    \item \textbf{비선형 관계:} 거시경제 변수 간의 관계가 선형적이지 않을 수 있어 비선형 모형의 필요성이 대두됨. 특히 COVID-19와 같은 급격한 경기변동 기간에는 선형 가정의 한계가 드러남. 비선형 모형은 구조적 변화와 비대칭적 반응을 포착할 수 있어 극단적 상황에서 더 강건한 예측을 제공하는 것으로 확인됨.
+    \item \textbf{요인 식별 문제:} 전통적 동적요인모형에서 요인 식별을 위한 factor loading 제약이 과도할 경우, 공통 요인이 적절하게 도출되지 못하여 예측력이 저하될 수 있음. 이는 특히 모형 확장 시 문제가 되며, 비선형 인코더를 사용하는 DDFM은 이러한 제약을 완화하는 것으로 보여짐.
+\end{itemize}
+
+\subsection{실험의 필요성}
+\label{sec:experiment_necessity}
+
+전통적인 시계열 모형(ARIMA, VAR), 상태공간 모형(DFM, DDFM), 그리고 최신 딥러닝 기반 모형(TFT, Chronos)의 성능을 체계적으로 비교하여, 한국 거시경제 변수 예측에 가장 적합한 모형을 도출함.
+
+\section{실험 소개}
+\label{sec:experiment_introduction}
+
+\subsection{이론적 배경}
+\label{sec:theoretical_background}
+
+\subsubsection{동적요인모형}
+\label{subsec:dfm}
+
+동적요인모형(DFM)은 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 대표적 차원축소 기법으로, 관측식과 상태식을 갖는 state-space 형태를 취함 \cite{stock2002forecasting}. 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약해 수십~수백 개 변수의 동시 예측이 가능하며, Kalman filter를 통해 누락·비동기 데이터(혼합주기, jagged edges)를 자연스럽게 처리할 수 있다는 점에서 나우캐스팅에 핵심적으로 활용됨 \cite{banbura2012nowcasting, bok2019frbny}.
+
+DFM의 기본 구조는 다음과 같음:
+\begin{align}
+y_t &= \lambda_i' f_t + e_t \\
+f_t &= A_1 f_{t-1} + A_2 f_{t-2} + A_3 f_{t-3} + A_4 f_{t-4} + u_t
+\end{align}
+여기서 $y_t$는 관측 데이터, $f_t$는 은닉 요인(latent factors) 벡터임.
+
+DFM은 state-space 형태로 표현되며, measurement equation과 transition equation으로 구성됨. EM 알고리즘으로 파라미터 추정, 칼만 필터와 스무더로 요인 추정 \cite{bok2019frbny}. 칼만 필터는 실시간 데이터 흐름을 재귀적으로 처리하여 각 시점의 예측을 업데이트함. 이는 nowcasting에 특히 유용하여 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있음 \cite{banbura2012nowcasting}.
+
+DFM 모형에서 요인 식별을 위한 factor loading 제약 가정이 nowcasting 성과를 저해하는 요소로 알려져 있음. 예를 들어, FRBNY nowcasting 모형은 COVID-19 기간 동안 예측력이 저하되었으며, 이는 공통 요인 식별을 위한 과도한 제약으로 인해 공통 요인이 적절하게 도출되지 못한 데 기인한 것으로 분석됨 \cite{bok2019frbny}. 요인식별 제약을 완화하면 기존 모형도 양호한 예측력을 유지할 수 있으나, 주간 데이터를 모형에 추가하는 등 모형의 확장 측면에서 전통적 DFM은 한계가 있는 것으로 보여짐.
+
+\subsection{데이터 소개}
+\label{sec:data_introduction}
+
+\subsubsection{기본 데이터 탐색}
+\label{subsec:data_exploration}
+
+세 대상 변수에 대한 데이터 품질 분석 결과, 다음과 같은 특징이 발견됨: (1) 시계열 간 스케일 비율이 크게 달라 EM 알고리즘의 수치적 정밀도 문제를 야기할 수 있음, (2) 일부 시계열이 매우 낮은 분산을 보여 Kalman 필터의 수치적 불안정성을 유발할 수 있음, (3) 완전한 관측값(complete cases)의 비율이 낮아 대부분의 관측값이 하나 이상의 결측치를 포함함.
+
+데이터 품질 및 통계량 대시보드는 그림~\ref{fig:data_quality_dashboard}에 제시됨.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{forecast/images/data_quality_dashboard.png}
+    \caption{데이터 품질 및 통계량 대시보드: (상단 왼쪽) 정규화된 타겟 변수 비교, (상단 오른쪽) 분포 비교, (하단 왼쪽) 변동성 비교, (하단 오른쪽) 주요 통계량 비교}
+    \label{fig:data_quality_dashboard}
+\end{figure}
+
+\subsubsection{주요 변수 소개}
+\label{subsec:key_variables}
+
+세 가지 주요 거시경제 변수를 대상으로 함:
+\begin{itemize}
+    \item \textbf{생산:} 전산업생산지수(KOIPALL.G)
+    \item \textbf{투자:} 설비투자지수(KOEQUIPTE)
+    \item \textbf{소비:} 도소매판매액(KOWRCCNSE)
+\end{itemize}
+
+세 부문 모형 모두 총 41개 변수로 구성됨. 고용, 산업생산, 서베이(기업경기, 소비자 동향) 등 주요 월간 지수와 주간 데이터를 포함하며, 기업경기동향 조사는 해당월 중 발표되어 속보성이 높음. 주가지수 등 금융변수, 뉴스심리지수, 미국 경제정책불확실성 지수를 포함함.
+
+\subsubsection{전처리}
+\label{subsec:preprocessing}
+
+모든 모형은 공통 전처리 파이프라인을 사용하여 동일한 변환을 적용함. 변환 유형은 시계열별 설정 파일에서 읽어오며, lin(수준값), log(로그), chg(전기대비 차분), ch1(전년동기대비 차분), pch(전기대비 성장률), pc1(전년동기대비 성장률), cha(연율화 차분), pca(연율화 성장률)을 사용함.
+
+주파수 변환: 원본 데이터는 주간 주파수로 제공됨. 모든 모형은 주간 주파수로 학습하고 예측을 생성함. 일관된 예측을 위해 모든 모형이 주간 데이터를 그대로 사용하며, 리샘플링을 하지 않음. DFM과 DDFM은 주간 클럭을 사용하며, 혼합주기 옵션을 통해 tent kernel이 자동으로 적용되어 주간/월간 데이터를 통합 처리함. 예측 생성 시 horizon은 개월 단위로 지정되며, 주간 예측을 위해 자동으로 주 단위로 변환됨. 예측 평가 시 모든 모형의 주간 예측을 월간으로 평균 집계한 후, 원본 타겟 변수(월간 주파수)와 비교함.
+
+결측치 처리: forward-fill $\to$ backward-fill $\to$ naive forecaster 순차 적용함.
+
+표준화: ARIMA, VAR, DFM, DDFM, TFT, Chronos 모두 RobustScaler 적용. RobustScaler는 중앙값을 0으로, 사분위수 범위(IQR)를 1로 조정하여 이상치에 강건한 표준화를 수행함.
+
+세 대상 변수에 대한 전처리 결과는 그림~\ref{fig:preprocessed_targets}에 제시됨.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{forecast/images/preprocessed_targets.png}
+    \caption{전처리된 타겟 변수 시계열 (KOIPALL.G, KOEQUIPTE, KOWRCCNSE)}
+    \label{fig:preprocessed_targets}
+\end{figure}
+
+\section{실험 방법론}
+\label{sec:methodology}
+
+\subsection{예측 모형}
+\label{sec:forecasting_models}
+
+\subsubsection{전통적 시계열 모형}
+\label{subsec:traditional_models}
+
+\textbf{ARIMA:} 단변량 시계열 모형으로, 각 대상 변수에 대해 독립적으로 모형을 추정하고 예측을 수행함 \cite{box1976time}. ARIMA 모형은 자기회귀(AR), 차분(I), 이동평균(MA) 성분을 결합하여 시계열의 자기상관 구조를 모형화함. Box-Jenkins 방법론에 따라 모형 식별, 추정, 진단의 반복적 과정을 통해 최적의 모형을 선택함. 단변량 모형의 특성상 변수 간 상호작용을 고려하지 못하지만, 계산이 간단하고 해석이 용이하여 벤치마크 모형으로 널리 사용됨. 재귀적 방식으로 다단계 예측을 수행하므로, 예측 오차가 누적되어 장기 예측에서 불안정성이 증가하는 것으로 확인됨.
+
+\textbf{VAR:} 다변량 자기회귀 모형으로, 여러 변수 간의 동시적 상호작용을 모형화함 \cite{sims1980macroeconomics}. VAR 모형은 각 변수를 다른 모든 변수의 시차값의 선형결합으로 표현하여 변수 간의 동적 상호작용을 포착함. 구조적 제약 없이 데이터 기반으로 추정되며, 충격반응함수와 분산분해를 통해 변수 간 인과관계를 분석할 수 있음 \cite{sims1986forecasting}. VAR 모형은 거시경제 변수 간의 동적 관계를 모형화하는 데 널리 사용되며, 정책 분석에도 활용됨 \cite{sims1986forecasting}. ARIMA와 마찬가지로 재귀적 방식으로 다단계 예측을 수행하므로, 예측 오차가 누적되어 장기 예측에서 불안정성이 증가하는 것으로 확인됨.
+
+\subsubsection{딥러닝 시계열 모형}
+\label{subsec:deep_learning_models}
+
+\textbf{Temporal Fusion Transformer (TFT):} TFT는 attention 기반 아키텍처로, 다중 시점 예측과 해석 가능성을 결합한 모형임 \cite{lim2021temporal}. TFT는 시계열 예측을 위해 설계된 transformer 변형으로, LSTM을 지역 처리에 사용하고 self-attention을 장기 의존성에 사용함. Variable Selection Networks를 통해 정적, 과거, 미래 입력의 중요도를 학습하며, Temporal Fusion Decoder와 Gating Mechanisms를 통해 다양한 입력 유형을 처리함. Attention weights를 통해 변수별 중요도를 해석할 수 있어 경제 예측에서 변수 기여도를 분석하는 데 유용함 \cite{lim2021temporal}. TFT는 시계열 예측에서 attention 메커니즘의 효과를 보여주며, 다중 시점 예측에서 우수한 성능을 보이는 것으로 알려져 있음.
+
+\textbf{Chronos:} Chronos는 사전 훈련된 foundation model로, 시계열 예측을 위한 사전 훈련 모형임. 대규모 시계열 데이터로 사전 훈련되어 다양한 시계열 패턴을 학습하며, fine-tuning 없이도 다양한 도메인에서 양호한 성능을 보이는 것으로 알려져 있음. Foundation model의 특성상 사전 훈련 단계에서 학습한 일반적인 시계열 패턴을 활용하여 새로운 데이터에 빠르게 적응할 수 있음.
+
+\textbf{DeepAR:} DeepAR은 확률적 예측을 위한 자기회귀 순환 신경망 모형임 \cite{salinas2020deepar}. DeepAR은 LSTM 기반 아키텍처를 사용하여 시계열의 장기 의존성을 포착하며, 확률적 예측을 통해 예측 불확실성을 정량화함. 자기회귀 구조를 통해 과거 관측값을 기반으로 미래를 예측하며, 여러 시계열을 동시에 학습하여 공통 패턴을 활용함 \cite{salinas2020deepar}. DeepAR은 시계열 예측에서 확률적 접근의 중요성을 보여주며, 특히 불확실성 정량화가 중요한 경제 예측에서 유용함.
+
+\textbf{LSTM:} Long Short-Term Memory (LSTM)은 순환 신경망(RNN)의 변형으로, 장기 의존성을 학습할 수 있는 게이트 메커니즘을 도입함 \cite{hochreiter1997long}. LSTM은 forget gate, input gate, output gate를 통해 정보의 흐름을 제어하며, gradient vanishing 문제를 완화하여 긴 시계열에서도 효과적으로 학습할 수 있음 \cite{hochreiter1997long}. 시계열 예측에서 LSTM은 과거 정보를 효과적으로 활용하여 미래를 예측하며, 단변량 및 다변량 시계열 모두에 적용 가능함. LSTM은 딥러닝 기반 시계열 예측의 기초가 되는 아키텍처로, 다양한 변형 모형의 구성 요소로 활용됨.
+
+\subsubsection{상태공간 모형}
+\label{subsec:state_space_models}
+
+\textbf{동적요인모형(DFM):} 동적요인모형은 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 차원축소 기법임 \cite{stock2002forecasting}. DFM은 관측식과 상태식을 갖는 state-space 형태로 표현되며, 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약함. EM 알고리즘으로 파라미터를 추정하고, Kalman filter를 통해 요인을 추정함 \cite{bok2019frbny}. Kalman filter는 실시간 데이터 흐름을 재귀적으로 처리하여 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있어 nowcasting에 특히 유용함 \cite{banbura2012nowcasting}. DFM은 state-space 구조를 활용하여 잠재 요인 상태를 업데이트한 후 직접 다단계 예측을 생성함 \cite{bok2019frbny}. State-space 모형은 관측 가능한 변수와 은닉 상태 변수를 구분하여 모형화하며, Kalman filter를 통해 상태 변수를 추정함 \cite{banbura2012nowcasting}. 칼만 필터는 measurement equation과 transition equation을 결합하여 상태 변수의 조건부 분포를 업데이트함. 이 과정에서 데이터의 품질과 시의성에 기반한 가중치를 부여하므로 오차 누적이 완화됨 \cite{banbura2012nowcasting}. 재귀적 방식으로 다단계 예측을 수행하는 ARIMA나 VAR과 달리, 각 예측 시점에서 상태를 직접 업데이트하므로 장기 예측에서도 안정적인 성능을 유지하는 것으로 확인됨. 특히 혼합주기 데이터와 비동기적 데이터 발표(jagged edges)를 자연스럽게 처리할 수 있어 nowcasting에 적합함 \cite{banbura2012nowcasting, bok2019frbny}. 전통적 DFM은 선형 가정을 기반으로 하며, 요인 식별을 위한 factor loading 제약이 모형 확장 시 한계로 작용할 수 있음.
+
+\textbf{심층 동적요인모형(DDFM):} DDFM은 오토인코더 기반 비선형 인코더를 사용해 요인 구조를 학습함으로써 전통적 DFM의 선형 가정을 완화함 \cite{andreini2020deep}. 비선형 인코더는 고차원 거시 데이터의 복잡한 상호작용을 더 적은 요인으로 포착하면서도, 요인층 뒤에는 선형 state-space를 두어 필터링·스무딩 안정성을 유지함. DDFM의 학습은 두 단계로 구성됨: (1) 오토인코더를 통해 재구성 오차를 최소화하여 요인 구조를 학습, (2) 학습된 요인을 사용하여 전이 행렬을 추정하고 칼만 필터를 통해 최종 스무딩을 수행함. DDFM은 DFM과 동일한 state-space 구조를 활용하여 잠재 요인 상태를 업데이트한 후 직접 다단계 예측을 생성함 \cite{bok2019frbny}. 비선형 인코더를 통해 전통적 DFM의 요인 식별 제약 문제를 자연스럽게 해결하며, 혼합주기 데이터와 대규모 변수 집합을 효율적으로 처리할 수 있음. DDFM은 전통적 DFM의 선형 가정 한계를 극복하면서도, state-space 구조의 안정성과 해석 가능성을 유지하는 것으로 확인됨.
+
+\subsection{실험 구성}
+\label{sec:experiment_design}
+
+\subsubsection{평가 기준}
+\label{subsec:evaluation_criteria}
+
+훈련 기간은 1985년 1월부터 2019년 12월까지이며, 테스트 기간은 2024년 1월부터 2025년 10월까지임. 모든 모형은 주간 주파수로 예측을 생성하며, 원본 타겟 변수가 월간 주파수이므로 주간 예측을 월간으로 평균 집계하여 비교함. 각 모형은 훈련 기간 데이터로 학습한 후, 테스트 기간에 대해 1--22개월 예측을 생성함. 주간 예측을 월간으로 평균 집계한 후, 각 예측 시점(1--22개월)에 대한 지표를 평균하여 최종 성능 지표로 사용함.
+
+\subsubsection{하이퍼 패러미터}
+\label{subsec:hyperparameters}
+
+모형별 하이퍼패러미터 설정은 표~\ref{tab:hyperparameters}에 정리되어 있음.
+
+\input{forecast/tables/tab_hyperparameters}
+
+\subsubsection{성능 지표}
+\label{subsec:performance_metrics}
+
+표준화된 지표(sMAE, sMSE, sRMSE)를 사용하며, 각 지표는 훈련 데이터의 표준편차로 정규화하여 계산함.
+
+\section{실험 결과}
+\label{sec:experiment_result}
+
+\subsection{예측 결과 비교}
+\label{sec:forecasting_results_comparison}
+
+세 가지 대상 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 여러 예측 모형(ARIMA, VAR, DFM, DDFM, TFT, Chronos)의 예측 성능을 평가함. 모든 모형은 주간 주파수로 예측을 생성하며, 주간 예측을 월간으로 평균 집계한 후 1개월부터 22개월까지의 시점에 대해 평가함.
+
+\subsubsection{전체 시점 평균 성능}
+
+\begin{itemize}
+    \item \textbf{KOIPALL.G:} DDFM이 가장 우수한 성능(sMAE=10.03)을 보였음. ARIMA(sMAE=24.57)와 VAR(sMAE=58.75)보다 현저히 낮은 오차를 기록하며, ARIMA 대비 약 59.1\%, VAR 대비 약 82.9\%의 성능 개선을 보였음.
+    \item \textbf{KOEQUIPTE:} DDFM이 가장 우수한 성능(sMAE=9.14)을 보였음. ARIMA(sMAE=15.44)와 VAR(sMAE=31.57)보다 현저히 낮은 오차를 기록하며, ARIMA 대비 약 40.8\%, VAR 대비 약 71.0\%의 성능 개선을 보였음.
+    \item \textbf{KOWRCCNSE:} DDFM이 가장 우수한 성능(sMAE=11.40)을 보였음. ARIMA(sMAE=17.72)와 VAR(sMAE=45.18)보다 현저히 낮은 오차를 기록하며, ARIMA 대비 약 35.7\%, VAR 대비 약 74.8\%의 성능 개선을 보였음.
+\end{itemize}
+
+\subsubsection{시점별 성능 패턴}
+
+\begin{itemize}
+    \item \textbf{KOIPALL.G:} DDFM이 모든 시점(1-22개월)에서 가장 우수한 성능을 보였음. 단기(1-6개월)에서 sMAE=10.33, 중기(7-12개월)에서 sMAE=10.18, 장기(13-22개월)에서 sMAE=10.05를 기록하여 시점에 관계없이 일관된 성능을 유지함.
+    \item \textbf{KOEQUIPTE:} DDFM이 모든 시점에서 가장 우수한 성능을 보였음. 단기(1-6개월)에서 sMAE=10.34, 중기(7-12개월)에서 sMAE=10.21, 장기(13-22개월)에서 sMAE=9.40를 기록하여 장기 예측에서 오히려 성능이 향상되는 특징을 보였음.
+    \item \textbf{KOWRCCNSE:} DDFM이 모든 시점에서 가장 우수한 성능을 보였음. 단기(1-6개월)에서 sMAE=10.99, 중기(7-12개월)에서 sMAE=11.08, 장기(13-22개월)에서 sMAE=11.30을 기록하여 시점에 관계없이 안정적인 성능을 유지함.
+\end{itemize}
+
+\subsection{성능 비교}
+\label{sec:performance_comparison}
+
+\subsubsection{벤치마크 모형(ARIMA, VAR)}
+
+\begin{itemize}
+    \item \textbf{KOIPALL.G:} ARIMA(sMAE=24.57)와 VAR(sMAE=58.75)는 전통적인 선형 모형으로 벤치마크 역할을 수행함. VAR이 ARIMA 대비 높은 오차를 보였으며, 이는 모형 복잡도와 과적합 가능성을 시사함.
+    \item \textbf{KOEQUIPTE:} ARIMA(sMAE=15.44)와 VAR(sMAE=31.57)는 전통적인 선형 모형으로 벤치마크 역할을 수행함. ARIMA가 VAR보다 낮은 오차를 보였으며, 이는 VAR의 과적합 가능성을 시사함.
+    \item \textbf{KOWRCCNSE:} ARIMA(sMAE=17.72)와 VAR(sMAE=45.18)는 전통적인 선형 모형으로 벤치마크 역할을 수행함. ARIMA가 VAR보다 낮은 오차를 보였으며, 이는 VAR의 과적합 가능성을 시사함.
+\end{itemize}
+
+\subsubsection{동적요인모형(DFM, DDFM)}
+
+\begin{itemize}
+    \item DDFM은 세 대상 변수 모두에서 최고 성능을 보였음. DDFM의 비선형 인코더를 통한 요인 추출이 복잡한 거시경제 시계열의 패턴을 효과적으로 포착함.
+\end{itemize}
+
+\subsubsection{모형 간 비교}
+
+\begin{itemize}
+    \item DDFM이 세 대상 변수 모두에서 ARIMA와 VAR보다 현저히 우수한 성능을 보였으며, 비선형 요인 모형의 이점을 확인함. DDFM은 단기, 중기, 장기 모든 시점에서 일관된 성능을 유지하며, 시점이 길어져도 오차 증가가 제한적임.
+    \item VAR이 ARIMA 대비 높은 오차를 보였으며, 다변량 정보 활용에도 불구하고 DDFM에 비해 상대적으로 높은 오차를 보였음. 이는 모형 복잡도와 과적합 가능성을 시사함.
+\end{itemize}
+
+\subsection{논의}
+\label{sec:discussion}
+
+\begin{itemize}
+    \item DDFM이 세 대상 변수 모두에서 ARIMA와 VAR 대비 35.7\%--82.9\%의 성능 개선을 보였으며, 비선형 요인 모형의 우수성을 확인함. 전통적 DFM의 선형 가정 한계를 비선형 인코더로 극복한 결과로 해석됨.
+    \item DDFM의 비선형 인코더를 통한 요인 추출이 복잡한 거시경제 시계열의 비선형 패턴을 효과적으로 포착함. 혼합주기 데이터와 대규모 변수 집합을 효율적으로 처리할 수 있으며, 전통적 DFM의 요인 식별 제약 문제를 자연스럽게 해결함.
+\end{itemize}
+
+\section{결론}
+\label{sec:conclusion}
+
+본 연구는 세 가지 주요 한국 거시경제 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 예측을 위해 전통적 시계열 모형(ARIMA, VAR), 상태공간 모형(DFM, DDFM), 그리고 최신 딥러닝 모형(TFT, Chronos)의 성능을 비교 평가함.
+
+예측 실험에서 DDFM이 세 대상 변수 모두에서 최고 성능을 보였음. KOIPALL.G에서 DDFM(sMAE=10.03), KOEQUIPTE에서 DDFM(sMAE=9.14), KOWRCCNSE에서 DDFM(sMAE=11.40)이 가장 우수함. DDFM은 ARIMA와 VAR 대비 35.7\%--82.9\%의 성능 개선을 보였으며, 비선형 요인 모형의 우수성을 확인함.
+
+DDFM의 비선형 인코더를 통한 요인 추출이 복잡한 거시경제 시계열의 패턴을 효과적으로 포착함. 다변량 정보를 활용할 수 있는 경우 DDFM이 가장 유리한 것으로 확인됨.

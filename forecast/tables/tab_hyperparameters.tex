@@ -1,0 +1,23 @@
+\begin{table}[h]
+\centering
+\caption{모형별 하이퍼패러미터 설정}
+\label{tab:hyperparameters}
+\small
+\begin{tabular}{ll}
+\toprule
+모형 & 하이퍼패러미터 설정 \\
+\midrule
+ARIMA & Order: (1,1,1) \\
+\midrule
+VAR & Lag order: 1, Trend: 상수항 포함 \\
+\midrule
+DFM & 요인 개수: 3, 최대 반복 횟수: 5000, 수렴 임계값: $1.0 \times 10^{-5}$, 초기화: PCA 기반 \\
+\midrule
+DDFM & 인코더 레이어: [64, 32], 요인 개수: 3, 학습률: 0.005, 배치 크기: 100, 에폭: 50, 학습률 감쇠: 적용, Factor order: 2, 사전 훈련 최소 관측값: 50, Scaler: RobustScaler \\
+\midrule
+TFT & 입력 크기: 96, 은닉 크기: 64, Attention head 수: 4, LSTM 레이어 수: 2, Dropout: 0.1, 학습률: 0.001, 최대 스텝: 100, 배치 크기: 32, Scaler: RobustScaler \\
+\midrule
+Chronos & 모형: chronos-t5-tiny, Context length: 자동 설정, Prediction length: 자동 설정, Scaler: RobustScaler \\
+\bottomrule
+\end{tabular}
+\end{table}
