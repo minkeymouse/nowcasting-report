@@ -4,7 +4,7 @@
 \subsection{거시 경제 예측 필요성}
 \label{sec:macro_forecast_necessity}
 
-거시경제 변수의 정확한 예측은 정책 수립, 기업 경영 전략, 금융 시장 분석 등 다양한 분야에서 핵심적인 역할을 수행함 \cite{stock2002forecasting, banbura2012nowcasting}. 특히 한국 경제의 주요 거시경제 변수인 생산, 투자, 소비에 대한 신뢰할 수 있는 예측은 경제 정책의 효과성과 시장 참여자의 의사결정 품질을 크게 좌우함. 실시간 예측(nowcasting)은 최신 고빈도 데이터를 활용하여 현재 경제 상태를 추정하고 미래를 예측하는 데 핵심적이며 \cite{banbura2012nowcasting, bok2019frbny}, 이를 위해 다양한 예측 모형의 성능을 체계적으로 비교 평가하는 것이 중요함.
+정확한 거시경제 변수 예측은 정책 수립, 기업 경영 전략, 금융 시장 분석 등 여러 영역에서 중요한 역할을 함 \cite{stock2002forecasting, banbura2012nowcasting}. 한국 경제의 주요 거시경제 변수인 생산, 투자, 소비에 대한 신뢰할 수 있는 예측은 경제 정책의 효과성과 시장 참여자의 의사결정 품질에 큰 영향을 미침. 실시간 예측(nowcasting)은 최신 고빈도 데이터를 활용하여 현재 경제 상태를 추정하고 미래를 예측하는 데 핵심적이며 \cite{banbura2012nowcasting, bok2019frbny}, 이를 위해 다양한 예측 모형의 성능을 체계적으로 비교 평가하는 것이 필요함.
 
 \subsection{거시 경제 변수 예측 주요 이슈}
 \label{sec:forecast_issues}
@@ -263,7 +263,7 @@
   \item 대상 변수: 생산(KOIPALL.G), 투자(KOEQUIPTE), 소비(KOWRCCNSE).
   \item 비교 모형: DFM, DDFM, TFT, Chronos, LSTM.
   \item 모든 모형은 주간 주파수로 예측을 생성하며, 주간 예측을 월간으로 평균 집계한 후 1개월부터 22개월까지의 시점에 대해 평가함.
-  \item 예측 결과는 아래 전체 시점 평균 성능 섹션에 요약되어 있으며, 시점별 상세 결과는 부록 표들(표~\ref{tab:koipallg_forecasts}, 표~\ref{tab:koequipte_forecasts}, 표~\ref{tab:kowrccnse_forecasts})에 제시됨.
+  \item 예측 결과는 아래 전체 시점 평균 성능 섹션에서 요약되며, 시점별 상세 결과는 부록 표들(표~\ref{tab:koipallg_forecasts}, 표~\ref{tab:koequipte_forecasts}, 표~\ref{tab:kowrccnse_forecasts})에 포함됨.
 \end{itemize}
 
 
@@ -425,7 +425,7 @@
 \begin{itemize}
   \item \textbf{DFM의 선형성 한계 원인 분석 및 개선:} 본 연구에서 관찰된 DFM의 발산 및 수렴 문제는 선형 VAR(1) factor dynamics의 한계와 관련이 있음. VAR(1) 모델은 1기 시차만 고려하여 장기 의존성을 포착하지 못하며, 스펙트럴 반경이 1에 가까워 불안정하거나 과도하게 수렴하는 문제가 발생함. 또한 선형 가정으로 인해 복잡한 비선형 시계열 패턴을 포착하지 못하는 한계가 있음. 이러한 한계를 극복하기 위해 다음과 같은 개선 방안을 탐구할 수 있음:
   \begin{itemize}
-    \item \textbf{비선형 factor dynamics 도입:} VAR(1) 대신 VAR(p) 모델을 사용하여 장기 의존성을 포착하거나, 더 나아가 비선형 factor dynamics(예: neural ODE, recurrent neural network 기반 factor dynamics)를 도입하여 복잡한 시계열 패턴을 모델링할 수 있음.
+    \item \textbf{비선형 factor dynamics 도입:} VAR(1) 대신 VAR(p) 모델을 사용하여 장기 의존성을 포착하거나, 비선형 factor dynamics(예: neural ODE, recurrent neural network 기반 factor dynamics)를 도입하여 복잡한 시계열 패턴을 모델링할 수 있음.
     \item \textbf{Hybrid 아키텍처 탐구:} DDFM과 유사하게 비선형 인코더를 사용하되, factor dynamics 자체도 비선형으로 확장하는 방안을 탐구할 수 있음. 예를 들어, factor dynamics에 attention 메커니즘이나 transformer 구조를 도입하는 방안을 고려할 수 있음.
   \end{itemize}
   
