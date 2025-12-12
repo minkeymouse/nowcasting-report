@@ -1,77 +1,22 @@
 \section{개요}
 \label{sec:overview}
 
-\subsection{거시 경제 예측 필요성}
+\subsection{연구 목적}
 \label{sec:macro_forecast_necessity}
 
-정확한 거시경제 변수 예측은 정책 수립, 기업 경영 전략, 금융 시장 분석 등 여러 영역에서 중요한 역할을 함 \cite{stock2002forecasting, banbura2012nowcasting}. 한국 경제의 주요 거시경제 변수인 생산, 투자, 소비에 대한 신뢰할 수 있는 예측은 경제 정책의 효과성과 시장 참여자의 의사결정 품질에 큰 영향을 미침. 실시간 예측(nowcasting)은 최신 고빈도 데이터를 활용하여 현재 경제 상태를 추정하고 미래를 예측하는 데 핵심적이며 \cite{banbura2012nowcasting, bok2019frbny}, 이를 위해 다양한 예측 모형의 성능을 체계적으로 비교 평가하는 것이 필요함.
+정확한 거시경제 변수 예측은 정책 수립, 기업 경영 전략, 금융 시장 분석 등 여러 영역에서 중요함 \cite{stock2002forecasting, banbura2012nowcasting}. 본 파트에서는 한국 거시경제의 대표 변수인 생산, 투자, 소비에 대해 고빈도 정보를 활용한 예측(nowcasting/forecasting) 문제를 설정하고, 상태공간 모형과 딥러닝 모형의 성능을 동일한 데이터와 평가 기준으로 비교함 \cite{banbura2012nowcasting, bok2019frbny}.
 
 \subsection{거시 경제 변수 예측 주요 이슈}
 \label{sec:forecast_issues}
 
-거시경제 변수 예측에서 주요한 도전 과제는 다음과 같음:
+거시경제 nowcasting/forecasting에서 핵심적인 도전 과제는 다음과 같음:
 \begin{itemize}
-    \item \textbf{고차원 데이터:} 수십 개의 거시경제 지표를 동시에 활용할 때 차원의 저주 문제와 계산 복잡도가 증가함 \cite{stock2002forecasting}. 소수의 공통 요인(common factors)으로 차원을 축소하는 기법이 필요하며, Stock and Watson (2002)는 주성분 분석을 활용한 요인 추출 방법을 제시하여 대규모 예측 변수 집합에서 효과적인 예측이 가능함을 보여줌. 전통적 회귀 모형은 고차원 데이터에서 과적합 문제를 겪는 반면, 요인 모형은 공분산 구조를 소수 요인으로 집약하여 이를 해결함.
-    
-    \item \textbf{혼합 주기 데이터:} 주간, 월간, 분기 데이터가 혼재되어 있어 이를 효과적으로 통합하는 방법이 필요함 \cite{mariano2003new, ghysels2004midas}. 특히 nowcasting에서는 비동기적 데이터 발표(jagged edges)와 결측치를 자연스럽게 처리할 수 있는 모형이 요구됨 \cite{banbura2012nowcasting}. Jagged edges는 서로 다른 변수가 서로 다른 시점에 발표되어 발생하는 데이터 불균형 문제로, 상태공간 모형의 Kalman filter는 이를 재귀적으로 처리할 수 있음 \cite{banbura2012nowcasting, bok2019frbny}. Mariano and Murasawa (2003)가 제시한 tent kernel을 활용한 혼합주기 데이터 통합 방법은 DFM과 DDFM에서 활용됨.
-    
-    \item \textbf{비선형 관계:} 거시경제 변수 간의 관계가 선형적이지 않을 수 있어 비선형 모형의 필요성이 대두됨 \cite{andreini2020deep}. 특히 COVID-19와 같은 급격한 경기변동 기간에는 선형 가정의 한계가 드러남 \cite{huber2020nowcasting}. Andreini et al. (2020)의 DDFM은 비선형 인코더를 사용함.
-    
-    \item \textbf{요인 식별 문제:} 전통적 동적요인모형에서 요인 식별을 위한 factor loading 제약이 과도할 경우, 공통 요인이 적절하게 도출되지 못하여 예측력이 저하될 수 있음 \cite{bok2019frbny}. 이는 특히 모형 확장 시 문제가 되며, 비선형 인코더를 사용하는 DDFM은 이러한 제약을 완화함 \cite{andreini2020deep}. FRBNY nowcasting 모형은 COVID-19 기간 동안 예측력이 저하되었으며, 이는 과도한 요인 식별 제약뿐만 아니라 regime shift, 과도한 shock, volatility 폭증, external shock, 비선형성(non-linearity) 등을 포착하지 못한 것이 주요 원인으로 보고됨 \cite{bok2019frbny}.
+    \item \textbf{고차원 공변량:} 많은 거시·금융·서베이 변수를 동시에 사용하면 과적합과 계산 부담이 커짐 \cite{stock2002forecasting}.
+    \item \textbf{혼합 주기/비동기 발표:} 주·월·분기 데이터가 섞이고 발표시점이 달라(jagged edges) 결측이 구조적으로 발생함 \cite{banbura2012nowcasting}.
+    \item \textbf{비선형/구조변화:} 위기·팬데믹 구간 등에서 선형 가정이 성능을 제한할 수 있음 \cite{huber2020nowcasting, andreini2020deep}.
 \end{itemize}
 
-\subsection{실험의 필요성}
-\label{sec:experiment_necessity}
-
-이러한 도전 과제를 해결하기 위해, 본 연구는 상태공간 모형(DFM, DDFM)과 최신 딥러닝 기반 모형(TFT, Chronos, LSTM)의 성능을 체계적으로 비교하여 한국 거시경제 변수 예측에 가장 적합한 모형을 도출함.
-
-\section{실험 소개}
-\label{sec:experiment_introduction}
-
-\subsection{이론적 배경}
-\label{sec:theoretical_background}
-
-\subsubsection{동적요인모형}
-\label{subsec:dfm}
-
-\begin{itemize}
-  \item \textbf{기본 구조:} 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 차원축소 기법 \cite{stock2002forecasting}. 관측식과 상태식을 갖는 state-space 형태를 취함.
-  \item \textbf{수식:}
-  \begin{align}
-  y_t &= \lambda_i' f_t + e_t \\
-  f_t &= A_1 f_{t-1} + A_2 f_{t-2} + A_3 f_{t-3} + A_4 f_{t-4} + u_t
-  \end{align}
-  여기서 $y_t$는 관측 데이터, $f_t$는 은닉 요인(latent factors) 벡터임.
-  \item \textbf{추정 방법:} EM 알고리즘으로 파라미터를 추정하고, Kalman filter와 smoother로 요인을 추정함 \cite{bok2019frbny}.
-  \item \textbf{장점:}
-  \begin{itemize}
-    \item 대규모 이질적 거시 지표 간의 공분산 구조를 소수 요인으로 집약해 수십~수백 개 변수의 동시 예측이 가능함.
-    \item Kalman filter를 통해 누락·비동기 데이터(혼합주기, jagged edges)를 자연스럽게 처리할 수 있어 nowcasting에 핵심적으로 활용됨 \cite{banbura2012nowcasting, bok2019frbny}.
-  \end{itemize}
-  \item \textbf{한계:} 요인 식별을 위한 factor loading 제약 가정이 nowcasting 성과를 저해할 수 있음 \cite{bok2019frbny}. FRBNY nowcasting 모형은 COVID-19 기간 동안 예측력이 저하되었으며, 이는 과도한 요인 식별 제약뿐만 아니라 regime shift, 과도한 shock, volatility 폭증, external shock, 비선형성(non-linearity) 등을 포착하지 못한 것이 주요 원인으로 보고됨.
-\end{itemize}
-
-\paragraph{DFM 안정화 문제 및 개선 방안:}
-
-\begin{itemize}
-  \item \textbf{발산 문제:} 본 연구에서 DFM 모형을 적용한 결과, 전이 행렬(transition matrix) $A$의 고유값이 1.0을 초과하여 예측값이 발산하는 문제가 발생함. 구체적으로, A 행렬의 최대 고유값이 1.23으로 관측되었으며, 25개의 고유값이 1.0 이상으로 확인됨. 이는 VAR(1) 모델의 스펙트럴 반경이 1에 가까워 불안정한 상태를 나타냄.
-  
-  \item \textbf{수렴 문제:} 발산 문제와는 반대로, 일부 경우에는 factor forecast가 빠르게 수렴 지점으로 이동하여 예측값이 시간에 따라 변화하지 않는 문제도 발생함. 이는 VAR(1) 계수 행렬 $A$의 스펙트럴 반경이 1에 가까워 불안정하거나, EM 알고리즘이 제대로 수렴하지 못하여 발생하는 것으로 관찰됨. Factor forecast ($Z_{forecast}$)가 시간에 따라 변화하지 않으면, 관측 예측값 ($X_{forecast} = C \cdot Z_{forecast}$)도 일정하게 유지되어 실제 시계열의 시간적 변화를 포착하지 못함. 선형 VAR(1) 모델은 복잡한 비선형 시계열 패턴을 포착하지 못하는 한계가 있음.
-  
-  \item \textbf{재귀적 예측의 적용:} DFM의 발산 문제를 완화하기 위해 본 연구에서는 DFM에만 재귀적 예측(recursive prediction) 방식을 적용함. 전체 예측 기간(22개월)을 6개월 청크로 나누어 각 청크마다 예측을 생성하고, 각 청크 후에 모델 상태를 업데이트함. 이 방식은 장기 예측에서의 발산을 방지하지만, 청크 경계에서 불연속성이 발생하여 예측값이 들쭉날쭉한 패턴을 보일 수 있음. 그림~\ref{fig:forecast_vs_actual_all}에서 관찰되는 DFM의 불규칙한 예측 패턴은 이러한 재귀적 예측 방식과 관련이 있음. 한편, DDFM은 발산 문제가 발생하지 않아 재귀적 예측 없이 한 번에 전체 22개월을 예측하는 원타임 예측 방식을 사용함.
-  
-  \item \textbf{개선 방안:}
-  \begin{enumerate}
-    \item 고유값 제한 강화: 제한값을 0.85로 낮추고, 예외 처리 시에도 강제로 스케일링을 적용.
-    \item Regularization 증가: regularization scale을 $10^{-4}$ 또는 $10^{-3}$로 증가시켜 수치적 안정성 향상.
-    \item 예측 시 안정화 추가: 예측 메서드에서 A 행렬의 안정성을 사전에 확인하고, 고유값이 0.85 이상인 경우 강제로 스케일링을 적용.
-    \item 초기화 후 즉시 안정화: PCA를 통한 초기화 후 즉시 고유값을 확인하고, 0.85 이상인 경우 스케일링을 적용.
-    \item 매 EM iteration마다 강제 확인: M-step 후 항상 A 행렬의 고유값을 확인하고, 0.85 이상인 경우 즉시 스케일링을 적용.
-    \item VAR(1) 대신 VAR(p) 또는 비선형 factor dynamics 고려: 단기 의존성만 고려하는 VAR(1)의 한계를 극복하기 위해 더 복잡한 factor dynamics 모델 고려.
-  \end{enumerate}
-\end{itemize}
-
-\subsection{데이터 소개}
+\section{데이터와 전처리}
 \label{sec:data_introduction}
 
 \subsubsection{기본 데이터 탐색}
@@ -91,10 +36,10 @@
     \label{fig:data_quality_dashboard}
 \end{figure}
 
-\subsubsection{주요 변수 소개}
+\subsubsection{타겟 변수 및 설명변수 구성}
 \label{subsec:key_variables}
 
-세 가지 주요 거시경제 변수를 대상으로 함:
+본 파트에서는 세 가지 주요 거시경제 변수를 타겟으로 함:
 \begin{itemize}
     \item \textbf{생산:} 전산업생산지수(KOIPALL.G)
     \item \textbf{투자:} 설비투자지수(KOEQUIPTE)
@@ -149,7 +94,7 @@
     \label{fig:preprocessed_targets}
 \end{figure}
 
-\section{실험 방법론}
+\section{모형과 실험 설계}
 \label{sec:methodology}
 
 \subsection{예측 모형}
@@ -194,9 +139,7 @@
     \item 많은 시계열에서 공통 요인을 추출해 소수의 동태적 요인으로 설명하는 차원축소 기법 \cite{stock2002forecasting}.
     \item 관측식과 상태식을 갖는 state-space 형태로 표현됨.
     \item EM 알고리즘으로 파라미터를 추정하고, Kalman filter를 통해 요인을 추정함 \cite{bok2019frbny}.
-    \item Kalman filter는 데이터의 품질과 시의성에 기반한 가중치를 부여하므로 오차 누적이 완화됨 \cite{banbura2012nowcasting}.
-    \item 혼합주기 데이터와 비동기적 데이터 발표(jagged edges)를 자연스럽게 처리할 수 있어 nowcasting에 적합함 \cite{banbura2012nowcasting, bok2019frbny}.
-    \item 전통적 DFM은 선형 가정을 기반으로 하며, 요인 식별을 위한 factor loading 제약이 모형 확장 시 한계로 작용할 수 있음.
+    \item 혼합주기 데이터와 비동기적 데이터 발표(jagged edges)를 처리하는 데 강점이 있음 \cite{banbura2012nowcasting, bok2019frbny}.
   \end{itemize}
   \item \textbf{심층 동적요인모형(DDFM):}
   \begin{itemize}
@@ -256,7 +199,7 @@
 \section{실험 결과}
 \label{sec:experiment_result}
 
-\subsection{예측 결과 비교}
+\subsection{예측 결과 요약}
 \label{sec:forecasting_results_comparison}
 
 \begin{itemize}
@@ -266,10 +209,9 @@
   \item 예측 결과는 아래 전체 시점 평균 성능 섹션에서 요약되며, 시점별 상세 결과는 부록 표들(표~\ref{tab:koipallg_forecasts}, 표~\ref{tab:koequipte_forecasts}, 표~\ref{tab:kowrccnse_forecasts})에 포함됨.
 \end{itemize}
 
-
 \subsubsection{전체 시점 평균 성능}
 
-변수별로 최우수 모형이 다르게 나타났으며, 예측 시점(단기 vs 장기)에 따라 모형 간 성능 차이도 달라짐. 단기 예측(1--6개월)에서는 DDFM이 대부분의 변수에서 가장 우수한 성능을 보였으나, 장기 예측(13--22개월)으로 갈수록 DDFM의 성능이 저하되는 경향이 관찰됨. 재귀적 예측을 사용하는 TFT와 직접 장기 예측을 사용하는 LSTM, Chronos는 장기 예측에서도 상대적으로 안정적인 성능을 유지함. DFM은 전이 행렬의 고유값이 1.0을 초과하여 예측값이 발산하는 안정화 문제로 인해 모든 변수에서 높은 오차를 보임.
+변수별로 최우수 모형이 다르게 나타났으며, 특히 예측 시점(단기 vs 장기)에 따라 강점이 달라지는 양상이 관찰됨. DFM은 전이 행렬의 불안정성으로 인해 테스트 구간에서 오차가 크게 나타났음(논의 섹션 참조).
 
 \begin{itemize}
   \item \textbf{KOIPALL.G(생산):} Chronos(sMAE=1.44) > LSTM(sMAE=1.87) > DDFM(sMAE=1.72) > TFT(sMAE=2.07) > DFM(sMAE=3.55). 단기 예측에서는 DDFM이 가장 우수하나, 장기 예측에서는 Chronos와 LSTM이 우수함.
@@ -290,146 +232,22 @@
 \subsubsection{시점별 성능 패턴}
 \label{subsec:horizon_performance}
 
-시점별 상세 결과는 부록 표들에 제시됨. 각 모형은 1개월부터 22개월까지의 예측 시점에 대해 평가되었음.
-
 \begin{itemize}
-  \item \textbf{단기 예측(1--6개월):} 대부분의 모형이 양호한 성능을 보이며, DDFM이 대부분의 변수에서 가장 우수한 성능을 보임.
-  
-  \item \textbf{중기 예측(7--12개월):} 모형 간 성능 차이가 확대되며, 재귀적 예측을 사용하는 TFT와 직접 장기 예측을 사용하는 LSTM, Chronos가 상대적으로 안정적인 성능을 유지함. DDFM은 재귀적 예측을 사용하지 않음에도 불구하고 중기 예측에서도 양호한 성능을 보임.
-  
-  \item \textbf{장기 예측(13--22개월):} 모형 간 성능 차이가 가장 크게 나타나며, 재귀적 예측을 사용하는 TFT와 직접 장기 예측을 사용하는 LSTM, Chronos가 장기 예측에서 상대적으로 우수한 성능을 보임. 소비 지수에서는 DDFM이 장기 예측에서도 여전히 가장 우수한 성능을 보였으나, 생산과 투자 지수에서는 TFT, LSTM, Chronos가 장기 예측에서 DDFM보다 우수한 성능을 보임.
-  
-  \item \textbf{변수별 패턴:}
-  \begin{itemize}
-    \item \textbf{KOIPALL.G:} Chronos와 LSTM이 대부분의 시점에서 우수함. DDFM은 초기 시점에서 우수하나 장기 예측으로 갈수록 오차가 증가함.
-    \item \textbf{KOEQUIPTE:} TFT가 모든 시점에서 가장 우수함. DDFM이 두 번째로 우수하며 장기 예측에서도 상대적으로 안정적임.
-    \item \textbf{KOWRCCNSE:} DDFM이 모든 시점에서 가장 우수하며, 시점이 길어져도 성능 저하가 제한적임. TFT가 두 번째로 우수함.
-  \end{itemize}
-\end{itemize}
-
-\subsection{성능 비교}
-\label{sec:performance_comparison}
-
-\subsubsection{모형별 성능 비교}
-
-\begin{itemize}
-  \item 변수별로 최우수 모형이 다르게 나타났음. KOIPALL.G에서는 Chronos가, KOEQUIPTE에서는 TFT가, KOWRCCNSE에서는 DDFM이 가장 우수한 성능을 보였음.
-  \item 특히 투자 지수에서 TFT(sMAE=0.53)가 가장 우수한 성능을 보였으며, DDFM(sMAE=1.50)이 두 번째로 우수함. Chronos(sMAE=2.60)와 LSTM(sMAE=5.04)은 상대적으로 높은 오차를 보였음.
-  \item 변수별 성능 차이:
-  \begin{itemize}
-    \item 소비 지수(KOWRCCNSE): DDFM이 가장 우수한 성능을 보이며, TFT도 양호한 성능을 보임.
-    \item 투자 지수(KOEQUIPTE): 모형 간 성능 차이가 가장 큼. 투자 지수는 높은 변동성과 구조적 변화를 보임 \cite{stock2002forecasting}. TFT와 DDFM이 우수한 성능을 보였음.
-    \item 생산 지수(KOIPALL.G): Chronos와 LSTM이 우수한 성능을 보임.
-  \end{itemize}
-  \item 모형별 특성:
-  \begin{itemize}
-    \item TFT: 투자 지수에서 가장 우수한 성능을 보이며, 소비 지수에서도 두 번째로 우수함.
-    \item DDFM: 소비 지수에서 가장 우수한 성능을 보이며, 투자 지수에서도 두 번째로 우수함.
-    \item Chronos: 생산 지수에서 가장 우수한 성능을 보이며, 소비 지수에서도 양호한 성능을 보임.
-    \item LSTM: 생산 지수에서 두 번째로 우수한 성능을 보이며, 소비 지수에서도 양호한 성능을 보임. 그러나 투자 지수에서는 높은 오차를 보임.
-  \end{itemize}
-\end{itemize}
-
-\subsubsection{동적요인모형(DFM, DDFM)의 성능}
-
-\begin{itemize}
-  \item DFM은 전이 행렬의 고유값이 1.0을 초과하여 예측값이 발산하는 안정화 문제로 인해 모든 변수에서 높은 오차를 보임. DFM의 발산 문제를 완화하기 위해 재귀적 예측(6개월 청크 단위)을 적용했으나, 이로 인해 예측값이 들쭉날쭉한 패턴을 보임. 각 청크마다 모델 상태를 업데이트하면서 예측을 생성하므로 청크 경계에서 불연속성이 발생할 수 있으며, 이는 그림~\ref{fig:forecast_vs_actual_all}에서 관찰되는 DFM의 불규칙한 예측 패턴으로 나타남. 반면, DDFM은 발산 문제가 발생하지 않아 재귀적 예측 없이 한 번에 전체 22개월을 예측하는 원타임 예측 방식을 사용함.
-  
-  \item DFM의 수렴 문제: VAR(1) 모델의 스펙트럴 반경이 1에 가까워 불안정한 경우, factor forecast가 빠르게 수렴 지점으로 이동하여 예측값이 시간에 따라 변화하지 않는 문제가 발생할 수 있음. 이는 EM 알고리즘의 수렴 실패와 함께 선형 VAR(1) 모델이 비선형 시계열 패턴을 포착하지 못하는 한계와 관련이 있음.
-  
-  \item DDFM은 소비 지수에서 가장 우수한 성능을 보였으며, 투자 지수에서도 두 번째로 우수한 성능을 보임. 생산 지수에서는 Chronos와 LSTM보다 낮은 성능을 보였으나 여전히 양호한 수준임.
-  \item 혼합주기 데이터와 비동기적 데이터 발표를 자연스럽게 처리할 수 있어 nowcasting에 유리함 \cite{banbura2012nowcasting, bok2019frbny}.
-  \item Kalman filter를 통한 상태 업데이트로 장기 예측에서도 오차 누적이 제한적임 \cite{bok2019frbny, banbura2012nowcasting}.
+  \item \textbf{단기(1--6개월):} DDFM이 상대적으로 강한 경향이 관찰됨.
+  \item \textbf{장기(13--22개월):} 생산·투자에서는 TFT/Chronos/LSTM이 상대적으로 안정적인 경우가 있었고, 소비에서는 DDFM 우위가 유지됨.
+  \item 시점별 상세 수치는 부록 표(표~\ref{tab:koipallg_forecasts}--\ref{tab:kowrccnse_forecasts})에 제시됨.
 \end{itemize}
 
 \subsection{논의}
 \label{sec:discussion}
 
-\subsubsection{모형별 특성과 성능}
-
 \begin{itemize}
-  \item 변수별로 최우수 모형이 다르게 나타났음. TFT는 투자 지수에서, DDFM은 소비 지수에서, Chronos는 생산 지수에서 가장 우수한 성능을 보였음.
-  \item 변수별 예측 난이도:
-  \begin{itemize}
-    \item 소비 지수: DDFM이 가장 우수한 성능을 보이며, TFT도 양호한 성능을 보임.
-    \item 투자 지수: 높은 변동성과 구조적 변화로 인해 예측이 어려움 \cite{stock2002forecasting}. TFT와 DDFM이 우수한 성능을 보였음 \cite{lim2021temporal, banbura2012nowcasting, bok2019frbny}.
-    \item 생산 지수: Chronos와 LSTM이 우수한 성능을 보임.
-  \end{itemize}
-  \item DFM은 전이 행렬의 고유값이 1.0을 초과하여 예측값이 발산하는 문제가 발생하였으며, 재귀적 예측을 적용했음에도 불구하고 모든 변수에서 높은 오차를 보임.
-\end{itemize}
-
-\subsubsection{이론적 함의}
-
-\begin{itemize}
-  \item 전통적 DFM의 선형 가정은 복잡한 거시경제 시계열의 비선형 패턴을 포착하는 데 한계가 있으며 \cite{stock2002forecasting}, DDFM의 비선형 인코더는 이러한 한계를 극복하여 더 효과적인 요인 추출을 가능하게 함 \cite{andreini2020deep}. 특히 COVID-19와 같은 급격한 구조적 변화 기간에는 비선형 모형의 중요성이 더욱 부각됨 \cite{huber2020nowcasting}.
-  \item Kalman filter를 활용한 state-space 모형은 재귀적으로 상태를 업데이트하므로 장기 예측에서도 오차 누적이 제한적이며 \cite{banbura2012nowcasting, bok2019frbny}, 실시간 데이터 흐름을 재귀적으로 처리하여 비동기적 데이터 발표와 결측치를 자연스럽게 처리할 수 있음 \cite{banbura2012nowcasting}. 이는 순환 신경망의 장기 의존성 학습 한계와 대비되는 장점으로, nowcasting과 같은 실시간 예측 상황에서 유리함.
-  \item 다만, 전이 행렬의 고유값이 1.0을 초과하면 예측값이 발산하는 문제가 발생할 수 있으므로 \cite{higham2002computing}, 고유값 제한 강화 및 regularization 증가 등의 안정화 기법이 필요함.
-  \item DFM과 DDFM은 tent kernel을 통해 혼합주기 데이터를 자연스럽게 처리할 수 있으며 \cite{mariano2003new}, 이를 통해 주파수 변환 없이도 다양한 주기의 데이터를 직접 활용할 수 있다는 장점이 있음.
-\end{itemize}
-
-\subsubsection{시사점}
-
-\begin{itemize}
-  \item 변수의 특성에 따라 적합한 모형이 다를 수 있음:
-  \begin{itemize}
-    \item 상대적으로 안정적인 패턴을 가진 변수: 순환 신경망이 효과적일 수 있음.
-    \item 높은 변동성과 구조적 변화가 빈번한 변수: 다변량 정보를 활용하는 요인 모형이 더 유리함 \cite{stock2002forecasting, banbura2012nowcasting}.
-    \item 다변량 정보가 풍부한 경우: 요인 모형의 공통 요인 추출 능력이 단일 변수 모형보다 우수한 성능을 보일 가능성이 높음.
-  \end{itemize}
-  \item 단일 모형의 한계를 보완하기 위해 여러 모형의 예측을 결합하는 앙상블 방법을 탐구할 수 있음.
-  \item state-space 모형의 재귀적 업데이트 특성은 실시간 데이터 흐름에 적합함 \cite{banbura2012nowcasting}.
+  \item \textbf{변수별 이질성:} 생산/투자/소비는 변동성, 구조변화, 공변량의 정보량이 달라 단일 모형이 항상 우세하지 않을 수 있음.
+  \item \textbf{DFM 안정성 이슈:} 본 실험에서는 전이 행렬의 불안정(고유값 $>1$)으로 예측이 발산하거나 과도하게 수렴하는 현상이 관찰되었고, 이를 완화하기 위해 DFM에만 재귀적 예측(청크 단위)을 적용함. 이 설정 차이는 모형 간 비교의 공정성에 영향을 줄 수 있으므로, 추후에는 (i) 안정화(regularization/고유값 제약) 강화, (ii) 재귀 예측/원타임 예측을 모형별로 모두 비교하는 형태로 재설계를 권장함.
+  \item \textbf{실험 설계 제약:} Recent 구간(2020--2023)의 상태 업데이트가 계획대로 반영되지 못했으며, 하이퍼파라미터 튜닝도 모형 간 완전한 동등성으로 수행되지는 못했음.
 \end{itemize}
 
 \section{결론}
 \label{sec:conclusion}
 
-본 연구는 세 가지 주요 한국 거시경제 변수(생산: KOIPALL.G, 투자: KOEQUIPTE, 소비: KOWRCCNSE)에 대한 예측을 위해 상태공간 모형(DFM, DDFM)과 최신 딥러닝 모형(TFT, Chronos, LSTM)의 성능을 체계적으로 비교 평가함.
-
-\subsection{주요 발견사항}
-
-\begin{itemize}
-  \item 변수별로 최우수 모형이 다르게 나타났음.
-  \item KOIPALL.G(생산)에서는 Chronos(sMAE=1.44)가 가장 우수한 성능을 보였으며, LSTM(sMAE=1.87)이 두 번째로 우수함. DDFM(sMAE=1.72)은 세 번째로 우수한 성능을 보였음.
-  \item KOEQUIPTE(투자)에서는 TFT(sMAE=0.53)가 가장 우수한 성능을 보였으며, DDFM(sMAE=1.50)이 두 번째로 우수함. Chronos(sMAE=2.60)와 LSTM(sMAE=5.04)은 상대적으로 높은 오차를 보였음.
-  \item KOWRCCNSE(소비)에서는 DDFM(sMAE=0.32)이 가장 우수한 성능을 보였으며, TFT(sMAE=1.48)이 두 번째로 우수함. LSTM(sMAE=2.87)과 Chronos(sMAE=2.44)는 상대적으로 높은 오차를 보였으나 전반적으로 안정적인 패턴을 유지함.
-  \item 변수별 예측 난이도:
-  \begin{itemize}
-    \item 소비 지수: DDFM이 가장 우수한 성능을 보임.
-    \item 투자 지수: 높은 변동성으로 인해 예측이 어려움. TFT와 DDFM이 우수한 성능을 보였음 \cite{lim2021temporal, stock2002forecasting, banbura2012nowcasting}.
-    \item 생산 지수: 사전 훈련된 foundation model(Chronos)과 순환 신경망(LSTM)이 우수한 성능을 보임.
-  \end{itemize}
-  \item DFM은 전이 행렬의 고유값이 1.0을 초과하여 예측값이 발산하는 문제가 발생하였으며, 재귀적 예측을 적용했음에도 불구하고 모든 변수에서 높은 오차를 보임.
-\end{itemize}
-
-\subsection{의의 및 한계}
-
-\subsubsection{의의}
-
-\begin{itemize}
-  \item 한국 거시경제 변수 예측을 위한 다양한 모형의 체계적 비교 평가를 제공하며, 상태공간 모형과 최신 딥러닝 모형을 동일한 데이터와 평가 기준으로 비교함으로써 각 모형의 장단점을 명확히 제시함.
-  \item 비선형 요인 모형(DDFM)의 효과성을 실증적으로 검증하며, 전통적 DFM의 선형 가정 한계를 비선형 인코더로 극복하는 DDFM이 소비 지수에서 가장 우수한 성능을 보였음을 확인함 \cite{andreini2020deep}. 다만 변수별로 최우수 모형이 다르게 나타났음.
-  \item 혼합주기 데이터와 비동기적 데이터 발표를 처리하는 state-space 모형의 장점을 실증적으로 보여주며 \cite{banbura2012nowcasting, bok2019frbny}, DDFM이 재귀적 예측을 사용하지 않음에도 불구하고 state-space 구조의 Kalman filter를 통해 오차 누적이 제한적이어서 장기 예측에서도 상대적으로 양호한 성능을 보였음을 확인함. 특히 소비 지수에서는 DDFM이 장기 예측에서도 여전히 가장 우수한 성능을 보였으나, 생산과 투자 지수에서는 재귀적 예측을 사용하는 모형들이 장기 예측에서 DDFM보다 우수한 성능을 보였음.
-  \item DFM 모형의 안정화 문제를 식별하고 고유값 제한 강화, regularization 증가 등의 개선 방안을 제시함.
-\end{itemize}
-
-\subsubsection{한계}
-
-\begin{itemize}
-  \item 시간 제약으로 인해 완벽하게 통일된 예측 파이프라인과 robust한 실험 설계를 적용하지 못함. 예를 들어, 모든 모형에 대해 동일한 하이퍼파라미터 튜닝 절차나 교차 검증을 체계적으로 수행하지 못함.
-  \item 재귀적 예측과 원타임 예측의 최적 조합을 탐구하지 못함. 본 연구에서는 DFM만 재귀적 예측을 사용하고 DDFM은 원타임 예측을 사용했으나, 각 모형에 대해 재귀적 예측의 청크 크기나 상태 업데이트 전략을 최적화하지 못함. 재귀적 예측과 장기 예측을 적절히 조정하면 더 좋은 결과가 나올 수 있음.
-  \item 실험의 범위와 깊이가 제한적임. 예를 들어, 다양한 데이터 분할 방식, 다른 예측 시점, 또는 외부 변수(external variables)의 영향 등을 체계적으로 분석하지 못함. 또한 모형의 불확실성 정량화나 예측 구간 추정 등에 대한 평가를 포함하지 못함.
-\end{itemize}
-
-\subsection{향후 연구 방향}
-
-\begin{itemize}
-  \item \textbf{DFM의 선형성 한계 원인 분석 및 개선:} 본 연구에서 관찰된 DFM의 발산 및 수렴 문제는 선형 VAR(1) factor dynamics의 한계와 관련이 있음. VAR(1) 모델은 1기 시차만 고려하여 장기 의존성을 포착하지 못하며, 스펙트럴 반경이 1에 가까워 불안정하거나 과도하게 수렴하는 문제가 발생함. 또한 선형 가정으로 인해 복잡한 비선형 시계열 패턴을 포착하지 못하는 한계가 있음. 이러한 한계를 극복하기 위해 다음과 같은 개선 방안을 탐구할 수 있음:
-  \begin{itemize}
-    \item \textbf{비선형 factor dynamics 도입:} VAR(1) 대신 VAR(p) 모델을 사용하여 장기 의존성을 포착하거나, 비선형 factor dynamics(예: neural ODE, recurrent neural network 기반 factor dynamics)를 도입하여 복잡한 시계열 패턴을 모델링할 수 있음.
-    \item \textbf{Hybrid 아키텍처 탐구:} DDFM과 유사하게 비선형 인코더를 사용하되, factor dynamics 자체도 비선형으로 확장하는 방안을 탐구할 수 있음. 예를 들어, factor dynamics에 attention 메커니즘이나 transformer 구조를 도입하는 방안을 고려할 수 있음.
-  \end{itemize}
-  
-  \item \textbf{앙상블 방법 탐구:} 단일 모형의 한계를 보완하기 위해 여러 모형의 예측을 결합하는 앙상블 방법을 탐색할 수 있음. 변수별로 최우수 모형이 다르게 나타난 본 연구의 결과를 활용하여, 변수 특성에 따라 가중치를 조정하는 adaptive ensemble 방법을 탐구할 수 있음.
-  
-  \item \textbf{실시간 예측 시스템 구축:} state-space 모형의 재귀적 업데이트 특성을 활용한 실시간 예측 시스템 구축이 가능하며, nowcasting과 같은 실시간 예측 상황에서의 모형 성능 평가가 필요함 \cite{banbura2012nowcasting}. 특히 비동기적 데이터 발표와 jagged edges 문제를 처리하는 실시간 예측 파이프라인을 구축하고 평가하는 연구가 필요함.
-\end{itemize}
+본 파트의 비교 실험에서는 변수별로 우수한 모형이 달랐으며(생산: Chronos, 투자: TFT, 소비: DDFM), 시점(단기/장기)에 따라서도 상대적 우위가 달라질 수 있음을 확인함. 다만 DFM 안정성 이슈 및 실험 설계 제약(Recent 미활용, 예측 방식 차이 등)이 존재하므로, 후속 연구에서는 안정화 강화와 공정한 예측 설정(재귀/원타임의 동등 비교), 그리고 체계적인 튜닝/검증을 포함한 재설계를 권장함.
