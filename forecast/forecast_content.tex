@@ -189,8 +189,16 @@
 \label{subsec:performance_metrics}
 
 \begin{itemize}
-  \item \textbf{표준화된 지표:} sMAE, sMSE. 두 지표 모두 훈련 데이터의 표준편차로 정규화하여 계산함. 변수 간 스케일 차이를 제거하여 직접 비교 가능하게 하며, 특히 거시경제 변수처럼 단위와 크기가 다른 변수들을 비교할 때 유용함 \cite{stock2002forecasting}.
-  \item 모든 모형은 주간 단위로 학습하고 예측을 생성함. 주간 예측값을 월간으로 평균 집계한 후, 실제 월간 값과 비교하여 메트릭을 계산함. 지표는 1개월부터 22개월까지의 예측 시점에 대해 계산한 후 평균하여 최종 성능 지표로 사용함.
+  \item \textbf{표준화된 지표:} sMAE, sMSE. 두 지표 모두 훈련 데이터의 표준편차로 정규화하여 계산함. 변수 간 스케일 차이를 제거하여 비교 가능하게 하며, 특히 거시경제 변수처럼 단위와 크기가 다른 변수들을 비교할 때 유용함 \cite{stock2002forecasting}.
+  \item \textbf{지표 정의:} 월간 실측값을 $y_{t+h}$, 월간 예측값을 $\hat{y}_{t+h}$로 두고, 훈련 구간 목표변수의 표준편차를 $\sigma_{\text{train}}$로 두면 각 시점(예측지평 $h$)에서의 지표는 다음과 같음:
+  \begin{align}
+    \mathrm{MAE}_h &= \frac{1}{T_h}\sum_{t \in \mathcal{T}_h} \left|y_{t+h} - \hat{y}_{t+h}\right|, \\
+    \mathrm{MSE}_h &= \frac{1}{T_h}\sum_{t \in \mathcal{T}_h} \left(y_{t+h} - \hat{y}_{t+h}\right)^2, \\
+    \mathrm{sMAE}_h &= \frac{\mathrm{MAE}_h}{\sigma_{\text{train}}}, \\
+    \mathrm{sMSE}_h &= \frac{\mathrm{MSE}_h}{\sigma_{\text{train}}^2}.
+  \end{align}
+  여기서 $\mathcal{T}_h$는 예측지평 $h$에서 평가 가능한 시점들의 집합이며, $T_h = |\mathcal{T}_h|$임.
+  \item \textbf{평가 절차:} 모든 모형은 주간 데이터로 학습하고 주간 단위로 예측을 생성함. 평가는 주간 예측을 월간 평균으로 집계한 뒤, 월간 실측치와 비교하여 수행함. 최종 성능 지표는 $h=1,\dots,22$에 대해 계산한 $\mathrm{sMAE}_h$, $\mathrm{sMSE}_h$를 평균하여 요약함.
 \end{itemize}
 
 \section{실험 결과}
