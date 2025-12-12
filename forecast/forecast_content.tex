@@ -258,7 +258,7 @@
 \subsection{논의}
 \label{sec:discussion}
 
-\subsubsection{4.2.1 모형별 강점과 한계}
+\subsubsection{모형별 강점과 한계}
 
 \begin{itemize}
   \item \textbf{DFM:} Kalman filter 기반 state-space 모형은 혼합주기/결측/비동기 발표를 구조적으로 처리할 수 있어 nowcasting에 적합함 \cite{banbura2012nowcasting, bok2019frbny}. 다만 본 실험에서는 전이 행렬 안정화가 충분하지 않아(스펙트럴 반경 $>1$) 예측 발산 또는 과도한 수렴이 관찰되었고, 이를 완화하기 위해 DFM에만 재귀 예측(구간 단위) 적용함. 이로 인해 예측 경로의 불연속/들쭉날쭉함이 나타날 수 있으며, 모형 간 비교의 정합성에도 영향.
@@ -266,7 +266,7 @@
   \item \textbf{TFT/LSTM/Chronos:} 딥러닝 계열은 비선형성과 장기 의존성을 직접 학습할 수 있으나, (i) 데이터 양/전처리, (ii) 공변량의 가용성(실시간 예측 시점에 관측 가능한지), (iii) 직접 장기 예측 vs 재귀 예측 선택에 따라 성능 변동이 커질 수 있음.
 \end{itemize}
 
-\subsubsection{4.2.2 DFM 선형 동학 수렴 이슈}
+\subsubsection{DFM 선형 동학 수렴 이슈}
 
 본 실험에서는 DFM에만 재귀적 예측(6개월 구간 단위)을 적용하여 발산을 완화했으나, 이는 예측 경로의 불연속성을 야기하고 모형 간 비교의 정합성을 저해함. 발견한 이슈는 다음과 같음:
 
@@ -280,7 +280,7 @@
 \end{itemize}
 
 
-\subsubsection{4.2.3 평가 설계}
+\subsubsection{평가 설계}
 
 \begin{itemize}
   \item \textbf{주간→월간 평균 집계}: 모든 모형이 주간 단위로 예측을 생성한 뒤 월간 평균으로 평가되므로, 주간 내 변동을 잘 맞추는 모형의 이점이 평가에서 약화될 수 있음. 반대로 월간 평균 수준을 잘 맞추는 모형이 유리할 수 있음.
@@ -291,14 +291,14 @@
 \subsection{의의 및 한계}
 \label{sec:contribution_limitations}
 
-\subsubsection{4.3.1 의의}
+\subsubsection{의의}
 \begin{itemize}
   \item \textbf{동일 전처리 기반 비교}: state-space(DFM/DDFM)과 딥러닝(TFT/Chronos/LSTM)을 동일한 전처리 및 평가 방식 하에서 비교하여, 한국 거시변수 예측에서의 상대적 강점이 변수별로 달라질 수 있음을 제시함.
   \item \textbf{실용적 관찰 제공}: DFM의 수치적 불안정(전이행렬 안정성)과 같은 구현·운영 이슈가 실제 예측 성능을 크게 훼손할 수 있음을 확인하고, 안정화 강화 필요성 제기함.
   \item \textbf{변수별 모델 선택의 근거}: 생산/투자/소비의 성격 차이에 따라 (i) 사전학습 기반 일반화, (ii) 공변량 선택/가중 구조, (iii) 잠재요인 기반 다변량 압축이 각기 다른 성능을 낼 수 있음을 실증 결과와 함께 정리함.
 \end{itemize}
 
-\subsubsection{4.3.2 한계 및 개선 방향}
+\subsubsection{한계 및 개선 방향}
 \begin{itemize}
   \item \textbf{실시간(nowcast) 설정의 불완전성}: 예측 시점별로 사용 가능한 정보집합(vintage)을 엄밀히 구성하지 못했으며, 공변량이 예측 시점에 관측 가능한지에 대한 검증이 충분하지 않음.
   \item \textbf{전처리·결측치 처리의 영향}: 결측치 채움 방식은 성능에 큰 영향을 줄 수 있으며, 실시간 예측 관점에서 허용되지 않는 정보 사용(backward-fill 등) 여부 점검 필요.
