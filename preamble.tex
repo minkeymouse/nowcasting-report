@@ -73,7 +73,10 @@
 \def\@part[#1]#2{%
     \ifnum \c@secnumdepth >-2\relax
       \refstepcounter{part}%
-      \addcontentsline{toc}{part}{\protect\numberline{\thepart}#1}%
+      % Write part number + title as a single text run in the TOC.
+      % This avoids odd selection/text-extraction ordering where the roman numeral
+      % can appear detached from the title.
+      \addcontentsline{toc}{part}{\thepart\quad #1}%
     \else
       \addcontentsline{toc}{part}{#1}%
     \fi
