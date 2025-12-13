@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  11 DEC 2025 18:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  13 DEC 2025 15:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -445,6 +445,10 @@ Package: longtable 2023-11-01 v4.19 Multi-page Table package (DPC)
 \c@LT@chunks=\count297
 \LT@p@ftn=\toks27
 )
+(/usr/share/texlive/texmf-dist/tex/latex/threeparttable/threeparttable.sty
+Package: threeparttable 2003/06/13  v 3.0
+\@tempboxb=\box60
+)
 (/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
 Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
 
@@ -471,7 +475,9 @@ Package caption Info: longtable package is loaded.
 
 (/usr/share/texlive/texmf-dist/tex/latex/caption/ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
-))
+)
+Package caption Info: threeparttable package is loaded.
+)
 Package caption Info: New subtype `subfigure' on input line 238.
 \c@subfigure=\count300
 Package caption Info: New subtype `subtable' on input line 238.
@@ -495,7 +501,7 @@ Package: nicefrac 1998/08/04 v0.9b Nice fractions
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
 Package: microtype 2023/03/13 v3.1a Micro-typographical refinements (RS)
 \MT@toks=\toks29
-\MT@tempbox=\box60
+\MT@tempbox=\box61
 \MT@count=\count302
 LaTeX Info: Redefining \noprotrusionifhmode on input line 1059.
 LaTeX Info: Redefining \leftprotrusion on input line 1060.
@@ -526,7 +532,7 @@ Package: expl3 2024-01-22 L3 programming layer (loader)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count304
-\l__pdf_internal_box=\box61
+\l__pdf_internal_box=\box62
 ))
 Package: l3keys2e 2023-10-10 LaTeX2e option processing using LaTeX3 keys
 )
@@ -567,8 +573,8 @@ LaTeX Info: Redefining \colon on input line 410.
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
 LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box62
-\strutbox@=\box63
+\Mathstrutbox@=\box63
+\strutbox@=\box64
 LaTeX Info: Redefining \big on input line 722.
 LaTeX Info: Redefining \Big on input line 723.
 LaTeX Info: Redefining \bigg on input line 724.
@@ -609,7 +615,7 @@ Package: enumitem 2019/06/20 v3.9 Customized lists
 \labelindent=\skip78
 \enit@outerparindent=\dimen197
 \enit@toks=\toks36
-\enit@inbox=\box64
+\enit@inbox=\box65
 \enit@count@id=\count320
 \enitdp@description=\count321
 )
@@ -662,11 +668,7 @@ Package tocloft Info: The document has chapter divisions on input line 51.
 \cftbeforetabskip=\skip112
 \cfttabindent=\skip113
 \cfttabnumwidth=\skip114
-)) (./main.aux
-
-LaTeX Warning: Label `fig:xgb-imp-heatmap_iip' multiply defined.
-
-)
+)) (./main.aux)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
@@ -686,7 +688,8 @@ LaTeX Font Info:    ... okay on input line 5.
 LaTeX Font Info:    Checking defaults for LUC/nanummj/m/n on input line 5.
 LaTeX Font Info:    Trying to load font information for LUC+nanummj on input li
 ne 5.
- (/usr/share/texlive/texmf-dist/tex/latex/nanumtype1/lucnanummj.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/nanumtype1/lucnanummj.fd
 File: lucnanummj.fd 2013/02/12 v0.1 Nanum Myeongjo font definitions
 )
 LaTeX Font Info:    ... okay on input line 5.
@@ -765,7 +768,7 @@ LaTeX Font Info:    ... okay on input line 5.
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count325
 \scratchdimen=\dimen198
-\scratchbox=\box65
+\scratchbox=\box66
 \nofMPsegments=\count326
 \nofMParguments=\count327
 \everyMPshowfont=\toks37
@@ -868,29 +871,22 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-di
 st/fonts/enc/dvips/base/8r.enc}]
 
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \hskip 10.0pt
+(hyperref)                replaced by space on input line 26.
 
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[2]
 LaTeX Font Info:    Font shape `LUC/nanummj/b/n' in size <28> not available
 (Font)              Font shape `LUC/nanummj/bx/n' tried instead on input line 2
 6.
- [3
+[2
 
 ] (./midas/midas_content.tex
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1.
-
 LaTeX Font Info:    Font shape `LUC/nanummj/b/n' in size <12> not available
 (Font)              Font shape `LUC/nanummj/bx/n' tried instead on input line 3
 .
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
 .
+
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
@@ -904,7 +900,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [4]
+ [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -916,12 +912,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[5]
-
-Package natbib Warning: Citation `clements2008macroeconomic' on page 6 undefine
-d on input line 136.
-
-
+[4]
 Underfull \vbox (badness 1975) has occurred while \output is active []
 
 
@@ -933,7 +924,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[6]
+[5]
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 151.
@@ -949,7 +940,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[7]
+[6]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -961,7 +952,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[8]
+[7]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -970,14 +961,14 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[9]
+[8]
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 305.
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 341.
-<midas/images/midasar_sample_fit.png, id=249, 2649.9pt x 1324.95pt>
+<midas/images/midasar_sample_fit.png, id=228, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_sample_fit.png Graphic file (type png)
 <use midas/images/midasar_sample_fit.png>
 Package pdftex.def Info: midas/images/midasar_sample_fit.png  used on input lin
@@ -995,8 +986,12 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[10]
-<midas/images/midasar_weight.png, id=258, 1987.425pt x 1324.95pt>
+[9]
+
+LaTeX Warning: Reference `fig:midasar_insample' on page 10 undefined on input l
+ine 355.
+
+<midas/images/midasar_weight.png, id=236, 1987.425pt x 1324.95pt>
 File: midas/images/midasar_weight.png Graphic file (type png)
 <use midas/images/midasar_weight.png>
 Package pdftex.def Info: midas/images/midasar_weight.png  used on input line 37
@@ -1014,11 +1009,14 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[11 <./midas/images/midasar_sample_fit.png>]
+[10 <./midas/images/midasar_sample_fit.png>]
+
+LaTeX Warning: Reference `fig:midasar_weights' on page 11 undefined on input li
+ne 378.
+
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 381.
-
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1027,8 +1025,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[12 <./midas/images/midasar_weight.png>]
-<midas/images/midasar_test_fit.png, id=276, 2649.9pt x 1324.95pt>
+[11 <./midas/images/midasar_weight.png>]
+<midas/images/midasar_test_fit.png, id=253, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_test_fit.png Graphic file (type png)
 <use midas/images/midasar_test_fit.png>
 Package pdftex.def Info: midas/images/midasar_test_fit.png  used on input line 
@@ -1036,6 +1034,14 @@ Package pdftex.def Info: midas/images/midasar_test_fit.png  used on input line
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
 
 
+LaTeX Warning: Reference `fig:midasar_test' on page 12 undefined on input line 
+425.
+
+
+Underfull \vbox (badness 6526) has occurred while \output is active []
+
+
+
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
 (fancyhdr)                \setlength{\headheight}{14.49998pt}.
@@ -1043,14 +1049,14 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[13 <./midas/images/midasar_test_fit.png>]
-<midas/images/midasar_mom_sample_fit.png, id=286, 2649.9pt x 1324.95pt>
+[12 <./midas/images/midasar_test_fit.png>]
+<midas/images/midasar_mom_sample_fit.png, id=261, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_mom_sample_fit.png Graphic file (type png)
 <use midas/images/midasar_mom_sample_fit.png>
 Package pdftex.def Info: midas/images/midasar_mom_sample_fit.png  used on input
  line 459.
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
-<midas/images/midasar_mom_weight.png, id=287, 2649.9pt x 1324.95pt>
+<midas/images/midasar_mom_weight.png, id=262, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_mom_weight.png Graphic file (type png)
 <use midas/images/midasar_mom_weight.png>
 Package pdftex.def Info: midas/images/midasar_mom_weight.png  used on input lin
@@ -1068,7 +1074,15 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[14 <./midas/images/midasar_mom_sample_fit.png>]
+[13 <./midas/images/midasar_mom_sample_fit.png>]
+
+LaTeX Warning: Reference `fig:midasar_yoy_insample' on page 14 undefined on inp
+ut line 472.
+
+
+LaTeX Warning: Reference `fig:midasar_yoy_weights' on page 14 undefined on inpu
+t line 478.
+
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1077,8 +1091,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[15 <./midas/images/midasar_mom_weight.png>]
-<midas/images/midasar_mom_test_fit.png, id=307, 2649.9pt x 1324.95pt>
+[14 <./midas/images/midasar_mom_weight.png>]
+<midas/images/midasar_mom_test_fit.png, id=282, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_mom_test_fit.png Graphic file (type png)
 <use midas/images/midasar_mom_test_fit.png>
 Package pdftex.def Info: midas/images/midasar_mom_test_fit.png  used on input l
@@ -1086,6 +1100,10 @@ ine 520.
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
 
 
+LaTeX Warning: Reference `fig:midasar_yoy_test' on page 15 undefined on input l
+ine 526.
+
+
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
 (fancyhdr)                \setlength{\headheight}{14.49998pt}.
@@ -1093,7 +1111,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[16 <./midas/images/midasar_mom_test_fit.png>]
+[15 <./midas/images/midasar_mom_test_fit.png>]
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 548.
@@ -1101,6 +1119,15 @@ LaTeX Info: Symbol \textrightarrow not provided by
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[16]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1119,15 +1146,6 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [18]
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[19]
 LaTeX Font Info:    Font shape `LUC/nanummj/m/it' in size <9> not available
 (Font)              Font shape `LUC/nanummj/m/sl' tried instead on input line 7
 40.
@@ -1140,17 +1158,22 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[20]
-<midas/images/xgboost_test_plots.png, id=355, 2429.075pt x 1324.95pt>
+[19]
+<midas/images/xgboost_test_plots.png, id=328, 2429.075pt x 1324.95pt>
 File: midas/images/xgboost_test_plots.png Graphic file (type png)
 <use midas/images/xgboost_test_plots.png>
 Package pdftex.def Info: midas/images/xgboost_test_plots.png  used on input lin
 e 771.
 (pdftex.def)             Requested size: 469.75499pt x 256.21109pt.
+
+
+LaTeX Warning: Reference `fig:xgboost_test_plots' on page 20 undefined on input
+ line 777.
+
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 781.
-<midas/images/heatmap_iip.png, id=357, 2208.25pt x 1324.95pt>
+<midas/images/heatmap_iip.png, id=329, 2208.25pt x 1324.95pt>
 File: midas/images/heatmap_iip.png Graphic file (type png)
 <use midas/images/heatmap_iip.png>
 Package pdftex.def Info: midas/images/heatmap_iip.png  used on input line 789.
@@ -1167,7 +1190,11 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[21 <./midas/images/xgboost_test_plots.png>]
+[20 <./midas/images/xgboost_test_plots.png>]
+
+LaTeX Warning: Reference `fig:xgb-imp-heatmap_iip' on page 21 undefined on inpu
+t line 800.
+
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1176,7 +1203,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[22 <./midas/images/heatmap_iip.png>]
+[21 <./midas/images/heatmap_iip.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1188,13 +1215,9 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[23]
-<midas/images/xgboost_test_mom_plot.png, id=386, 2649.9pt x 1324.95pt>
-File: midas/images/xgboost_test_mom_plot.png Graphic file (type png)
-<use midas/images/xgboost_test_mom_plot.png>
-Package pdftex.def Info: midas/images/xgboost_test_mom_plot.png  used on input 
-line 935.
-(pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
+[22]
+Underfull \vbox (badness 1231) has occurred while \output is active []
+
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1204,8 +1227,14 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[24]
-<midas/images/heatmap_mom.png, id=394, 2429.075pt x 1324.95pt>
+[23]
+<midas/images/xgboost_test_mom_plot.png, id=362, 2649.9pt x 1324.95pt>
+File: midas/images/xgboost_test_mom_plot.png Graphic file (type png)
+<use midas/images/xgboost_test_mom_plot.png>
+Package pdftex.def Info: midas/images/xgboost_test_mom_plot.png  used on input 
+line 935.
+(pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
+<midas/images/heatmap_mom.png, id=363, 2429.075pt x 1324.95pt>
 File: midas/images/heatmap_mom.png Graphic file (type png)
 <use midas/images/heatmap_mom.png>
 Package pdftex.def Info: midas/images/heatmap_mom.png  used on input line 950.
@@ -1222,8 +1251,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[25 <./midas/images/xgboost_test_mom_plot.png>]
-Underfull \vbox (badness 3386) has occurred while \output is active []
+[24 <./midas/images/xgboost_test_mom_plot.png>]
+Underfull \vbox (badness 3364) has occurred while \output is active []
 
 
 
@@ -1234,8 +1263,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[26 <./midas/images/heatmap_mom.png>]
-Underfull \vbox (badness 1902) has occurred while \output is active []
+[25 <./midas/images/heatmap_mom.png>]
+Underfull \vbox (badness 1910) has occurred while \output is active []
 
 
 
@@ -1246,7 +1275,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[27])
+[26])
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1255,7 +1284,13 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[28] [29
+[27]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \hskip 10.0pt
+(hyperref)                replaced by space on input line 34.
+
+[28
 
 ] (./forecast/forecast_content.tex
 pdfTeX warning (ext4): destination with the same identifier (name{section.0.1})
@@ -1264,31 +1299,26 @@ pdfTeX warning (ext4): destination with the same identifier (name{section.0.1})
                    \relax 
 l.1 \section{개요}
                     
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1.
-
-
 pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
 1.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.4 \subsection{거시 경제 예측 필요성}
-                                               
+l.4 \subsection{연구 목적}
+                              
 
-Package natbib Warning: Citation `stock2002forecasting' on page 30 undefined on
+Package natbib Warning: Citation `stock2002forecasting' on page 29 undefined on
  input line 7.
 
 
-Package natbib Warning: Citation `banbura2012nowcasting' on page 30 undefined o
+Package natbib Warning: Citation `banbura2012nowcasting' on page 29 undefined o
 n input line 7.
 
 
-Package natbib Warning: Citation `banbura2012nowcasting' on page 30 undefined o
+Package natbib Warning: Citation `banbura2012nowcasting' on page 29 undefined o
 n input line 7.
 
 
-Package natbib Warning: Citation `bok2019frbny' on page 30 undefined on input l
+Package natbib Warning: Citation `bok2019frbny' on page 29 undefined on input l
 ine 7.
 
 
@@ -1299,100 +1329,82 @@ pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
 l.9 ...{거시 경제 변수 예측 주요 이슈}
                                                   
 
-Package natbib Warning: Citation `stock2002forecasting' on page 30 undefined on
+Package natbib Warning: Citation `stock2002forecasting' on page 29 undefined on
  input line 14.
 
 
-Package natbib Warning: Citation `mariano2003new' on page 30 undefined on input
- line 16.
+Package natbib Warning: Citation `banbura2012nowcasting' on page 29 undefined o
+n input line 15.
 
 
-Package natbib Warning: Citation `ghysels2004midas' on page 30 undefined on inp
+Package natbib Warning: Citation `huber2020nowcasting' on page 29 undefined on 
+input line 16.
+
+
+Package natbib Warning: Citation `andreini2020deep' on page 29 undefined on inp
 ut line 16.
 
 
-Package natbib Warning: Citation `banbura2012nowcasting' on page 30 undefined o
-n input line 16.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 30 undefined o
-n input line 16.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 30 undefined on input l
-ine 16.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 30 undefined on inp
-ut line 18.
-
-
-Package natbib Warning: Citation `huber2020nowcasting' on page 30 undefined on 
-input line 18.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 30 undefined on input l
-ine 20.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 30 undefined on inp
-ut line 20.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 30 undefined on input l
-ine 20.
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-1.3}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.23 \subsection{실험의 필요성}
-                                     
 pdfTeX warning (ext4): destination with the same identifier (name{section.0.2})
  has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.28 \section{실험 소개}
-                            
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-2.1}) has been already used, duplicate ignored
+l.19 \section{데이터와 전처리}
+                                     
+
+LaTeX Warning: Reference `fig:data_quality_dashboard' on page 29 undefined on i
+nput line 31.
+
+<forecast/images/data_quality_dashboard.png, id=395, 1148.8521pt x 866.5173pt>
+File: forecast/images/data_quality_dashboard.png Graphic file (type png)
+<use forecast/images/data_quality_dashboard.png>
+Package pdftex.def Info: forecast/images/data_quality_dashboard.png  used on in
+put line 34.
+(pdftex.def)             Requested size: 469.75499pt x 354.30919pt.
+[29]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[30 <./forecast/images/data_quality_dashboard.png>]
+
+Package natbib Warning: Citation `mariano2003new' on page 31 undefined on input
+ line 79.
+
+
+LaTeX Warning: Reference `fig:preprocessed_targets' on page 31 undefined on inp
+ut line 89.
+
+<forecast/images/preprocessed_targets.png, id=411, 1111.2717pt x 664.4022pt>
+File: forecast/images/preprocessed_targets.png Graphic file (type png)
+<use forecast/images/preprocessed_targets.png>
+Package pdftex.def Info: forecast/images/preprocessed_targets.png  used on inpu
+t line 92.
+(pdftex.def)             Requested size: 469.75499pt x 280.85158pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{section.0.3})
+ has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.31 \subsection{이론적 배경}
-                                  
+l.97 \section{모형과 실험 설계}
+                                      
+pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
+3.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.100 \subsection{예측 모형}
+                                
 
-Package natbib Warning: Citation `stock2002forecasting' on page 30 undefined on
- input line 37.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 30 undefined o
-n input line 37.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 30 undefined on input l
-ine 37.
-
-[30]
-
-Package natbib Warning: Citation `bok2019frbny' on page 31 undefined on input l
-ine 46.
+Package natbib Warning: Citation `lim2021temporal' on page 31 undefined on inpu
+t line 114.
 
 
-Package natbib Warning: Citation `stock2002forecasting' on page 31 undefined on
- input line 46.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 31 undefined o
-n input line 46.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 31 undefined on input l
-ine 48.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+Package natbib Warning: Citation `lim2021temporal' on page 31 undefined on inpu
+t line 116.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1404,24 +1416,54 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 [31]
 
-Package natbib Warning: Citation `higham2002computing' on page 32 undefined on 
-input line 66.
+Package natbib Warning: Citation `ansari2024chronos' on page 32 undefined on in
+put line 121.
+
+
+Package natbib Warning: Citation `hochreiter1997long' on page 32 undefined on i
+nput line 127.
+
+
+Package natbib Warning: Citation `stock2002forecasting' on page 32 undefined on
+ input line 139.
+
+
+Underfull \vbox (badness 7362) has occurred while \output is active []
+
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[32 <./forecast/images/preprocessed_targets.png>]
+
+Package natbib Warning: Citation `bok2019frbny' on page 33 undefined on input l
+ine 141.
+
+
+Package natbib Warning: Citation `banbura2012nowcasting' on page 33 undefined o
+n input line 142.
+
+
+Package natbib Warning: Citation `bok2019frbny' on page 33 undefined on input l
+ine 142.
+
+
+Package natbib Warning: Citation `andreini2020deep' on page 33 undefined on inp
+ut line 148.
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-2.2}) has been already used, duplicate ignored
+3.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.68 \subsection{데이터 소개}
-                                  
-<forecast/images/data_quality_dashboard.png, id=440, 1148.8521pt x 866.5173pt>
-File: forecast/images/data_quality_dashboard.png Graphic file (type png)
-<use forecast/images/data_quality_dashboard.png>
-Package pdftex.def Info: forecast/images/data_quality_dashboard.png  used on in
-put line 79.
-(pdftex.def)             Requested size: 469.75499pt x 354.30919pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+l.160 \subsection{실험 구성}
+                                
+Underfull \vbox (badness 2213) has occurred while \output is active []
 
 
 
@@ -1432,54 +1474,24 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[32]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[33]
+
+Package natbib Warning: Citation `stock2002forecasting' on page 34 undefined on
+ input line 194.
 
 
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[33 <./forecast/images/data_quality_dashboard.png>]
-
-Package natbib Warning: Citation `mariano2003new' on page 34 undefined on input
- line 115.
-
-<forecast/images/preprocessed_targets.png, id=461, 1111.2717pt x 664.4022pt>
-File: forecast/images/preprocessed_targets.png Graphic file (type png)
-<use forecast/images/preprocessed_targets.png>
-Package pdftex.def Info: forecast/images/preprocessed_targets.png  used on inpu
-t line 125.
-(pdftex.def)             Requested size: 469.75499pt x 280.85158pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{section.0.3})
+pdfTeX warning (ext4): destination with the same identifier (name{section.0.4})
  has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.130 \section{실험 방법론}
-                                
+l.206 \section{실험 결과}
+                             
 pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-3.1}) has been already used, duplicate ignored
+4.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.133 \subsection{예측 모형}
-                                
-
-Package natbib Warning: Citation `lim2021temporal' on page 34 undefined on inpu
-t line 141.
-
-
-Package natbib Warning: Citation `lim2021temporal' on page 34 undefined on inpu
-t line 141.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+l.209 \subsection{예측 결과 요약}
+                                       
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1490,36 +1502,30 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 [34]
 
-Package natbib Warning: Citation `ansari2024chronos' on page 35 undefined on in
-put line 143.
+LaTeX Warning: Reference `tab:koipallg_forecasts' on page 35 undefined on input
+ line 216.
 
 
-Package natbib Warning: Citation `hochreiter1997long' on page 35 undefined on i
-nput line 145.
+LaTeX Warning: Reference `tab:koequipte_forecasts' on page 35 undefined on inpu
+t line 216.
 
 
-Package natbib Warning: Citation `stock2002forecasting' on page 35 undefined on
- input line 150.
+LaTeX Warning: Reference `tab:kowrccnse_forecasts' on page 35 undefined on inpu
+t line 216.
 
 
-Package natbib Warning: Citation `bok2019frbny' on page 35 undefined on input l
-ine 150.
+LaTeX Warning: Reference `fig:forecast_vs_actual_all' on page 35 undefined on i
+nput line 231.
 
+<forecast/images/forecast_vs_actual_all.png, id=446, 1004.3121pt x 853.5087pt>
+File: forecast/images/forecast_vs_actual_all.png Graphic file (type png)
+<use forecast/images/forecast_vs_actual_all.png>
+Package pdftex.def Info: forecast/images/forecast_vs_actual_all.png  used on in
+put line 234.
+(pdftex.def)             Requested size: 469.75499pt x 399.22168pt.
 
-Package natbib Warning: Citation `bok2019frbny' on page 35 undefined on input l
-ine 150.
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 35 undefined o
-n input line 150.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 35 undefined o
-n input line 150.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 35 undefined on input l
-ine 150.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1529,29 +1535,18 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[35 <./forecast/images/preprocessed_targets.png>]
+[35]
 
-Package natbib Warning: Citation `andreini2020deep' on page 36 undefined on inp
-ut line 152.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 36 undefined on input l
-ine 152.
+LaTeX Warning: Reference `tab:koipallg_forecasts' on page 36 undefined on input
+ line 247.
 
 
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-3.2}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.154 \subsection{실험 구성}
-                                
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 36 undefined o
-n input line 165.
+LaTeX Warning: Reference `tab:kowrccnse_forecasts' on page 36 undefined on inpu
+t line 247.
 
 
-Package natbib Warning: Citation `bok2019frbny' on page 36 undefined on input l
-ine 165.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1561,68 +1556,36 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[36]
-
-Package natbib Warning: Citation `stock2002forecasting' on page 37 undefined on
- input line 180.
-
-
-Underfull \hbox (badness 5064) in paragraph at lines 180--181
-\LUC/nanummj/m/n/10/bc � \LUC/nanummj/m/n/10/c5 �\LUC/nanummj/m/n/10/ad l\LUC/n
-anummj/m/n/10/c5 �\LUC/nanummj/m/n/10/c1 ^^\\LUC/nanummj/m/n/10/b2 � \LUC/nanum
-mj/m/n/10/d4 \\LUC/nanummj/m/n/10/c9 ^^@\LUC/nanummj/m/n/10/d6 T\LUC/nanummj/m/
-n/10/b4 ^^\ \LUC/nanummj/m/n/10/c9 �\LUC/nanummj/m/n/10/d4 \\LUC/nanummj/m/n/10
-/c6 @ \LUC/nanummj/m/n/10/c8 ^^H\LUC/nanummj/m/n/10/b3 ^^@ \LUC/nanummj/m/n/10/
-c9 �\LUC/nanummj/m/n/10/d4 \\LUC/nanummj/m/n/10/b9 | \LUC/nanummj/m/n/10/ba �\L
-UC/nanummj/m/n/10/b4 P \LUC/nanummj/m/n/10/c0 �\LUC/nanummj/m/n/10/c6 �\LUC/nan
-ummj/m/n/10/d5 X\LUC/nanummj/m/n/10/c5 � \LUC/nanummj/m/n/10/ba �\LUC/nanummj/m
-/n/10/d6 ^^U \LUC/nanummj/m/n/10/c1 1\LUC/nanummj/m/n/10/b2 �\LUC/nanummj/m/n/1
-0/c7 D \LUC/nanummj/m/n/10/d3 �\LUC/nanummj/m/n/10/ac ^^@\LUC/nanummj/m/n/10/d5
- h\T1/ptm/m/n/10 (+20) . \LUC/nanummj/m/n/10/d4 \\LUC/nanummj/m/n/10/c9 ^^@\LUC
-/nanummj/m/n/10/d6 T\LUC/nanummj/m/n/10/b4 ^^\ \LUC/nanummj/m/n/10/c9 �\LUC/nan
-ummj/m/n/10/d4 \\LUC/nanummj/m/n/10/b2 �
- []
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{section.0.4})
- has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.184 \section{실험 결과}
-                             
+[36 <./forecast/images/forecast_vs_actual_all.png>]
 pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-4.1}) has been already used, duplicate ignored
+4.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.187 \subsection{예측 결과 비교}
-                                       
-
-LaTeX Warning: Reference `tab:forecasting_results' on page 37 undefined on inpu
-t line 190.
-
-
-LaTeX Warning: Reference `tab:forecasting_results' on page 37 undefined on inpu
-t line 195.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 37 undefined on inp
-ut line 197.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 37 undefined on inp
-ut line 199.
-
-
-Package natbib Warning: Citation `stock2002forecasting' on page 37 undefined on
- input line 199.
-
+l.258 \subsection{논의}
+                         
 
 Package natbib Warning: Citation `banbura2012nowcasting' on page 37 undefined o
-n input line 199.
+n input line 264.
 
 
-Package natbib Warning: Citation `hochreiter1997long' on page 37 undefined on i
-nput line 201.
+Package natbib Warning: Citation `bok2019frbny' on page 37 undefined on input l
+ine 264.
+
+
+Package natbib Warning: Citation `andreini2020deep' on page 37 undefined on inp
+ut line 265.
+
+
+Package natbib Warning: Citation `huber2020nowcasting' on page 37 undefined on 
+input line 279.
+
+
+Package natbib Warning: Citation `andreini2020deep' on page 37 undefined on inp
+ut line 279.
+
+
+Package natbib Warning: Citation `stock2016dynamic' on page 37 undefined on inp
+ut line 279.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1633,14 +1596,11 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [37]
-<forecast/images/forecast_vs_actual_all.png, id=490, 1004.553pt x 853.5087pt>
-File: forecast/images/forecast_vs_actual_all.png Graphic file (type png)
-<use forecast/images/forecast_vs_actual_all.png>
-Package pdftex.def Info: forecast/images/forecast_vs_actual_all.png  used on in
-put line 206.
-(pdftex.def)             Requested size: 469.75499pt x 399.11748pt.
+LaTeX Info: Symbol \textrightarrow not provided by
+            font family ptm in TS1 encoding.
+            Default family used instead on input line 286.
 
-Underfull \vbox (badness 2698) has occurred while \output is active []
+Underfull \vbox (badness 7221) has occurred while \output is active []
 
 
 
@@ -1651,68 +1611,19 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[38 <./forecast/images/forecast_vs_actual_all.png>]
-
-Package natbib Warning: Citation `bok2019frbny' on page 39 undefined on input l
-ine 216.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 39 undefined o
-n input line 216.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 39 undefined on input l
-ine 218.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 39 undefined on inp
-ut line 220.
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-4.2}) has been already used, duplicate ignored
+[38]
+pdfTeX warning (ext4): destination with the same identifier (name{section.0.5})
+ has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.226 \subsection{성능 비교}
-                                
-
-Package natbib Warning: Citation `andreini2020deep' on page 39 undefined on inp
-ut line 231.
-
-
-Package natbib Warning: Citation `stock2002forecasting' on page 39 undefined on
- input line 233.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 39 undefined o
-n input line 233.
-
-
-Package natbib Warning: Citation `stock2002forecasting' on page 39 undefined on
- input line 237.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 39 undefined on inp
-ut line 237.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 39 undefined o
-n input line 237.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 39 undefined on input l
-ine 237.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 39 undefined on input l
-ine 237.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 39 undefined o
-n input line 237.
-
-
-Underfull \vbox (badness 4673) has occurred while \output is active []
+l.310 \section{결론}
+                      
+LaTeX Font Info:    Font shape `LUC/nanummj/m/it' in size <10> not available
+(Font)              Font shape `LUC/nanummj/m/sl' tried instead on input line 3
+15.
+) (./forecast/forecast_appendix.tex
+(./forecast/tables/KOIPALL.G_forecasts.tex
+Underfull \vbox (badness 1152) has occurred while \output is active []
 
 
 
@@ -1723,63 +1634,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[39]
-
-Package natbib Warning: Citation `andreini2020deep' on page 40 undefined on inp
-ut line 244.
-
-
-Package natbib Warning: Citation `stock2002forecasting' on page 40 undefined on
- input line 246.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 40 undefined o
-n input line 246.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 40 undefined on input l
-ine 246.
-
-
-Package natbib Warning: Citation `stock2002forecasting' on page 40 undefined on
- input line 250.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 40 undefined on inp
-ut line 250.
-
-
-Package natbib Warning: Citation `huber2020nowcasting' on page 40 undefined on 
-input line 250.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 40 undefined o
-n input line 252.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 40 undefined on input l
-ine 252.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 40 undefined o
-n input line 252.
-
-
-Package natbib Warning: Citation `higham2002computing' on page 40 undefined on 
-input line 252.
-
-
-Package natbib Warning: Citation `mariano2003new' on page 40 undefined on input
- line 254.
-
-
-Package natbib Warning: Citation `stock2002forecasting' on page 40 undefined on
- input line 258.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 40 undefined o
-n input line 258.
-
+[39]) (./forecast/tables/KOEQUIPTE_forecasts.tex)
+(./forecast/tables/KOWRCCNSE_forecasts.tex))
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1790,65 +1646,6 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 [40]
 
-Package natbib Warning: Citation `banbura2012nowcasting' on page 41 undefined o
-n input line 260.
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{section.0.5})
- has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.262 \section{결론}
-                      
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-5.1}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.267 \subsection{주요 발견사항}
-                                      
-
-Package natbib Warning: Citation `stock2002forecasting' on page 41 undefined on
- input line 271.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 41 undefined o
-n input line 271.
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-5.2}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.273 \subsection{이론적 기여}
-                                   
-
-Package natbib Warning: Citation `andreini2020deep' on page 41 undefined on inp
-ut line 275.
-
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 41 undefined o
-n input line 275.
-
-
-Package natbib Warning: Citation `bok2019frbny' on page 41 undefined on input l
-ine 275.
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-5.3}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.277 \subsection{향후 연구 방향}
-                                       
-
-Package natbib Warning: Citation `banbura2012nowcasting' on page 41 undefined o
-n input line 279.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
 (fancyhdr)                \setlength{\headheight}{14.49998pt}.
@@ -1857,181 +1654,287 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [41]
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
-5.4}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.281 \subsection{최종 결론}
-                                ) (./forecast/forecast_appendix.tex
-(./forecast/tables/KOIPALL.G_forecasts.tex
-Overfull \hbox (589.89491pt too wide) in paragraph at lines 3--97
- [][] 
- []
 
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \hskip 10.0pt
+(hyperref)                replaced by space on input line 43.
 
-LaTeX Warning: Float too large for page by 627.3678pt on input line 99.
-
-) (./forecast/tables/KOEQUIPTE_forecasts.tex
-Overfull \hbox (639.89491pt too wide) in paragraph at lines 3--97
- [][] 
- []
-
-
-LaTeX Warning: Float too large for page by 627.3678pt on input line 99.
-
-) (./forecast/tables/KOWRCCNSE_forecasts.tex
-Overfull \hbox (629.89491pt too wide) in paragraph at lines 3--97
- [][] 
- []
-
-
-LaTeX Warning: Float too large for page by 627.3678pt on input line 99.
-
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[42]
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[43]
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[44]))
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[45]
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[46] [47
+[42
 
 ] (./forecast/forecast_part3.tex
+<nowcast/nowcast_part3.pdf, id=514, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf  used on input line 1.
+(pdftex.def)             Requested size: 552.06114pt x 748.79567pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf  used on input line 1.
+(pdftex.def)             Requested size: 552.06114pt x 748.79567pt.
+<nowcast/nowcast_part3.pdf, id=517, page=1, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 1>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
+.
+(pdftex.def)             Requested size: 552.06114pt x 748.79567pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 1>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 1>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 1>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 1>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [43
 
-! Package pdfpages Error: Cannot find file `../nowcast/nowcast_part3.pdf'.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=566, page=2, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 2>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page2 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 2>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page2 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 2>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page2 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [44
 
-See the pdfpages package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-This error message was generated by an \errmessage
-command, so I can't give any explicit help.
-Pretend that you're Hercule Poirot: Examine all clues,
-and deduce the truth by order and method.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=631, page=3, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 3>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page3 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 3>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page3 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 3>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page3 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [45
 
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=641, page=4, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 4>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page4 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 4>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page4 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 4>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page4 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [46
 
-! Package pdfpages Error: Cannot find file `-'.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=655, page=5, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 5>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page5 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 5>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page5 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 5>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page5 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [47
 
-See the pdfpages package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-(That was another \errmessage.)
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=661, page=6, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 6>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page6 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 6>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page6 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 6>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page6 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [48
 
-! Undefined control sequence.
-\AM@expand@range ...M@i \relax \@tempcntb =\AM@ii 
-                                                  \relax \ifnum \@tempcnta <...
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=708, page=7, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 7>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page7 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 7>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page7 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 7>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page7 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [49
 
-! Missing number, treated as zero.
-<to be read again> 
-                   \relax 
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-A number should have been here; I inserted `0'.
-(If you can't figure out why I needed to see a number,
-look up `weird error' in the index to The TeXbook.)
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=723, page=8, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 8>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page8 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 8>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page8 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 8>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page8 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [50
 
-! Undefined control sequence.
-\AM@checkpagenumber #1->\ifnum #1>\AM@pagecount 
-                                                \relax \ifthenelse {\boolean...
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=733, page=9, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 9>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page9 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 9>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page9 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 9>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page9 used on input line 1
+.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
 
-! Missing number, treated as zero.
-<to be read again> 
-                   \relax 
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-A number should have been here; I inserted `0'.
-(If you can't figure out why I needed to see a number,
-look up `weird error' in the index to The TeXbook.)
+[51
 
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=743, page=10, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 10>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page10 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 10>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page10 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 10>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page10 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [52
 
-! Package pdfpages Error: Page 1 of `\AM@currentdocname ' does not exist.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=753, page=11, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 11>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page11 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 11>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page11 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 11>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page11 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [53
 
-See the pdfpages package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-You have set a wrong page number in the `pages' option. Document 
-`\AM@currentdocname ' does not have 1 pages.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=759, page=12, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 12>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page12 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 12>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page12 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 12>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page12 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [54
 
-! Undefined control sequence.
-\AM@checkpagenumber #1->\ifnum #1>\AM@pagecount 
-                                                \relax \ifthenelse {\boolean...
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
+ <./nowcast/nowcast_part3.pdf>]
+<nowcast/nowcast_part3.pdf, id=773, page=13, 552.0625pt x 748.7975pt>
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 13>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page13 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 13>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page13 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
+<use nowcast/nowcast_part3.pdf, page 13>
+Package pdftex.def Info: nowcast/nowcast_part3.pdf , page13 used on input line 
+1.
+(pdftex.def)             Requested size: 586.725pt x 795.81248pt.
+ [55
 
-! Missing number, treated as zero.
-<to be read again> 
-                   \relax 
-l.1 ...epdf[pages=-]{../nowcast/nowcast_part3.pdf}
-                                                  
-A number should have been here; I inserted `0'.
-(If you can't figure out why I needed to see a number,
-look up `weird error' in the index to The TeXbook.)
+ <./nowcast/nowcast_part3.pdf>])
 
-) [48] [49
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \hskip 10.0pt
+(hyperref)                replaced by space on input line 51.
+
+[56
 
 ] (./source_research/source_research_content.tex
 pdfTeX warning (ext4): destination with the same identifier (name{section.Alph0
@@ -2039,12 +1942,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{section.Alph0
 <to be read again> 
                    \relax 
 l.1 \section{연구 목적 및 평가 기준}
-                                             
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1.
-
-[50]
+                                              [57]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -2053,7 +1951,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[51]
+[58]
 Underfull \vbox (badness 4013) has occurred while \output is active []
 
 
@@ -2065,14 +1963,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[52]
-LaTeX Font Info:    Font shape `LUC/nanummj/m/it' in size <10> not available
-(Font)              Font shape `LUC/nanummj/m/sl' tried instead on input line 1
-51.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+[59]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -2081,7 +1972,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[53]
+[60]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -2090,7 +1981,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[54]
+[61]
 Underfull \vbox (badness 4013) has occurred while \output is active []
 
 
@@ -2102,10 +1993,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[55]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+[62]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -2114,7 +2002,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[56]
+[63]
 
 LaTeX Font Warning: Font shape `LUC/nanummj/b/it' undefined
 (Font)              using `LUC/nanummj/b/n' instead on input line 391.
@@ -2131,17 +2019,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[57]
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[58]
-Underfull \vbox (badness 1721) has occurred while \output is active []
+[64]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
@@ -2152,8 +2031,17 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[59]
-Underfull \vbox (badness 1147) has occurred while \output is active []
+[65]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
+[66]
+Underfull \vbox (badness 1107) has occurred while \output is active []
 
 
 
@@ -2164,27 +2052,27 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[60]
-Underfull \hbox (badness 10000) in paragraph at lines 510--510
+[67]
+Underfull \hbox (badness 10000) in paragraph at lines 522--522
 []\T1/ptm/m/n/9 (+20) KPX \LUC/nanummj/m/n/9/c8 ^^D\LUC/nanummj/m/n/9/b8 %\LUC/
 nanummj/m/n/9/c2 ^^X\LUC/nanummj/m/n/9/ae 	\LUC/nanummj/m/n/9/d6 ^^Di
  []
 
 
-Underfull \hbox (badness 1019) in paragraph at lines 573--574
+Underfull \hbox (badness 1019) in paragraph at lines 585--586
 []\T1/ptm/m/n/9 (+20) BIGKinds (\LUC/nanummj/m/n/9/b2 t\LUC/nanummj/m/n/9/c2 � 
 \LUC/nanummj/m/n/9/be E\LUC/nanummj/m/n/9/b3 p
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 595--597
+Underfull \hbox (badness 10000) in paragraph at lines 607--609
 []\LUC/nanummj/m/n/9/ae ^^@\LUC/nanummj/m/n/9/b8 \\LUC/nanummj/m/n/9/bc � \LUC/
 nanummj/m/n/9/ad P\LUC/nanummj/m/n/9/c5 �[]\LUC/nanummj/m/n/9/bb <\LUC/nanummj/
 m/n/9/b3 �\LUC/nanummj/m/n/9/b7 �
  []
 
 
-Underfull \hbox (badness 5245) in paragraph at lines 595--597
+Underfull \hbox (badness 5245) in paragraph at lines 607--609
 \LUC/nanummj/m/n/9/c1  \LUC/nanummj/m/n/9/d5 �\LUC/nanummj/m/n/9/c9 �\LUC/nanum
 mj/m/n/9/d4 \\T1/ptm/m/n/9 (+20) , \LUC/nanummj/m/n/9/c8 �\LUC/nanummj/m/n/9/ac
  ^^D \T1/ptm/m/n/9 (+20) now-
@@ -2198,7 +2086,10 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[61]
+[68]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -2207,7 +2098,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[62])
+[69])
 No file main.bbl.
 
 Package natbib Warning: There were undefined citations.
@@ -2220,7 +2111,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[63] (./main.aux)
+[70] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -2233,19 +2124,25 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: There were multiply-defined labels.
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 446CB0967E5C2E186D25B8747646D120;3550.
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 446CB0967E5C2E186D25B8747646D120;3550
+(rerunfilecheck)             After:  562E3B728B52250B4F1603B0B98F3178;932.
  ) 
 Here is how much of TeX's memory you used:
- 19492 strings out of 475662
- 324200 string characters out of 5784442
- 2324975 words of memory out of 5000000
- 40668 multiletter control sequences out of 15000+600000
- 702706 words of font info for 488 fonts, out of 8000000 for 9000
+ 19595 strings out of 475662
+ 327278 string characters out of 5784442
+ 1971975 words of memory out of 5000000
+ 40769 multiletter control sequences out of 15000+600000
+ 704351 words of font info for 486 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 84i,13n,96p,1521b,848s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,17n,96p,1001b,843s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Hfootnote.13} has been referenced but does not exis
 t, replaced by a fixed one
@@ -2298,10 +2195,12 @@ pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 , replaced by a fixed one
 
- </home/minkeymouse/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000
-.600pk> </home/minkeymouse/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/e
-ctt1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cme
-x10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pf
+ </home/minkeymouse/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrb1000
+.600pk> </home/minkeymouse/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/t
+crm1000.600pk> </home/minkeymouse/.texlive2023/texmf-var/fonts/pk/ljfour/jknapp
+en/ec/ectt1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+mi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive
@@ -2398,32 +2297,34 @@ xlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmc8.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/nanumtype1/nanummjmc9.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/nanumtype1/nanummjmc9.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/nanumtype1/nanummjmca.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/nanumtype1/nanummjmcc.pfb></usr/share/texlive/texmf-dis
+dist/fonts/type1/public/nanumtype1/nanummjmcb.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/nanumtype1/nanummjmcc.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/nanumtype1/nanummjmcd.pfb></usr/share/texlive/texmf-dist/font
+onts/type1/public/nanumtype1/nanummjmcc.pfb></usr/share/texlive/texmf-dist/font
 s/type1/public/nanumtype1/nanummjmcd.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/nanumtype1/nanummjmce.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/nanumtype1/nanummjmcf.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/nanumtype1/nanummjmd0.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/nanumtype1/nanummjmd0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-nanumtype1/nanummjmd1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nan
-umtype1/nanummjmd1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumt
-ype1/nanummjmd2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype
-1/nanummjmd2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/n
-anummjmd3.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanu
-mmjmd4.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummj
-md4.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd5
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd5.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd6.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd6.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd7.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (63 pages, 10232932 bytes).
+ype1/public/nanumtype1/nanummjmcd.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/nanumtype1/nanummjmce.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/nanumtype1/nanummjmce.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/nanumtype1/nanummjmcf.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+nanumtype1/nanummjmd0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nan
+umtype1/nanummjmd0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumt
+ype1/nanummjmd1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype
+1/nanummjmd1.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/n
+anummjmd2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanu
+mmjmd2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummj
+md3.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd4
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd4.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd5.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd5.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd6.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd6.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd7.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+urw/times/utmri8a.pfb>
+Output written on main.pdf (70 pages, 10650350 bytes).
 PDF statistics:
- 1328 PDF objects out of 1440 (max. 8388607)
- 940 compressed objects within 10 object streams
- 251 named destinations out of 1000 (max. 500000)
- 85226 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 1578 PDF objects out of 1728 (max. 8388607)
+ 1090 compressed objects within 11 object streams
+ 256 named destinations out of 1000 (max. 500000)
+ 86330 words of extra memory for PDF output out of 89155 (max. 10000000)
 
