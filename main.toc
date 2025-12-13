@@ -63,11 +63,11 @@
 \contentsline {subsubsection}{평가 기준}{33}{section*.47}%
 \contentsline {subsubsection}{하이퍼 패러미터}{34}{section*.48}%
 \contentsline {subsubsection}{성능 지표}{34}{section*.49}%
-\contentsline {section}{\numberline {4}실험 결과}{34}{section.0.4}%
-\contentsline {subsection}{\numberline {4.1}예측 결과 요약}{34}{subsection.0.4.1}%
+\contentsline {section}{\numberline {4}실험 결과}{35}{section.0.4}%
+\contentsline {subsection}{\numberline {4.1}예측 결과 요약}{35}{subsection.0.4.1}%
 \contentsline {subsubsection}{전체 시점 평균 성능}{35}{section*.50}%
 \contentsline {subsubsection}{시점별 성능 패턴}{35}{section*.52}%
-\contentsline {subsubsection}{결과 해석(변수별)}{36}{section*.53}%
+\contentsline {subsubsection}{결과 해석(변수별)}{37}{section*.53}%
 \contentsline {subsection}{\numberline {4.2}논의}{37}{subsection.0.4.2}%
 \contentsline {subsubsection}{모형별 강점과 한계}{37}{section*.54}%
 \contentsline {subsubsection}{DFM 선형 동학 수렴 이슈}{37}{section*.55}%
@@ -78,7 +78,7 @@
 \contentsline {section}{\numberline {5}결론}{39}{section.0.5}%
 \contentsline {section}{\numberline {1}부록: 상세 예측 결과}{39}{section.Alph0.1}%
 \contentsline {subsection}{\numberline {1.1}전체 평가지표 비교}{39}{subsection.Alph0.1.1}%
-\contentsline {subsection}{\numberline {1.2}목표 변수별 시점별 상세 결과}{39}{subsection.Alph0.1.2}%
+\contentsline {subsection}{\numberline {1.2}목표 변수별 시점별 상세 결과}{40}{subsection.Alph0.1.2}%
 \contentsline {subsubsection}{KOIPALL.G (생산)}{40}{section*.59}%
 \contentsline {subsubsection}{KOEQUIPTE (투자)}{40}{section*.61}%
 \contentsline {subsubsection}{KOWRCCNSE (소비)}{40}{section*.63}%

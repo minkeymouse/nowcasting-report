@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  13 DEC 2025 15:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.7)  13 DEC 2025 15:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -668,7 +668,11 @@ Package tocloft Info: The document has chapter divisions on input line 51.
 \cftbeforetabskip=\skip112
 \cfttabindent=\skip113
 \cfttabnumwidth=\skip114
-)) (./main.aux)
+)) (./main.aux
+
+LaTeX Warning: Label `fig:xgb-imp-heatmap_iip' multiply defined.
+
+)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
@@ -688,8 +692,7 @@ LaTeX Font Info:    ... okay on input line 5.
 LaTeX Font Info:    Checking defaults for LUC/nanummj/m/n on input line 5.
 LaTeX Font Info:    Trying to load font information for LUC+nanummj on input li
 ne 5.
-
-(/usr/share/texlive/texmf-dist/tex/latex/nanumtype1/lucnanummj.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/nanumtype1/lucnanummj.fd
 File: lucnanummj.fd 2013/02/12 v0.1 Nanum Myeongjo font definitions
 )
 LaTeX Font Info:    ... okay on input line 5.
@@ -968,7 +971,7 @@ LaTeX Info: Symbol \textrightarrow not provided by
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 341.
-<midas/images/midasar_sample_fit.png, id=228, 2649.9pt x 1324.95pt>
+<midas/images/midasar_sample_fit.png, id=168, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_sample_fit.png Graphic file (type png)
 <use midas/images/midasar_sample_fit.png>
 Package pdftex.def Info: midas/images/midasar_sample_fit.png  used on input lin
@@ -987,11 +990,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [9]
-
-LaTeX Warning: Reference `fig:midasar_insample' on page 10 undefined on input l
-ine 355.
-
-<midas/images/midasar_weight.png, id=236, 1987.425pt x 1324.95pt>
+<midas/images/midasar_weight.png, id=178, 1987.425pt x 1324.95pt>
 File: midas/images/midasar_weight.png Graphic file (type png)
 <use midas/images/midasar_weight.png>
 Package pdftex.def Info: midas/images/midasar_weight.png  used on input line 37
@@ -1010,13 +1009,10 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [10 <./midas/images/midasar_sample_fit.png>]
-
-LaTeX Warning: Reference `fig:midasar_weights' on page 11 undefined on input li
-ne 378.
-
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 381.
+
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1026,17 +1022,12 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [11 <./midas/images/midasar_weight.png>]
-<midas/images/midasar_test_fit.png, id=253, 2649.9pt x 1324.95pt>
+<midas/images/midasar_test_fit.png, id=196, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_test_fit.png Graphic file (type png)
 <use midas/images/midasar_test_fit.png>
 Package pdftex.def Info: midas/images/midasar_test_fit.png  used on input line 
 419.
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
-
-
-LaTeX Warning: Reference `fig:midasar_test' on page 12 undefined on input line 
-425.
-
 
 Underfull \vbox (badness 6526) has occurred while \output is active []
 
@@ -1050,13 +1041,13 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [12 <./midas/images/midasar_test_fit.png>]
-<midas/images/midasar_mom_sample_fit.png, id=261, 2649.9pt x 1324.95pt>
+<midas/images/midasar_mom_sample_fit.png, id=205, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_mom_sample_fit.png Graphic file (type png)
 <use midas/images/midasar_mom_sample_fit.png>
 Package pdftex.def Info: midas/images/midasar_mom_sample_fit.png  used on input
  line 459.
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
-<midas/images/midasar_mom_weight.png, id=262, 2649.9pt x 1324.95pt>
+<midas/images/midasar_mom_weight.png, id=206, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_mom_weight.png Graphic file (type png)
 <use midas/images/midasar_mom_weight.png>
 Package pdftex.def Info: midas/images/midasar_mom_weight.png  used on input lin
@@ -1076,14 +1067,6 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 [13 <./midas/images/midasar_mom_sample_fit.png>]
 
-LaTeX Warning: Reference `fig:midasar_yoy_insample' on page 14 undefined on inp
-ut line 472.
-
-
-LaTeX Warning: Reference `fig:midasar_yoy_weights' on page 14 undefined on inpu
-t line 478.
-
-
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
 (fancyhdr)                \setlength{\headheight}{14.49998pt}.
@@ -1092,16 +1075,12 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [14 <./midas/images/midasar_mom_weight.png>]
-<midas/images/midasar_mom_test_fit.png, id=282, 2649.9pt x 1324.95pt>
+<midas/images/midasar_mom_test_fit.png, id=229, 2649.9pt x 1324.95pt>
 File: midas/images/midasar_mom_test_fit.png Graphic file (type png)
 <use midas/images/midasar_mom_test_fit.png>
 Package pdftex.def Info: midas/images/midasar_mom_test_fit.png  used on input l
 ine 520.
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
-
-
-LaTeX Warning: Reference `fig:midasar_yoy_test' on page 15 undefined on input l
-ine 526.
 
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1159,21 +1138,16 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [19]
-<midas/images/xgboost_test_plots.png, id=328, 2429.075pt x 1324.95pt>
+<midas/images/xgboost_test_plots.png, id=278, 2429.075pt x 1324.95pt>
 File: midas/images/xgboost_test_plots.png Graphic file (type png)
 <use midas/images/xgboost_test_plots.png>
 Package pdftex.def Info: midas/images/xgboost_test_plots.png  used on input lin
 e 771.
 (pdftex.def)             Requested size: 469.75499pt x 256.21109pt.
-
-
-LaTeX Warning: Reference `fig:xgboost_test_plots' on page 20 undefined on input
- line 777.
-
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 781.
-<midas/images/heatmap_iip.png, id=329, 2208.25pt x 1324.95pt>
+<midas/images/heatmap_iip.png, id=280, 2208.25pt x 1324.95pt>
 File: midas/images/heatmap_iip.png Graphic file (type png)
 <use midas/images/heatmap_iip.png>
 Package pdftex.def Info: midas/images/heatmap_iip.png  used on input line 789.
@@ -1191,10 +1165,6 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [20 <./midas/images/xgboost_test_plots.png>]
-
-LaTeX Warning: Reference `fig:xgb-imp-heatmap_iip' on page 21 undefined on inpu
-t line 800.
-
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1228,13 +1198,13 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [23]
-<midas/images/xgboost_test_mom_plot.png, id=362, 2649.9pt x 1324.95pt>
+<midas/images/xgboost_test_mom_plot.png, id=315, 2649.9pt x 1324.95pt>
 File: midas/images/xgboost_test_mom_plot.png Graphic file (type png)
 <use midas/images/xgboost_test_mom_plot.png>
 Package pdftex.def Info: midas/images/xgboost_test_mom_plot.png  used on input 
 line 935.
 (pdftex.def)             Requested size: 469.75499pt x 234.86185pt.
-<midas/images/heatmap_mom.png, id=363, 2429.075pt x 1324.95pt>
+<midas/images/heatmap_mom.png, id=316, 2429.075pt x 1324.95pt>
 File: midas/images/heatmap_mom.png Graphic file (type png)
 <use midas/images/heatmap_mom.png>
 Package pdftex.def Info: midas/images/heatmap_mom.png  used on input line 950.
@@ -1351,17 +1321,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{section.0.2})
                    \relax 
 l.19 \section{데이터와 전처리}
                                      
-
-LaTeX Warning: Reference `fig:data_quality_dashboard' on page 29 undefined on i
-nput line 31.
-
-<forecast/images/data_quality_dashboard.png, id=395, 1148.8521pt x 866.5173pt>
+<forecast/images/data_quality_dashboard.png, id=348, 1148.8521pt x 866.5173pt>
 File: forecast/images/data_quality_dashboard.png Graphic file (type png)
 <use forecast/images/data_quality_dashboard.png>
 Package pdftex.def Info: forecast/images/data_quality_dashboard.png  used on in
 put line 34.
 (pdftex.def)             Requested size: 469.75499pt x 354.30919pt.
-[29]
+ [29]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1375,11 +1341,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 Package natbib Warning: Citation `mariano2003new' on page 31 undefined on input
  line 79.
 
-
-LaTeX Warning: Reference `fig:preprocessed_targets' on page 31 undefined on inp
-ut line 89.
-
-<forecast/images/preprocessed_targets.png, id=411, 1111.2717pt x 664.4022pt>
+<forecast/images/preprocessed_targets.png, id=366, 1111.2717pt x 664.4022pt>
 File: forecast/images/preprocessed_targets.png Graphic file (type png)
 <use forecast/images/preprocessed_targets.png>
 Package pdftex.def Info: forecast/images/preprocessed_targets.png  used on inpu
@@ -1492,38 +1454,6 @@ pdfTeX warning (ext4): destination with the same identifier (name{subsection.0.
                    \relax 
 l.209 \subsection{예측 결과 요약}
                                        
-
-Package fancyhdr Warning: \headheight is too small (14.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
-
-[34]
-
-LaTeX Warning: Reference `tab:koipallg_forecasts' on page 35 undefined on input
- line 216.
-
-
-LaTeX Warning: Reference `tab:koequipte_forecasts' on page 35 undefined on inpu
-t line 216.
-
-
-LaTeX Warning: Reference `tab:kowrccnse_forecasts' on page 35 undefined on inpu
-t line 216.
-
-
-LaTeX Warning: Reference `fig:forecast_vs_actual_all' on page 35 undefined on i
-nput line 231.
-
-<forecast/images/forecast_vs_actual_all.png, id=446, 1004.3121pt x 853.5087pt>
-File: forecast/images/forecast_vs_actual_all.png Graphic file (type png)
-<use forecast/images/forecast_vs_actual_all.png>
-Package pdftex.def Info: forecast/images/forecast_vs_actual_all.png  used on in
-put line 234.
-(pdftex.def)             Requested size: 469.75499pt x 399.22168pt.
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1535,16 +1465,23 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
+[34]
+<forecast/images/forecast_vs_actual_all.png, id=405, 1004.3121pt x 853.5087pt>
+File: forecast/images/forecast_vs_actual_all.png Graphic file (type png)
+<use forecast/images/forecast_vs_actual_all.png>
+Package pdftex.def Info: forecast/images/forecast_vs_actual_all.png  used on in
+put line 234.
+(pdftex.def)             Requested size: 469.75499pt x 399.22168pt.
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
+
 [35]
-
-LaTeX Warning: Reference `tab:koipallg_forecasts' on page 36 undefined on input
- line 247.
-
-
-LaTeX Warning: Reference `tab:kowrccnse_forecasts' on page 36 undefined on inpu
-t line 247.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1576,18 +1513,6 @@ Package natbib Warning: Citation `andreini2020deep' on page 37 undefined on inp
 ut line 265.
 
 
-Package natbib Warning: Citation `huber2020nowcasting' on page 37 undefined on 
-input line 279.
-
-
-Package natbib Warning: Citation `andreini2020deep' on page 37 undefined on inp
-ut line 279.
-
-
-Package natbib Warning: Citation `stock2016dynamic' on page 37 undefined on inp
-ut line 279.
-
-
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
 (fancyhdr)                \setlength{\headheight}{14.49998pt}.
@@ -1596,11 +1521,23 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
 [37]
+
+Package natbib Warning: Citation `huber2020nowcasting' on page 38 undefined on 
+input line 279.
+
+
+Package natbib Warning: Citation `andreini2020deep' on page 38 undefined on inp
+ut line 279.
+
+
+Package natbib Warning: Citation `stock2016dynamic' on page 38 undefined on inp
+ut line 279.
+
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ptm in TS1 encoding.
             Default family used instead on input line 286.
 
-Underfull \vbox (badness 7221) has occurred while \output is active []
+Underfull \vbox (badness 2134) has occurred while \output is active []
 
 
 
@@ -1622,10 +1559,6 @@ LaTeX Font Info:    Font shape `LUC/nanummj/m/it' in size <10> not available
 (Font)              Font shape `LUC/nanummj/m/sl' tried instead on input line 3
 15.
 ) (./forecast/forecast_appendix.tex
-(./forecast/tables/KOIPALL.G_forecasts.tex
-Underfull \vbox (badness 1152) has occurred while \output is active []
-
-
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1634,7 +1567,8 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-0.49998pt}.
 
-[39]) (./forecast/tables/KOEQUIPTE_forecasts.tex)
+[39] (./forecast/tables/KOIPALL.G_forecasts.tex)
+(./forecast/tables/KOEQUIPTE_forecasts.tex)
 (./forecast/tables/KOWRCCNSE_forecasts.tex))
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
@@ -1662,7 +1596,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 [42
 
 ] (./forecast/forecast_part3.tex
-<nowcast/nowcast_part3.pdf, id=514, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=476, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf  used on input line 1.
@@ -1671,7 +1605,7 @@ File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf  used on input line 1.
 (pdftex.def)             Requested size: 552.06114pt x 748.79567pt.
-<nowcast/nowcast_part3.pdf, id=517, page=1, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=479, page=1, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 1>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
@@ -1700,7 +1634,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page1 used on input line 1
  [43
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=566, page=2, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=528, page=2, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 2>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page2 used on input line 1
@@ -1719,7 +1653,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page2 used on input line 1
  [44
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=631, page=3, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=593, page=3, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 3>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page3 used on input line 1
@@ -1738,7 +1672,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page3 used on input line 1
  [45
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=641, page=4, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=603, page=4, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 4>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page4 used on input line 1
@@ -1757,7 +1691,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page4 used on input line 1
  [46
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=655, page=5, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=617, page=5, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 5>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page5 used on input line 1
@@ -1776,7 +1710,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page5 used on input line 1
  [47
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=661, page=6, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=623, page=6, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 6>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page6 used on input line 1
@@ -1795,7 +1729,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page6 used on input line 1
  [48
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=708, page=7, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=670, page=7, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 7>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page7 used on input line 1
@@ -1814,7 +1748,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page7 used on input line 1
  [49
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=723, page=8, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=685, page=8, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 8>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page8 used on input line 1
@@ -1833,7 +1767,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page8 used on input line 1
  [50
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=733, page=9, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=695, page=9, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 9>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page9 used on input line 1
@@ -1853,7 +1787,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page9 used on input line 1
 [51
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=743, page=10, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=705, page=10, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 10>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page10 used on input line 
@@ -1872,7 +1806,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page10 used on input line
  [52
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=753, page=11, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=715, page=11, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 11>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page11 used on input line 
@@ -1891,7 +1825,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page11 used on input line
  [53
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=759, page=12, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=721, page=12, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 12>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page12 used on input line 
@@ -1910,7 +1844,7 @@ Package pdftex.def Info: nowcast/nowcast_part3.pdf , page12 used on input line
  [54
 
  <./nowcast/nowcast_part3.pdf>]
-<nowcast/nowcast_part3.pdf, id=773, page=13, 552.0625pt x 748.7975pt>
+<nowcast/nowcast_part3.pdf, id=735, page=13, 552.0625pt x 748.7975pt>
 File: nowcast/nowcast_part3.pdf Graphic file (type pdf)
 <use nowcast/nowcast_part3.pdf, page 13>
 Package pdftex.def Info: nowcast/nowcast_part3.pdf , page13 used on input line 
@@ -2121,28 +2055,19 @@ L3 programming layer <2024-01-22>
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 
-LaTeX Warning: There were undefined references.
+LaTeX Warning: There were multiply-defined labels.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 446CB0967E5C2E186D25B8747646D120;3550
-(rerunfilecheck)             After:  562E3B728B52250B4F1603B0B98F3178;932.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 562E3B728B52250B4F1603B0B98F3178;932.
  ) 
 Here is how much of TeX's memory you used:
- 19595 strings out of 475662
- 327278 string characters out of 5784442
+ 19584 strings out of 475662
+ 327119 string characters out of 5784442
  1971975 words of memory out of 5000000
- 40769 multiletter control sequences out of 15000+600000
+ 40758 multiletter control sequences out of 15000+600000
  704351 words of font info for 486 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 84i,17n,96p,1001b,843s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,17n,96p,1001b,848s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Hfootnote.13} has been referenced but does not exis
 t, replaced by a fixed one
@@ -2321,10 +2246,10 @@ e/texlive/texmf-dist/fonts/type1/public/nanumtype1/nanummjmd7.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 urw/times/utmri8a.pfb>
-Output written on main.pdf (70 pages, 10650350 bytes).
+Output written on main.pdf (70 pages, 10650704 bytes).
 PDF statistics:
- 1578 PDF objects out of 1728 (max. 8388607)
- 1090 compressed objects within 11 object streams
+ 1543 PDF objects out of 1728 (max. 8388607)
+ 1055 compressed objects within 11 object streams
  256 named destinations out of 1000 (max. 500000)
- 86330 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 86194 words of extra memory for PDF output out of 89155 (max. 10000000)
 
